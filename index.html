@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>콘택트렌즈 시뮬레이터</title>
+<title>콘택트렌즈 시뮬레이터 - Tracking</title>
 <style>
 :root{
   --bg1:#02214a; --bg2:#005eb8; --panel:#071a34; --panel2:#0b2752; --line:rgba(255,255,255,.16);
@@ -58,8 +58,11 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
 .compare-pane .stack{position:absolute;inset:0}
 .compare-pane video,.compare-pane .ghost,.compare-pane .halo,.compare-pane .axis-line{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .compare-pane video.base{filter:var(--baseFilter)}
-.compare-pane video.far{opacity:var(--farOpacity);filter:var(--farFilter);clip-path:var(--farClip,polygon(0 0,100% 0,100% 68%,0 82%))}
-.compare-pane video.near{opacity:var(--nearOpacity);filter:var(--nearFilter);clip-path:var(--nearClip,polygon(0 56%,100% 44%,100% 100%,0 100%))}
+.compare-pane video.far{opacity:var(--farOpacity);filter:var(--farFilter);clip-path:var(--farClip, polygon(0 0,100% 0,100% 68%,0 82%))}
+.compare-pane video.near1,.compare-pane video.near2,.compare-pane video.near3{opacity:var(--nearOpacity);filter:var(--nearFilter)}
+.compare-pane video.near1{clip-path:var(--nearClip1, inset(100% 100% 100% 100%)); will-change:clip-path}
+.compare-pane video.near2{clip-path:var(--nearClip2, inset(100% 100% 100% 100%)); will-change:clip-path}
+.compare-pane video.near3{clip-path:var(--nearClip3, inset(100% 100% 100% 100%)); will-change:clip-path}
 .compare-pane .ghost{opacity:var(--ghostOpacity);transform:translate(var(--ghostX),var(--ghostY));filter:blur(var(--ghostBlur));mix-blend-mode:screen}
 .compare-pane .ghost::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.05));opacity:.2}
 .compare-pane .halo{pointer-events:none;opacity:var(--haloOpacity);background:
@@ -135,7 +138,9 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
           <div class="stack" id="leftStack">
             <video class="base" id="leftBase" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <video class="far" id="leftFar" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near" id="leftNear" autoplay muted loop playsinline crossorigin="anonymous"></video>
+            <video class="near1" id="leftNear1" autoplay muted loop playsinline crossorigin="anonymous"></video>
+            <video class="near2" id="leftNear2" autoplay muted loop playsinline crossorigin="anonymous"></video>
+            <video class="near3" id="leftNear3" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <div class="ghost"></div>
             <div class="halo"></div>
             <div class="axis-line"></div>
@@ -145,7 +150,9 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
           <div class="stack" id="rightStack">
             <video class="base" id="rightBase" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <video class="far" id="rightFar" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near" id="rightNear" autoplay muted loop playsinline crossorigin="anonymous"></video>
+            <video class="near1" id="rightNear1" autoplay muted loop playsinline crossorigin="anonymous"></video>
+            <video class="near2" id="rightNear2" autoplay muted loop playsinline crossorigin="anonymous"></video>
+            <video class="near3" id="rightNear3" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <div class="ghost"></div>
             <div class="halo"></div>
             <div class="axis-line"></div>
@@ -186,30 +193,106 @@ const allProducts=[
   {id:'maxMultiToric',name:'맥스 멀티 난시'}
 ];
 
-
-const sceneMasks={
-  day:{
-    // phone + hand + bottom cart handle
-    nearClip:'polygon(0% 100%, 0% 90%, 14% 86%, 24% 82%, 32% 76%, 37% 68%, 42% 54%, 48% 34%, 53% 18%, 61% 14%, 68% 17%, 70% 33%, 70% 58%, 75% 67%, 86% 76%, 95% 84%, 100% 88%, 100% 100%)',
-    farClip:'polygon(0 0,100% 0,100% 78%,86% 73%,75% 66%,70% 56%,70% 31%,66% 17%,57% 13%,50% 17%,45% 34%,40% 54%,35% 67%,24% 76%,14% 80%,0 84%)'
-  },
-  dine:{
-    // menu + hands + front plate/table
-    nearClip:'polygon(18% 100%, 20% 84%, 24% 75%, 29% 66%, 34% 58%, 36% 40%, 44% 31%, 56% 31%, 64% 40%, 66% 58%, 71% 67%, 76% 74%, 80% 83%, 82% 100%)',
-    farClip:'polygon(0 0,100% 0,100% 100%,82% 100%,80% 84%,75% 75%,68% 67%,65% 58%,63% 41%,56% 32%,44% 32%,37% 41%,35% 58%,28% 67%,23% 75%,19% 84%,17% 100%,0 100%)'
-  },
-  night:{
-    // dashboard + navigation + left instrument + steering lower arc
-    nearClip:'polygon(0% 100%, 0% 74%, 8% 67%, 20% 63%, 32% 61%, 42% 59%, 46% 51%, 57% 50%, 66% 56%, 78% 60%, 90% 66%, 100% 73%, 100% 100%)',
-    farClip:'polygon(0 0,100% 0,100% 73%,90% 66%,78% 60%,66% 56%,57% 50%,46% 51%,42% 59%,32% 61%,20% 63%,8% 67%,0 74%)'
-  }
-};
-
 const state={
   selected:['emmetrope'],
   severity:{myopia:45,hyperopia:45,astigmatism:50,presbyopia:50,axis:14},
   scene:'day', leftProduct:'none', rightProduct:'none', split:50
 };
+
+const sceneMasks={
+  day:{
+    far:'polygon(0 0,100% 0,100% 100%,72% 100%,72% 84%,58% 84%,58% 24%,72% 24%,72% 0,0 0)',
+    tracks:{
+      near1:[
+        {t:0.00, clip:'ellipse(8% 30% at 56% 53%)'},
+        {t:0.25, clip:'ellipse(8.5% 31% at 57% 54%)'},
+        {t:0.50, clip:'ellipse(9% 31% at 58% 54%)'},
+        {t:0.75, clip:'ellipse(8.5% 30% at 57% 53%)'},
+        {t:1.00, clip:'ellipse(8% 30% at 56% 53%)'}
+      ],
+      near2:[
+        {t:0.00, clip:'ellipse(11% 27% at 46% 60%)'},
+        {t:0.20, clip:'ellipse(12% 28% at 47% 60%)'},
+        {t:0.45, clip:'ellipse(12% 28% at 48% 61%)'},
+        {t:0.70, clip:'ellipse(11% 27% at 47% 60%)'},
+        {t:1.00, clip:'ellipse(11% 27% at 46% 60%)'}
+      ],
+      near3:[
+        {t:0.00, clip:'ellipse(28% 12% at 52% 92%)'},
+        {t:0.35, clip:'ellipse(29% 12% at 53% 92%)'},
+        {t:0.65, clip:'ellipse(30% 12% at 54% 92%)'},
+        {t:1.00, clip:'ellipse(28% 12% at 52% 92%)'}
+      ]
+    }
+  },
+  dine:{
+    far:'polygon(0 0,100% 0,100% 100%,76% 100%,76% 80%,58% 80%,58% 28%,42% 28%,42% 80%,24% 80%,24% 100%,0 100%)',
+    tracks:{
+      near1:[
+        {t:0.00, clip:'ellipse(8.5% 24% at 49% 56%)'},
+        {t:0.25, clip:'ellipse(9% 24% at 50% 56%)'},
+        {t:0.50, clip:'ellipse(9% 24% at 50% 57%)'},
+        {t:0.75, clip:'ellipse(8.5% 24% at 49% 56%)'},
+        {t:1.00, clip:'ellipse(8.5% 24% at 49% 56%)'}
+      ],
+      near2:[
+        {t:0.00, clip:'ellipse(18% 10% at 51% 86%)'},
+        {t:0.30, clip:'ellipse(20% 10% at 52% 86%)'},
+        {t:0.60, clip:'ellipse(20% 11% at 53% 87%)'},
+        {t:1.00, clip:'ellipse(18% 10% at 51% 86%)'}
+      ],
+      near3:[
+        {t:0.00, clip:'ellipse(11% 10% at 67% 89%)'},
+        {t:0.50, clip:'ellipse(10% 10% at 66% 89%)'},
+        {t:1.00, clip:'ellipse(11% 10% at 67% 89%)'}
+      ]
+    }
+  },
+  night:{
+    far:'polygon(0 0,100% 0,100% 100%,72% 100%,72% 84%,60% 84%,60% 56%,40% 56%,40% 84%,30% 84%,30% 100%,0 100%,0 60%,18% 60%,18% 48%,0 48%)',
+    tracks:{
+      near1:[
+        {t:0.00, clip:'ellipse(11% 11% at 51% 69%)'},
+        {t:0.30, clip:'ellipse(11% 11% at 51% 69%)'},
+        {t:0.60, clip:'ellipse(11% 11% at 50% 69%)'},
+        {t:1.00, clip:'ellipse(11% 11% at 51% 69%)'}
+      ],
+      near2:[
+        {t:0.00, clip:'ellipse(12% 9% at 24% 75%)'},
+        {t:0.40, clip:'ellipse(12% 9% at 24% 75%)'},
+        {t:1.00, clip:'ellipse(12% 9% at 24% 75%)'}
+      ],
+      near3:[
+        {t:0.00, clip:'ellipse(31% 10% at 49% 89%)'},
+        {t:0.50, clip:'ellipse(31% 10% at 50% 89%)'},
+        {t:1.00, clip:'ellipse(31% 10% at 49% 89%)'}
+      ]
+    }
+  }
+};
+
+function interpolateTrack(track, p){
+  if(!track||!track.length) return 'inset(100% 100% 100% 100%)';
+  for(let i=0;i<track.length-1;i++){
+    const a=track[i], b=track[i+1];
+    if(p>=a.t && p<=b.t){
+      return mixClip(a.clip,b.clip,(p-a.t)/(b.t-a.t||1));
+    }
+  }
+  return track[track.length-1].clip;
+}
+
+function mixClip(a,b,k){
+  const pa=parseEllipse(a), pb=parseEllipse(b);
+  if(!pa||!pb) return k<0.5?a:b;
+  const lerp=(x,y)=>x+(y-x)*k;
+  return `ellipse(${lerp(pa.rx,pb.rx).toFixed(2)}% ${lerp(pa.ry,pb.ry).toFixed(2)}% at ${lerp(pa.cx,pb.cx).toFixed(2)}% ${lerp(pa.cy,pb.cy).toFixed(2)}%)`;
+}
+
+function parseEllipse(str){
+  const m=str.match(/ellipse\(([-\d.]+)% ([-\d.]+)% at ([-\d.]+)% ([-\d.]+)%\)/);
+  return m?{rx:+m[1],ry:+m[2],cx:+m[3],cy:+m[4]}:null;
+}
 
 const dom={
   conditionGrid:document.getElementById('conditionGrid'), sliderList:document.getElementById('sliderList'),
@@ -217,11 +300,11 @@ const dom={
   leftInline:document.getElementById('leftInline'), rightInline:document.getElementById('rightInline'),
   sceneSelect:document.getElementById('sceneSelect'), conditionBadge:document.getElementById('conditionBadge'), sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'), stage:document.getElementById('stage'), handle:document.getElementById('handle'),
-  leftBase:document.getElementById('leftBase'), leftFar:document.getElementById('leftFar'), leftNear:document.getElementById('leftNear'),
-  rightBase:document.getElementById('rightBase'), rightFar:document.getElementById('rightFar'), rightNear:document.getElementById('rightNear'),
+  leftBase:document.getElementById('leftBase'), leftFar:document.getElementById('leftFar'), leftNear1:document.getElementById('leftNear1'), leftNear2:document.getElementById('leftNear2'), leftNear3:document.getElementById('leftNear3'),
+  rightBase:document.getElementById('rightBase'), rightFar:document.getElementById('rightFar'), rightNear1:document.getElementById('rightNear1'), rightNear2:document.getElementById('rightNear2'), rightNear3:document.getElementById('rightNear3'),
   leftStack:document.getElementById('leftStack'), rightStack:document.getElementById('rightStack')
 };
-const allVideos=[dom.leftBase,dom.leftFar,dom.leftNear,dom.rightBase,dom.rightFar,dom.rightNear];
+const allVideos=[dom.leftBase,dom.leftFar,dom.leftNear1,dom.leftNear2,dom.leftNear3,dom.rightBase,dom.rightFar,dom.rightNear1,dom.rightNear2,dom.rightNear3];
 
 function selectedFlags(){
   return {
@@ -327,15 +410,15 @@ function computeEffect(productId){
     case 'max1day':
       residual.myopia*=0.05; residual.hyperopia*=0.07; maxGlow=true; break;
     case 'moistMulti':
-      residual.presbyopia*=0.08; maxGlow=false; break;
+      residual.presbyopia*=0.08; residual.myopia*=0.12; residual.hyperopia*=0.14; maxGlow=false; break;
     case 'maxMulti':
-      residual.presbyopia*=0.04; maxGlow=true; break;
+      residual.presbyopia*=0.04; residual.myopia*=0.08; residual.hyperopia*=0.10; maxGlow=true; break;
     case 'oasysToric':
-      residual.astigmatism*=0.10; maxGlow=false; break;
+      residual.astigmatism*=0.10; residual.myopia*=0.10; residual.hyperopia*=0.12; maxGlow=false; break;
     case 'maxToric':
-      residual.astigmatism*=0.06; maxGlow=true; break;
+      residual.astigmatism*=0.06; residual.myopia*=0.07; residual.hyperopia*=0.09; maxGlow=true; break;
     case 'maxMultiToric':
-      residual.astigmatism*=0.06; residual.presbyopia*=0.04; maxGlow=true; break;
+      residual.astigmatism*=0.06; residual.presbyopia*=0.04; residual.myopia*=0.08; residual.hyperopia*=0.10; maxGlow=true; break;
   }
   if(productId==='none' || f.emmetrope){ maxGlow=false; }
 
@@ -353,7 +436,7 @@ function computeEffect(productId){
   baseBlur += Math.max(0, residual.hyperopia - 0.82) * 1.2;
 
   // 노안: 근거리만 흐림, 강해질수록 근거리만 더 흐림
-  nearBlur += residual.presbyopia * 9.0;
+  nearBlur += residual.presbyopia * 9.5;
 
   // 난시: 원/근거리 모두 방향성 중첩과 흐림
   baseBlur += residual.astigmatism * 0.9;
@@ -363,15 +446,6 @@ function computeEffect(productId){
   let contrast = 1 - (residual.myopia*0.06 + residual.hyperopia*0.06 + residual.presbyopia*0.015 + residual.astigmatism*0.03);
   let brightness = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.01);
   let saturate = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.015);
-
-
-  if(!f.myopia && !f.hyperopia && !f.astigmatism && f.presbyopia){
-    baseBlur = 0;
-    farBlur = 0;
-    contrast = Math.max(contrast, 1.0);
-    brightness = Math.max(brightness, 1.0);
-    saturate = Math.max(saturate, 1.0);
-  }
 
   let haloOpacity = state.scene==='night' ? 0.22 : 0.07;
   let haloBlur = state.scene==='night' ? 10 : 4;
@@ -406,7 +480,6 @@ function computeEffect(productId){
     nearBlur *= 0.86;
   }
 
-  const sceneMask = sceneMasks[state.scene] || sceneMasks.day;
   return {
     baseFilter:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
     farFilter:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
@@ -415,9 +488,7 @@ function computeEffect(productId){
     nearOpacity: nearBlur>0.1 ? 1 : 0,
     ghostOpacity, ghostX:`${ghostX.toFixed(1)}px`, ghostY:`${ghostY.toFixed(1)}px`, ghostBlur:`${ghostBlur.toFixed(2)}px`,
     haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness,
-    axisOpacity, axisDeg:`${axis}deg`,
-    farClip: sceneMask.farClip,
-    nearClip: sceneMask.nearClip
+    axisOpacity, axisDeg:`${axis}deg`
   };
 }
 
@@ -427,8 +498,6 @@ function applyStyle(stack,effect){
   stack.style.setProperty('--nearFilter', effect.nearFilter);
   stack.style.setProperty('--farOpacity', effect.farOpacity);
   stack.style.setProperty('--nearOpacity', effect.nearOpacity);
-  stack.style.setProperty('--farClip', effect.farClip);
-  stack.style.setProperty('--nearClip', effect.nearClip);
   stack.style.setProperty('--ghostOpacity', effect.ghostOpacity);
   stack.style.setProperty('--ghostX', effect.ghostX);
   stack.style.setProperty('--ghostY', effect.ghostY);
@@ -440,7 +509,23 @@ function applyStyle(stack,effect){
   stack.style.setProperty('--axisDeg', effect.axisDeg);
 }
 
+function applySceneMasks(progressOverride){
+  const m=sceneMasks[state.scene];
+  const master=dom.leftBase;
+  const p = progressOverride ?? ((master && master.duration && isFinite(master.duration) && master.duration>0) ? (master.currentTime/master.duration) : 0);
+  const near1=interpolateTrack(m.tracks.near1,p);
+  const near2=interpolateTrack(m.tracks.near2,p);
+  const near3=interpolateTrack(m.tracks.near3,p);
+  [dom.leftStack,dom.rightStack].forEach(stack=>{
+    stack.style.setProperty('--farClip', m.far);
+    stack.style.setProperty('--nearClip1', near1);
+    stack.style.setProperty('--nearClip2', near2);
+    stack.style.setProperty('--nearClip3', near3);
+  });
+}
+
 function applyVisuals(){
+  applySceneMasks();
   applyStyle(dom.leftStack, computeEffect(state.leftProduct));
   applyStyle(dom.rightStack, computeEffect(state.rightProduct));
   updateBadges();
@@ -470,6 +555,11 @@ function syncVideos(){
   });
 }
 
+function tickTracking(){
+  applySceneMasks();
+  requestAnimationFrame(tickTracking);
+}
+
 function renderAll(){renderConditions(); renderSliders(); renderProducts(); applyVisuals(); updateBadges();}
 
 function setSplit(percent){ state.split=Math.max(15,Math.min(85,percent)); dom.stage.style.setProperty('--split', state.split+'%'); }
@@ -485,7 +575,7 @@ dom.sceneSelect.onchange=e=>setScene(e.target.value);
 dom.resetBtn.onclick=()=>{ state.selected=['emmetrope']; state.severity={myopia:45,hyperopia:45,astigmatism:50,presbyopia:50,axis:14}; state.leftProduct='none'; state.rightProduct='none'; setSplit(50); syncSelectOptions(); renderAll(); };
 
 setInterval(syncVideos,500);
-renderAll(); setScene('day');
+renderAll(); setScene('day'); requestAnimationFrame(tickTracking);
 </script>
 </body>
 </html>
