@@ -60,9 +60,9 @@
     .section{display:flex; flex-direction:column; gap:10px}
     .section h3{margin:0; font-size:13px; color:#d7e8ff}
     .grid{display:grid; gap:10px}
-    .check-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .check-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
     .scene-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .card,.scene-btn,.pill,.product-card,.mini-btn{
+    .card,.scene-btn,.pill,.product-card,.mini-btn,.chip-btn{
       border:1px solid var(--line);
       background:rgba(255,255,255,.04);
       border-radius:16px;
@@ -70,13 +70,15 @@
       transition:.18s ease;
     }
     .card,.scene-btn,.mini-btn{padding:12px 14px; cursor:pointer}
-    .card:hover,.scene-btn:hover,.product-card:hover,.mini-btn:hover{transform:translateY(-1px); border-color:rgba(159,219,255,.35)}
-    .card.active,.scene-btn.active,.mini-btn.active,.product-card.active{
+    .chip-btn{padding:8px 10px; min-height:40px; border-radius:999px; font-size:13px; cursor:pointer; white-space:nowrap}
+    .card:hover,.scene-btn:hover,.product-card:hover,.mini-btn:hover,.chip-btn:hover{transform:translateY(-1px); border-color:rgba(159,219,255,.35)}
+    .card.active,.scene-btn.active,.mini-btn.active,.product-card.active,.chip-btn.active{
       background:linear-gradient(135deg, rgba(104,182,255,.28), rgba(159,219,255,.08));
       border-color:rgba(159,219,255,.56);
       box-shadow:inset 0 0 0 1px rgba(159,219,255,.14);
     }
     .card small,.muted{color:var(--muted); line-height:1.45}
+    .compact-help{font-size:12px; color:var(--muted); margin-top:2px}
     .card small{display:block; margin-top:5px; font-size:12px}
     .locked{opacity:.7}
     .slider-list{display:flex; flex-direction:column; gap:12px}
@@ -136,9 +138,13 @@
       .sidebar{position:static}
       .summary{grid-template-columns:1fr}
     }
+    @media (max-width:980px){
+      .check-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
     @media (max-width:760px){
       .app{padding:14px}
-      .check-grid,.scene-grid{grid-template-columns:1fr}
+      .check-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .scene-grid{grid-template-columns:1fr}
       h1{font-size:24px}
     }
   </style>
@@ -158,7 +164,7 @@
         <div class="section">
           <h3>1단계 · 굴절 이상 선택</h3>
           <div class="grid check-grid" id="conditionGrid"></div>
-          <div class="muted" style="font-size:12px">정시는 단독 선택 전용입니다. 근시·원시·난시·노안은 중복 선택 가능합니다.</div>
+          <div class="compact-help">정시는 단독 선택, 나머지는 중복 선택 가능</div>
         </div>
 
         <div class="section">
@@ -228,15 +234,15 @@
 const scenes = {
   day: {
     label: 'Day to Day',
-    url: 'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blt433a31f4f0fa7f74/66a8b28ebb95126f38022875/noLens_dayToDay_High.mp4?branch=prod_alias'
+    url: 'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/bltf0b4b11efcbe4ec4/66a8b2b0a3b12e0a0b5f5d9e/PureseeLens_dayToDay_High.mp4?branch=prod_alias'
   },
   dine: {
     label: 'Dine Out',
-    url: 'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blt1151ca0d4eca0698/66a8b293bb95127fc002287a/noLens_dineOut_High.mp4?branch=prod_alias'
+    url: 'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blta6e961a6e0f6a90f/66a8b2ae90e89afe7d28ffc4/PureseeLens_dineOut_High.mp4?branch=prod_alias'
   },
   night: {
     label: 'Night Driving',
-    url: 'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blt381890bca3098726/66a8b29590e89a699728ffbc/noLens_nightDriving_High.mp4?branch=prod_alias'
+    url: 'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blt1b4784f4566a173b/66a8b2b7971644620e9d0df9/PureseeLens_nightDriving_High.mp4?branch=prod_alias'
   }
 };
 
@@ -373,8 +379,8 @@ function renderConditions(){
   conditions.forEach(c=>{
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'card' + (state.selected.has(c.id) ? ' active' : '');
-    btn.innerHTML = `<div>${c.label}</div><small>${c.note}</small>`;
+    btn.className = 'chip-btn' + (state.selected.has(c.id) ? ' active' : '');
+    btn.textContent = c.label;
     btn.onclick = ()=>toggleCondition(c.id);
     if(c.id !== 'emmetrope' && flags.emmetrope) btn.classList.add('locked');
     conditionGrid.appendChild(btn);
@@ -485,8 +491,8 @@ function applyBeforeState(){
   const pr = (state.strengths.presbyopia||0)/100;
 
   let blur = 0;
-  let contrast = 1;
-  let brightness = 1;
+  let contrast = 1.04;
+  let brightness = 1.02;
   let ghostOpacity = 0;
   let ghostBlur = 0;
   let ghostX = 0;
@@ -503,6 +509,7 @@ function applyBeforeState(){
   let prismY = 0;
   let axisAlpha = 0;
 
+  if(f.emmetrope){ contrast = 1.08; brightness = 1.03; }
   if(f.myopia){ blur += 2 + my*6; contrast -= my*0.08; }
   if(f.hyperopia){ blur += 1 + hy*3; sharpOpacity = clamp(sharpOpacity + .22 + hy*0.22, 0, .6); sharpFilter = `blur(${2 + hy*2}px)`; maskHole = 24; maskOuter = 48; }
   if(f.presbyopia){ blur += .8 + pr*1.8; sharpOpacity = clamp(sharpOpacity + .34 + pr*0.26, 0, .8); sharpFilter = `blur(${3 + pr*2}px)`; maskHole = 26; maskOuter = 54; }
@@ -543,7 +550,10 @@ function applyBeforeState(){
 function applyProductState(){
   applyBeforeState();
   const p = state.product;
-  if(!p) return;
+  if(!p){
+    root.style.setProperty('--lensFilter', 'blur(0px) contrast(1.08) brightness(1.03) saturate(1.02)');
+    return;
+  }
   const f = getFlags();
   const as = (state.strengths.astigmatism||0)/100;
   const pr = (state.strengths.presbyopia||0)/100;
