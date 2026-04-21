@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>콘택트렌즈 시뮬레이터 - Tracking</title>
+<title>콘택트렌즈 시뮬레이터</title>
 <style>
 :root{
   --bg1:#02214a; --bg2:#005eb8; --panel:#071a34; --panel2:#0b2752; --line:rgba(255,255,255,.16);
@@ -58,11 +58,8 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
 .compare-pane .stack{position:absolute;inset:0}
 .compare-pane video,.compare-pane .ghost,.compare-pane .halo,.compare-pane .axis-line{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .compare-pane video.base{filter:var(--baseFilter)}
-.compare-pane video.far{opacity:var(--farOpacity);filter:var(--farFilter);clip-path:var(--farClip, polygon(0 0,100% 0,100% 68%,0 82%))}
-.compare-pane video.near1,.compare-pane video.near2,.compare-pane video.near3{opacity:var(--nearOpacity);filter:var(--nearFilter)}
-.compare-pane video.near1{clip-path:var(--nearClip1, inset(100% 100% 100% 100%)); will-change:clip-path}
-.compare-pane video.near2{clip-path:var(--nearClip2, inset(100% 100% 100% 100%)); will-change:clip-path}
-.compare-pane video.near3{clip-path:var(--nearClip3, inset(100% 100% 100% 100%)); will-change:clip-path}
+.compare-pane video.far{opacity:var(--farOpacity);filter:var(--farFilter);-webkit-mask-image:var(--farMask);mask-image:var(--farMask);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%;}
+.compare-pane video.near{opacity:var(--nearOpacity);filter:var(--nearFilter);-webkit-mask-image:var(--nearMask);mask-image:var(--nearMask);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%;}
 .compare-pane .ghost{opacity:var(--ghostOpacity);transform:translate(var(--ghostX),var(--ghostY));filter:blur(var(--ghostBlur));mix-blend-mode:screen}
 .compare-pane .ghost::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.05));opacity:.2}
 .compare-pane .halo{pointer-events:none;opacity:var(--haloOpacity);background:
@@ -138,9 +135,7 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
           <div class="stack" id="leftStack">
             <video class="base" id="leftBase" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <video class="far" id="leftFar" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near1" id="leftNear1" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near2" id="leftNear2" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near3" id="leftNear3" autoplay muted loop playsinline crossorigin="anonymous"></video>
+            <video class="near" id="leftNear" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <div class="ghost"></div>
             <div class="halo"></div>
             <div class="axis-line"></div>
@@ -150,9 +145,7 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
           <div class="stack" id="rightStack">
             <video class="base" id="rightBase" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <video class="far" id="rightFar" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near1" id="rightNear1" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near2" id="rightNear2" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near3" id="rightNear3" autoplay muted loop playsinline crossorigin="anonymous"></video>
+            <video class="near" id="rightNear" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <div class="ghost"></div>
             <div class="halo"></div>
             <div class="axis-line"></div>
@@ -193,106 +186,72 @@ const allProducts=[
   {id:'maxMultiToric',name:'맥스 멀티 난시'}
 ];
 
+const sceneMasks={
+  day:{
+    near:[
+      // phone body + screen
+      {type:'ellipse', x:49, y:60, rx:6.8, ry:19},
+      // hand / forearm
+      {type:'ellipse', x:34, y:72, rx:15, ry:24, rot:-12},
+      // cart handle / very front produce
+      {type:'ellipse', x:52, y:94, rx:24, ry:8.5, rot:0}
+    ],
+    far:[
+      {type:'ellipse', x:18, y:24, rx:18, ry:16},
+      {type:'ellipse', x:76, y:27, rx:20, ry:17},
+      {type:'ellipse', x:79, y:63, rx:20, ry:15},
+      {type:'ellipse', x:18, y:58, rx:19, ry:18}
+    ]
+  },
+  dine:{
+    near:[
+      // menu card
+      {type:'ellipse', x:51, y:62, rx:9, ry:24},
+      // hands around menu
+      {type:'ellipse', x:37, y:77, rx:10, ry:14, rot:-14},
+      {type:'ellipse', x:62, y:79, rx:10, ry:14, rot:10},
+      // front plate/table edge
+      {type:'ellipse', x:50, y:92, rx:26, ry:10}
+    ],
+    far:[
+      {type:'ellipse', x:18, y:26, rx:20, ry:18},
+      {type:'ellipse', x:81, y:30, rx:18, ry:18},
+      {type:'ellipse', x:84, y:68, rx:18, ry:16},
+      {type:'ellipse', x:18, y:67, rx:18, ry:16}
+    ]
+  },
+  night:{
+    near:[
+      // navigation screen
+      {type:'ellipse', x:50, y:75, rx:13, ry:10},
+      // gauge cluster / steering area
+      {type:'ellipse', x:26, y:79, rx:16, ry:12},
+      // lower dashboard spread
+      {type:'ellipse', x:48, y:91, rx:34, ry:9}
+    ],
+    far:[
+      {type:'ellipse', x:51, y:28, rx:24, ry:15},
+      {type:'ellipse', x:78, y:33, rx:18, ry:16},
+      {type:'ellipse', x:20, y:34, rx:18, ry:16},
+      {type:'ellipse', x:51, y:52, rx:26, ry:16}
+    ]
+  }
+};
+function gradFromShape(s, feather=78){
+  const rx=(s.rx||10), ry=(s.ry||10), x=(s.x||50), y=(s.y||50), rot=(s.rot||0);
+  return `radial-gradient(${rx}% ${ry}% at ${x}% ${y}%, rgba(255,255,255,1) 0%, rgba(255,255,255,1) ${feather}%, rgba(255,255,255,0) 100%)`;
+}
+function buildMask(sceneKey, kind){
+  const arr=(sceneMasks[sceneKey]&&sceneMasks[sceneKey][kind])||[];
+  if(!arr.length) return 'none';
+  return arr.map(s=>gradFromShape(s, kind==='near'?72:76)).join(',');
+}
+
 const state={
   selected:['emmetrope'],
   severity:{myopia:45,hyperopia:45,astigmatism:50,presbyopia:50,axis:14},
   scene:'day', leftProduct:'none', rightProduct:'none', split:50
 };
-
-const sceneMasks={
-  day:{
-    far:'polygon(0 0,100% 0,100% 100%,72% 100%,72% 84%,58% 84%,58% 24%,72% 24%,72% 0,0 0)',
-    tracks:{
-      near1:[
-        {t:0.00, clip:'ellipse(8% 30% at 56% 53%)'},
-        {t:0.25, clip:'ellipse(8.5% 31% at 57% 54%)'},
-        {t:0.50, clip:'ellipse(9% 31% at 58% 54%)'},
-        {t:0.75, clip:'ellipse(8.5% 30% at 57% 53%)'},
-        {t:1.00, clip:'ellipse(8% 30% at 56% 53%)'}
-      ],
-      near2:[
-        {t:0.00, clip:'ellipse(11% 27% at 46% 60%)'},
-        {t:0.20, clip:'ellipse(12% 28% at 47% 60%)'},
-        {t:0.45, clip:'ellipse(12% 28% at 48% 61%)'},
-        {t:0.70, clip:'ellipse(11% 27% at 47% 60%)'},
-        {t:1.00, clip:'ellipse(11% 27% at 46% 60%)'}
-      ],
-      near3:[
-        {t:0.00, clip:'ellipse(28% 12% at 52% 92%)'},
-        {t:0.35, clip:'ellipse(29% 12% at 53% 92%)'},
-        {t:0.65, clip:'ellipse(30% 12% at 54% 92%)'},
-        {t:1.00, clip:'ellipse(28% 12% at 52% 92%)'}
-      ]
-    }
-  },
-  dine:{
-    far:'polygon(0 0,100% 0,100% 100%,76% 100%,76% 80%,58% 80%,58% 28%,42% 28%,42% 80%,24% 80%,24% 100%,0 100%)',
-    tracks:{
-      near1:[
-        {t:0.00, clip:'ellipse(8.5% 24% at 49% 56%)'},
-        {t:0.25, clip:'ellipse(9% 24% at 50% 56%)'},
-        {t:0.50, clip:'ellipse(9% 24% at 50% 57%)'},
-        {t:0.75, clip:'ellipse(8.5% 24% at 49% 56%)'},
-        {t:1.00, clip:'ellipse(8.5% 24% at 49% 56%)'}
-      ],
-      near2:[
-        {t:0.00, clip:'ellipse(18% 10% at 51% 86%)'},
-        {t:0.30, clip:'ellipse(20% 10% at 52% 86%)'},
-        {t:0.60, clip:'ellipse(20% 11% at 53% 87%)'},
-        {t:1.00, clip:'ellipse(18% 10% at 51% 86%)'}
-      ],
-      near3:[
-        {t:0.00, clip:'ellipse(11% 10% at 67% 89%)'},
-        {t:0.50, clip:'ellipse(10% 10% at 66% 89%)'},
-        {t:1.00, clip:'ellipse(11% 10% at 67% 89%)'}
-      ]
-    }
-  },
-  night:{
-    far:'polygon(0 0,100% 0,100% 100%,72% 100%,72% 84%,60% 84%,60% 56%,40% 56%,40% 84%,30% 84%,30% 100%,0 100%,0 60%,18% 60%,18% 48%,0 48%)',
-    tracks:{
-      near1:[
-        {t:0.00, clip:'ellipse(11% 11% at 51% 69%)'},
-        {t:0.30, clip:'ellipse(11% 11% at 51% 69%)'},
-        {t:0.60, clip:'ellipse(11% 11% at 50% 69%)'},
-        {t:1.00, clip:'ellipse(11% 11% at 51% 69%)'}
-      ],
-      near2:[
-        {t:0.00, clip:'ellipse(12% 9% at 24% 75%)'},
-        {t:0.40, clip:'ellipse(12% 9% at 24% 75%)'},
-        {t:1.00, clip:'ellipse(12% 9% at 24% 75%)'}
-      ],
-      near3:[
-        {t:0.00, clip:'ellipse(31% 10% at 49% 89%)'},
-        {t:0.50, clip:'ellipse(31% 10% at 50% 89%)'},
-        {t:1.00, clip:'ellipse(31% 10% at 49% 89%)'}
-      ]
-    }
-  }
-};
-
-function interpolateTrack(track, p){
-  if(!track||!track.length) return 'inset(100% 100% 100% 100%)';
-  for(let i=0;i<track.length-1;i++){
-    const a=track[i], b=track[i+1];
-    if(p>=a.t && p<=b.t){
-      return mixClip(a.clip,b.clip,(p-a.t)/(b.t-a.t||1));
-    }
-  }
-  return track[track.length-1].clip;
-}
-
-function mixClip(a,b,k){
-  const pa=parseEllipse(a), pb=parseEllipse(b);
-  if(!pa||!pb) return k<0.5?a:b;
-  const lerp=(x,y)=>x+(y-x)*k;
-  return `ellipse(${lerp(pa.rx,pb.rx).toFixed(2)}% ${lerp(pa.ry,pb.ry).toFixed(2)}% at ${lerp(pa.cx,pb.cx).toFixed(2)}% ${lerp(pa.cy,pb.cy).toFixed(2)}%)`;
-}
-
-function parseEllipse(str){
-  const m=str.match(/ellipse\(([-\d.]+)% ([-\d.]+)% at ([-\d.]+)% ([-\d.]+)%\)/);
-  return m?{rx:+m[1],ry:+m[2],cx:+m[3],cy:+m[4]}:null;
-}
 
 const dom={
   conditionGrid:document.getElementById('conditionGrid'), sliderList:document.getElementById('sliderList'),
@@ -300,11 +259,11 @@ const dom={
   leftInline:document.getElementById('leftInline'), rightInline:document.getElementById('rightInline'),
   sceneSelect:document.getElementById('sceneSelect'), conditionBadge:document.getElementById('conditionBadge'), sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'), stage:document.getElementById('stage'), handle:document.getElementById('handle'),
-  leftBase:document.getElementById('leftBase'), leftFar:document.getElementById('leftFar'), leftNear1:document.getElementById('leftNear1'), leftNear2:document.getElementById('leftNear2'), leftNear3:document.getElementById('leftNear3'),
-  rightBase:document.getElementById('rightBase'), rightFar:document.getElementById('rightFar'), rightNear1:document.getElementById('rightNear1'), rightNear2:document.getElementById('rightNear2'), rightNear3:document.getElementById('rightNear3'),
+  leftBase:document.getElementById('leftBase'), leftFar:document.getElementById('leftFar'), leftNear:document.getElementById('leftNear'),
+  rightBase:document.getElementById('rightBase'), rightFar:document.getElementById('rightFar'), rightNear:document.getElementById('rightNear'),
   leftStack:document.getElementById('leftStack'), rightStack:document.getElementById('rightStack')
 };
-const allVideos=[dom.leftBase,dom.leftFar,dom.leftNear1,dom.leftNear2,dom.leftNear3,dom.rightBase,dom.rightFar,dom.rightNear1,dom.rightNear2,dom.rightNear3];
+const allVideos=[dom.leftBase,dom.leftFar,dom.leftNear,dom.rightBase,dom.rightFar,dom.rightNear];
 
 function selectedFlags(){
   return {
@@ -406,19 +365,19 @@ function computeEffect(productId){
 
   switch(productId){
     case 'oasys':
-      residual.myopia*=0.08; residual.hyperopia*=0.10; maxGlow=false; break;
+      residual.myopia*=0.10; residual.hyperopia*=0.10; maxGlow=false; break;
     case 'max1day':
-      residual.myopia*=0.05; residual.hyperopia*=0.07; maxGlow=true; break;
+      residual.myopia*=0.06; residual.hyperopia*=0.07; maxGlow=true; break;
     case 'moistMulti':
-      residual.presbyopia*=0.08; residual.myopia*=0.12; residual.hyperopia*=0.14; maxGlow=false; break;
+      residual.presbyopia*=0.10; residual.myopia*=0.18; residual.hyperopia*=0.18; maxGlow=false; break;
     case 'maxMulti':
-      residual.presbyopia*=0.04; residual.myopia*=0.08; residual.hyperopia*=0.10; maxGlow=true; break;
+      residual.presbyopia*=0.05; residual.myopia*=0.12; residual.hyperopia*=0.12; maxGlow=true; break;
     case 'oasysToric':
-      residual.astigmatism*=0.10; residual.myopia*=0.10; residual.hyperopia*=0.12; maxGlow=false; break;
+      residual.astigmatism*=0.10; residual.myopia*=0.18; residual.hyperopia*=0.18; maxGlow=false; break;
     case 'maxToric':
-      residual.astigmatism*=0.06; residual.myopia*=0.07; residual.hyperopia*=0.09; maxGlow=true; break;
+      residual.astigmatism*=0.06; residual.myopia*=0.14; residual.hyperopia*=0.14; maxGlow=true; break;
     case 'maxMultiToric':
-      residual.astigmatism*=0.06; residual.presbyopia*=0.04; residual.myopia*=0.08; residual.hyperopia*=0.10; maxGlow=true; break;
+      residual.astigmatism*=0.06; residual.presbyopia*=0.05; residual.myopia*=0.12; residual.hyperopia*=0.12; maxGlow=true; break;
   }
   if(productId==='none' || f.emmetrope){ maxGlow=false; }
 
@@ -436,7 +395,7 @@ function computeEffect(productId){
   baseBlur += Math.max(0, residual.hyperopia - 0.82) * 1.2;
 
   // 노안: 근거리만 흐림, 강해질수록 근거리만 더 흐림
-  nearBlur += residual.presbyopia * 9.5;
+  nearBlur += residual.presbyopia * 12.5;
 
   // 난시: 원/근거리 모두 방향성 중첩과 흐림
   baseBlur += residual.astigmatism * 0.9;
@@ -464,12 +423,12 @@ function computeEffect(productId){
     haloBlur = 2;
   }
 
-  const dist = 4 + residual.astigmatism * 20;
+  const dist = 5 + residual.astigmatism * 24;
   const rad = axis * Math.PI / 180;
   let ghostX = Math.cos(rad) * dist;
   let ghostY = Math.sin(rad) * dist;
-  let ghostOpacity = residual.astigmatism ? Math.min(0.55, residual.astigmatism * 0.68) : 0;
-  let ghostBlur = 0.7 + residual.astigmatism * 3.3;
+  let ghostOpacity = residual.astigmatism ? Math.min(0.62, residual.astigmatism * 0.78) : 0;
+  let ghostBlur = 0.8 + residual.astigmatism * 3.8;
   let axisOpacity = residual.astigmatism ? 0.30 : 0;
 
   if(maxGlow){
@@ -507,25 +466,11 @@ function applyStyle(stack,effect){
   stack.style.setProperty('--haloBrightness', effect.haloBrightness);
   stack.style.setProperty('--axisOpacity', effect.axisOpacity);
   stack.style.setProperty('--axisDeg', effect.axisDeg);
-}
-
-function applySceneMasks(progressOverride){
-  const m=sceneMasks[state.scene];
-  const master=dom.leftBase;
-  const p = progressOverride ?? ((master && master.duration && isFinite(master.duration) && master.duration>0) ? (master.currentTime/master.duration) : 0);
-  const near1=interpolateTrack(m.tracks.near1,p);
-  const near2=interpolateTrack(m.tracks.near2,p);
-  const near3=interpolateTrack(m.tracks.near3,p);
-  [dom.leftStack,dom.rightStack].forEach(stack=>{
-    stack.style.setProperty('--farClip', m.far);
-    stack.style.setProperty('--nearClip1', near1);
-    stack.style.setProperty('--nearClip2', near2);
-    stack.style.setProperty('--nearClip3', near3);
-  });
+  stack.style.setProperty('--nearMask', buildMask(state.scene,'near'));
+  stack.style.setProperty('--farMask', buildMask(state.scene,'far'));
 }
 
 function applyVisuals(){
-  applySceneMasks();
   applyStyle(dom.leftStack, computeEffect(state.leftProduct));
   applyStyle(dom.rightStack, computeEffect(state.rightProduct));
   updateBadges();
@@ -555,11 +500,6 @@ function syncVideos(){
   });
 }
 
-function tickTracking(){
-  applySceneMasks();
-  requestAnimationFrame(tickTracking);
-}
-
 function renderAll(){renderConditions(); renderSliders(); renderProducts(); applyVisuals(); updateBadges();}
 
 function setSplit(percent){ state.split=Math.max(15,Math.min(85,percent)); dom.stage.style.setProperty('--split', state.split+'%'); }
@@ -575,7 +515,7 @@ dom.sceneSelect.onchange=e=>setScene(e.target.value);
 dom.resetBtn.onclick=()=>{ state.selected=['emmetrope']; state.severity={myopia:45,hyperopia:45,astigmatism:50,presbyopia:50,axis:14}; state.leftProduct='none'; state.rightProduct='none'; setSplit(50); syncSelectOptions(); renderAll(); };
 
 setInterval(syncVideos,500);
-renderAll(); setScene('day'); requestAnimationFrame(tickTracking);
+renderAll(); setScene('day');
 </script>
 </body>
 </html>
