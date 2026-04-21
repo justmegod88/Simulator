@@ -78,7 +78,7 @@
     }
     .card small,.muted{color:var(--muted); line-height:1.45}
     .card small{display:block; margin-top:5px; font-size:12px}
-    .locked{opacity:.5; pointer-events:none}
+    .locked{opacity:.7}
     .slider-list{display:flex; flex-direction:column; gap:12px}
     .slider-block{padding:14px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.03)}
     .slider-row{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; margin-bottom:8px}
@@ -372,6 +372,7 @@ function renderConditions(){
   conditionGrid.innerHTML = '';
   conditions.forEach(c=>{
     const btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'card' + (state.selected.has(c.id) ? ' active' : '');
     btn.innerHTML = `<div>${c.label}</div><small>${c.note}</small>`;
     btn.onclick = ()=>toggleCondition(c.id);
@@ -446,6 +447,7 @@ function renderProducts(){
     const tagText = p.tag(flags);
     const tone = p.tone === 'good' ? 'good' : p.tone === 'best' ? 'best' : 'compare';
     const card = document.createElement('button');
+    card.type = 'button';
     card.className = 'product-card' + (state.product === p.id ? ' active' : '');
     card.innerHTML = `
       <div class="product-top">
