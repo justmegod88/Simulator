@@ -1,631 +1,77 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="ko"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>콘택트렌즈 시뮬레이터</title>
 <style>
-:root{
-  --bg1:#03224e; --bg2:#005eb8; --panel:#0a2347; --line:rgba(255,255,255,.16);
-  --text:#fff; --muted:#d9e9ff; --blue:#0a84ff; --blue-soft:#8cc7ff;
-  --radius:18px; --shadow:0 20px 48px rgba(0,18,44,.32);
-}
-*{box-sizing:border-box}
-body{
-  margin:0; color:var(--text);
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  background:radial-gradient(circle at top,#0f6fd2 0%,#0a4d97 16%,#072b5a 38%,#04152d 76%,#020910 100%);
-}
-.app{max-width:1520px;margin:0 auto;padding:18px}
-.shell{display:grid;grid-template-columns:350px 1fr;gap:18px;align-items:start}
-.panel{
-  background:linear-gradient(180deg,rgba(9,33,71,.96),rgba(5,24,50,.98));
-  border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(12px)
-}
-.sidebar{padding:18px;display:flex;flex-direction:column;gap:16px;position:sticky;top:16px}
-.viewer{padding:14px;display:flex;flex-direction:column;gap:12px}
-.kicker{font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--blue-soft)}
-h1{margin:0;font-size:30px;line-height:1.08;color:#fff}
-.section{
-  display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
-  border:1px solid var(--line);border-radius:16px;padding:14px
-}
-.section h3{margin:0;font-size:15px}
-.muted{font-size:12px;color:var(--muted);line-height:1.5}
-.grid-chip{display:flex;flex-wrap:wrap;gap:10px}
-.chip{
-  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:var(--text);
-  padding:10px 18px;border-radius:16px;font-size:14px;font-weight:800;cursor:pointer;transition:.18s;
-}
-.chip.active{
-  border-color:rgba(166,216,255,.8);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 0 18px rgba(0,94,184,.22);
-  background:linear-gradient(180deg,rgba(10,132,255,.26),rgba(10,132,255,.16))
-}
-.slider-list{display:flex;flex-direction:column;gap:12px}
-.slider-row{padding:11px 12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
-.slider-head{display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:800;margin-bottom:8px}
-input[type=range]{width:100%;accent-color:#9fd4ff}
-.select-wrap{display:flex;flex-direction:column;gap:12px}
-.field{display:flex;flex-direction:column;gap:6px}
-.field label{font-size:13px;font-weight:800}
-select{
-  width:100%;height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.18);
-  background:linear-gradient(180deg,#0d4eab,#08356f);color:#fff;padding:0 14px;font-size:15px;outline:none
-}
-select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255,.12)}
-.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
-.toolbar-left,.toolbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.badge{
-  display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));font-size:14px
-}
-.ghost-btn{
-  border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,rgba(10,132,255,.18),rgba(255,255,255,.03));
-  color:#fff;border-radius:14px;padding:10px 14px;font-weight:800;cursor:pointer
-}
-.stage{
-  position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);
-  aspect-ratio:16/9;background:#081120;
-}
-.compare-pane{position:absolute;inset:0;overflow:hidden}
-.compare-pane .stack{position:absolute;inset:0}
-.compare-pane video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.compare-pane video.clear{filter:var(--clearFilter);opacity:1}
-.compare-pane video.near{filter:var(--nearFilter);opacity:var(--nearOpacity);mask:url(#nearMaskL);-webkit-mask:url(#nearMaskL)}
-.compare-pane video.far{filter:var(--farFilter);opacity:var(--farOpacity);mask:url(#farMaskL);-webkit-mask:url(#farMaskL)}
-.compare-pane.right video.near{mask:url(#nearMaskR);-webkit-mask:url(#nearMaskR)}
-.compare-pane.right video.far{mask:url(#farMaskR);-webkit-mask:url(#farMaskR)}
-.compare-pane .ghost{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:var(--ghostOpacity);
-  transform:translate(var(--ghostX),var(--ghostY));filter:blur(var(--ghostBlur));mix-blend-mode:screen;
-  mask:url(#astMaskL);-webkit-mask:url(#astMaskL)
-}
-.compare-pane.right .ghost{mask:url(#astMaskR);-webkit-mask:url(#astMaskR)}
-.compare-pane .halo{
-  position:absolute;inset:0;opacity:var(--haloOpacity);mix-blend-mode:screen;
-  background:
-  radial-gradient(circle at 50% 52%, rgba(255,255,255,.42) 0 5%, rgba(255,255,255,.16) 9%, rgba(255,255,255,0) 22%),
-  radial-gradient(circle at 74% 28%, rgba(255,255,255,.18) 0 4%, rgba(255,255,255,0) 18%);
-  filter:blur(var(--haloBlur)) brightness(var(--haloBrightness));
-}
-.compare-pane .axis-line{
-  position:absolute;inset:0;opacity:var(--axisOpacity);
-  background:linear-gradient(var(--axisDeg), transparent 48.7%, rgba(255,255,255,.95) 49.6%, transparent 50.4%);
-  mix-blend-mode:screen; mask:url(#astMaskL); -webkit-mask:url(#astMaskL)
-}
-.compare-pane.right .axis-line{mask:url(#astMaskR);-webkit-mask:url(#astMaskR)}
-#leftPane{clip-path:polygon(0 0,var(--split) 0,var(--split) 100%,0 100%)}
-#rightPane{clip-path:polygon(var(--split) 0,100% 0,100% 100%,var(--split) 100%)}
-.divider{position:absolute;top:0;bottom:0;left:var(--split);width:2px;background:rgba(255,255,255,.78);transform:translateX(-1px);z-index:5}
-.handle{
-  position:absolute;top:50%;left:var(--split);transform:translate(-50%,-50%);z-index:6;width:42px;height:42px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.25);background:#fff;color:#1c2433;display:grid;place-items:center;font-size:24px;font-weight:900;cursor:ew-resize;user-select:none
-}
-.side-label{
-  position:absolute;top:18px;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:13px;
-  background:rgba(5,11,19,.74);border:1px solid rgba(255,255,255,.12);z-index:7;font-weight:800
-}
-.side-label.left{left:18px}.side-label.right{right:18px}
-.label-select{height:36px;border-radius:12px;padding:0 12px;background:#0a84ff;border:1px solid rgba(255,255,255,.16);color:#fff;font-weight:800}
-.footer-note{font-size:12px;color:#d8e7ff;text-align:center;padding-top:2px}
-svg#defs{position:absolute;width:0;height:0}
-@media (max-width:1180px){.shell{grid-template-columns:1fr}.sidebar{position:static}.app{padding:12px}}
-@media (max-width:760px){h1{font-size:24px}.badge{font-size:12px;padding:9px 12px}.chip{padding:9px 14px;font-size:13px}.handle{width:38px;height:38px}}
-</style>
-</head>
-<body>
-<div class="app">
-  <svg id="defs" viewBox="0 0 100 100" aria-hidden="true">
-    <defs>
-      <mask id="nearMaskL" maskUnits="objectBoundingBox"><rect width="1" height="1" fill="black"/><g id="nearShapesL"></g></mask>
-      <mask id="farMaskL" maskUnits="objectBoundingBox"><rect width="1" height="1" fill="white"/><g id="farHolesL"></g></mask>
-      <mask id="astMaskL" maskUnits="objectBoundingBox"><rect width="1" height="1" fill="white"/></mask>
-
-      <mask id="nearMaskR" maskUnits="objectBoundingBox"><rect width="1" height="1" fill="black"/><g id="nearShapesR"></g></mask>
-      <mask id="farMaskR" maskUnits="objectBoundingBox"><rect width="1" height="1" fill="white"/><g id="farHolesR"></g></mask>
-      <mask id="astMaskR" maskUnits="objectBoundingBox"><rect width="1" height="1" fill="white"/></mask>
-    </defs>
-  </svg>
-
-  <div class="shell">
-    <aside class="panel sidebar">
-      <div>
-        <div class="kicker">ACUVUE Vision Simulator</div>
-        <h1>콘택트렌즈 시뮬레이터</h1>
-      </div>
-
-      <div class="section">
-        <h3>1단계 | 굴절 이상 선택 (중복 선택 가능)</h3>
-        <div class="grid-chip" id="conditionGrid"></div>
-      </div>
-
-      <div class="section">
-        <h3>2단계 | 증상 강도 조절</h3>
-        <div class="slider-list" id="sliderList"></div>
-      </div>
-
-      <div class="section">
-        <h3>3단계 | 제품 선택 (좌/우 비교)</h3>
-        <div class="select-wrap">
-          <div class="field">
-            <label for="leftProduct">좌측 화면 제품</label>
-            <select id="leftProduct"></select>
-          </div>
-          <div class="field">
-            <label for="rightProduct">우측 화면 제품</label>
-            <select id="rightProduct"></select>
-          </div>
-          <div class="muted">None 선택 시 해당 화면은 제품 미적용 상태입니다.</div>
-        </div>
-      </div>
-    </aside>
-
-    <section class="panel viewer">
-      <div class="toolbar">
-        <div class="toolbar-left">
-          <span class="badge" id="conditionBadge">상태 : 정시</span>
-          <span class="badge" id="sceneBadge">Scene : Day to Day</span>
-        </div>
-        <div class="toolbar-right">
-          <select id="sceneSelect" style="width:220px;height:44px">
-            <option value="day">Day to Day</option>
-            <option value="dine">Dine Out</option>
-            <option value="night">Night Driving</option>
-          </select>
-          <button class="ghost-btn" id="resetBtn">초기화</button>
-        </div>
-      </div>
-
-      <div class="stage" id="stage">
-        <div class="compare-pane left" id="leftPane">
-          <div class="stack" id="leftStack">
-            <video class="clear" id="leftClear" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="far" id="leftFar" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near" id="leftNear" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="ghost" id="leftGhost" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <div class="halo"></div>
-            <div class="axis-line"></div>
-          </div>
-        </div>
-        <div class="compare-pane right" id="rightPane">
-          <div class="stack" id="rightStack">
-            <video class="clear" id="rightClear" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="far" id="rightFar" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="near" id="rightNear" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <video class="ghost" id="rightGhost" autoplay muted loop playsinline crossorigin="anonymous"></video>
-            <div class="halo"></div>
-            <div class="axis-line"></div>
-          </div>
-        </div>
-
-        <div class="side-label left">좌측 <select class="label-select" id="leftInline"></select></div>
-        <div class="side-label right">우측 <select class="label-select" id="rightInline"></select></div>
-        <div class="divider"></div>
-        <div class="handle" id="handle">‹›</div>
-      </div>
-
-      <div class="footer-note">* 본 시뮬레이션은 이해를 돕기 위한 예시이며, 실제 착용 시 개인에 따라 차이가 있을 수 있습니다.</div>
-    </section>
-  </div>
-</div>
-
+:root{--line:rgba(255,255,255,.16);--text:#fff;--muted:#d8e8ff;--r:18px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 50% 0%,#0a4eaa 0%,#062f6c 24%,#041a3a 52%,#031028 100%)}
+.app{max-width:1480px;margin:0 auto;padding:18px}.shell{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
+.panel{background:linear-gradient(180deg,rgba(10,44,99,.96),rgba(7,31,70,.98));border:1px solid var(--line);border-radius:var(--r);box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.sidebar{padding:18px;display:flex;flex-direction:column;gap:16px;position:sticky;top:12px}.viewer{padding:14px;display:flex;flex-direction:column;gap:12px}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#b9dcff}h1{margin:0;font-size:28px;line-height:1.08}
+.section{display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:16px;padding:14px}.section h3{margin:0;font-size:15px}
+.muted{font-size:12px;color:var(--muted);line-height:1.5}.grid-chip{display:flex;flex-wrap:wrap;gap:10px}
+.chip{appearance:none;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);color:#fff;padding:10px 18px;border-radius:16px;font-size:14px;font-weight:800;cursor:pointer;transition:.16s}
+.chip.active{border-color:rgba(182,222,255,.92);background:linear-gradient(180deg,rgba(0,115,230,.24),rgba(0,115,230,.14));box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),0 0 18px rgba(0,115,230,.24)}
+.slider-list{display:flex;flex-direction:column;gap:12px}.slider-row{padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+.slider-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px;font-weight:800}input[type=range]{width:100%;accent-color:#b9dcff}
+.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:13px;font-weight:800}
+select{width:100%;height:46px;border-radius:14px;padding:0 14px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,#0b3a84,#0a2d66);color:#fff;font-size:15px}
+.toolbar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}.toolbar-left,.toolbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;padding:11px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);font-size:14px}
+.ghost-btn{border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,#0b3a84,#0a2d66);color:#fff;border-radius:14px;padding:10px 14px;font-weight:800;cursor:pointer}
+.stage{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--line);aspect-ratio:16/9;background:#030d1f}.pane{position:absolute;inset:0;overflow:hidden}
+#leftPane{clip-path:polygon(0 0,var(--split,50%) 0,var(--split,50%) 100%,0 100%)}#rightPane{clip-path:polygon(var(--split,50%) 0,100% 0,100% 100%,var(--split,50%) 100%)}
+.stack{position:absolute;inset:0}.stack video,.stack .overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stack .base{filter:var(--baseFilter)}.stack .farLayer{filter:var(--farFilter);opacity:var(--farOpacity);clip-path:var(--farClip)}.stack .nearLayer{filter:var(--nearFilter);opacity:var(--nearOpacity);clip-path:var(--nearClip)}
+.stack .ghostFar{filter:var(--farFilter);opacity:var(--ghostFarOpacity);transform:translate(var(--ghostX),var(--ghostY));mix-blend-mode:screen;clip-path:var(--farClip)}
+.stack .ghostNear{filter:var(--nearFilter);opacity:var(--ghostNearOpacity);transform:translate(var(--ghostX),var(--ghostY));mix-blend-mode:screen;clip-path:var(--nearClip)}
+.stack .halo{opacity:var(--haloOpacity);background:radial-gradient(circle at 52% 52%, rgba(255,255,255,.34) 0 4%, rgba(255,255,255,.12) 8%, rgba(255,255,255,0) 18%),radial-gradient(circle at 72% 26%, rgba(255,255,255,.16) 0 3%, rgba(255,255,255,0) 14%),radial-gradient(circle at 20% 70%, rgba(255,255,255,.10) 0 2.2%, rgba(255,255,255,0) 12%);filter:blur(var(--haloBlur)) brightness(var(--haloBrightness));mix-blend-mode:screen}
+.stack .axisLine{opacity:var(--axisOpacity);background:linear-gradient(var(--axisDeg), transparent 49%, rgba(255,255,255,.9) 50%, transparent 51%);mix-blend-mode:screen}
+.divider{position:absolute;top:0;bottom:0;left:var(--split,50%);width:2px;background:rgba(255,255,255,.85);transform:translateX(-1px);z-index:8}
+.handle{position:absolute;left:var(--split,50%);top:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:#fff;color:#1f2b43;border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;font-size:24px;font-weight:900;z-index:9;cursor:ew-resize}
+.sideTag{position:absolute;top:18px;display:flex;align-items:center;gap:8px;z-index:7;padding:8px 12px;border-radius:14px;background:rgba(7,11,18,.72);border:1px solid rgba(255,255,255,.12)}.sideTag.left{left:18px}.sideTag.right{right:18px}.sideTag strong{font-size:16px}
+.inlineSel{height:38px;border-radius:12px;padding:0 12px;background:linear-gradient(180deg,#1086ff,#0b66d0);border:1px solid rgba(255,255,255,.18);color:#fff;font-weight:800}
+.footer-note{font-size:12px;color:#d8e7ff;text-align:center}
+@media (max-width:1180px){.shell{grid-template-columns:1fr}.sidebar{position:static}}
+</style></head>
+<body><div class="app"><div class="shell"><aside class="panel sidebar">
+<div><div class="kicker">ACUVUE Vision Simulator</div><h1>콘택트렌즈 시뮬레이터</h1></div>
+<div class="section"><h3>1단계 | 굴절 이상 선택 (중복 선택 가능)</h3><div class="grid-chip" id="conditionGrid"></div></div>
+<div class="section"><h3>2단계 | 증상 강도 조절</h3><div class="slider-list" id="sliderList"></div></div>
+<div class="section"><h3>3단계 | 제품 선택 (좌/우 비교)</h3><div class="field"><label>좌측 화면 제품</label><select id="leftProduct"></select></div><div class="field"><label>우측 화면 제품</label><select id="rightProduct"></select></div><div class="muted">None 선택 시 해당 화면은 제품 미적용 상태입니다.</div></div>
+</aside>
+<section class="panel viewer">
+<div class="toolbar"><div class="toolbar-left"><span class="badge" id="stateBadge">상태 : 정시</span><span class="badge" id="sceneBadge">Scene : Day to Day</span></div><div class="toolbar-right"><select id="sceneSelect" style="width:220px"><option value="day">Day to Day</option><option value="dine">Dine Out</option><option value="night">Night Driving</option></select><button class="ghost-btn" id="resetBtn">초기화</button></div></div>
+<div class="stage" id="stage">
+<div class="pane" id="leftPane"><div class="stack" id="leftStack"><video class="base" id="leftBase" autoplay muted loop playsinline crossorigin="anonymous"></video><video class="farLayer overlay" id="leftFar" autoplay muted loop playsinline crossorigin="anonymous"></video><video class="nearLayer overlay" id="leftNear" autoplay muted loop playsinline crossorigin="anonymous"></video><video class="ghostFar overlay" id="leftGhostFar" autoplay muted loop playsinline crossorigin="anonymous"></video><video class="ghostNear overlay" id="leftGhostNear" autoplay muted loop playsinline crossorigin="anonymous"></video><div class="halo overlay"></div><div class="axisLine overlay"></div></div></div>
+<div class="pane" id="rightPane"><div class="stack" id="rightStack"><video class="base" id="rightBase" autoplay muted loop playsinline crossorigin="anonymous"></video><video class="farLayer overlay" id="rightFar" autoplay muted loop playsinline crossorigin="anonymous"></video><video class="nearLayer overlay" id="rightNear" autoplay muted loop playsinline crossorigin="anonymous"></video><video class="ghostFar overlay" id="rightGhostFar" autoplay muted loop playsinline crossorigin="anonymous"></video><video class="ghostNear overlay" id="rightGhostNear" autoplay muted loop playsinline crossorigin="anonymous"></video><div class="halo overlay"></div><div class="axisLine overlay"></div></div></div>
+<div class="sideTag left"><strong>좌측</strong><select class="inlineSel" id="leftInline"></select></div><div class="sideTag right"><strong>우측</strong><select class="inlineSel" id="rightInline"></select></div>
+<div class="divider"></div><div class="handle" id="handle">‹›</div></div>
+<div class="footer-note">* 본 시뮬레이션은 이해를 돕기 위한 예시이며, 실제 착용 시 개인에 따라 차이가 있을 수 있습니다.</div>
+</section></div></div>
 <script>
-const SVG_NS='http://www.w3.org/2000/svg';
-const scenes={
-  day:{label:'Day to Day',url:'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/bltf0b4b11efcbe4ec4/66a8b2b0a3b12e0a0b5f5d9e/PureseeLens_dayToDay_High.mp4?branch=prod_alias'},
-  dine:{label:'Dine Out',url:'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blta6e961a6e0f6a90f/66a8b2ae90e89afe7d28ffc4/PureseeLens_dineOut_High.mp4?branch=prod_alias'},
-  night:{label:'Night Driving',url:'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blt1b4784f4566a173b/66a8b2b7971644620e9d0df9/PureseeLens_nightDriving_High.mp4?branch=prod_alias'}
-};
-const conditions=[
-  {id:'emmetrope',label:'정시'},
-  {id:'myopia',label:'근시'},
-  {id:'hyperopia',label:'원시'},
-  {id:'astigmatism',label:'난시'},
-  {id:'presbyopia',label:'노안'}
-];
-const allProducts=[
-  {id:'none',name:'None (아무것도 선택 안함)'},
-  {id:'oasys',name:'오아시스'},
-  {id:'max1day',name:'맥스 원데이'},
-  {id:'moistMulti',name:'모이스트 멀티포컬'},
-  {id:'maxMulti',name:'맥스 멀티포컬'},
-  {id:'oasysToric',name:'오아시스 난시'},
-  {id:'maxToric',name:'맥스 난시'},
-  {id:'maxMultiToric',name:'맥스 멀티 난시'}
-];
-const state={
-  selected:['emmetrope'],
-  severity:{myopia:33,hyperopia:0,astigmatism:0,presbyopia:50,axis:14},
-  scene:'day', leftProduct:'none', rightProduct:'none', split:50
-};
-const dom={
-  conditionGrid:document.getElementById('conditionGrid'),
-  sliderList:document.getElementById('sliderList'),
-  leftProduct:document.getElementById('leftProduct'),
-  rightProduct:document.getElementById('rightProduct'),
-  leftInline:document.getElementById('leftInline'),
-  rightInline:document.getElementById('rightInline'),
-  sceneSelect:document.getElementById('sceneSelect'),
-  conditionBadge:document.getElementById('conditionBadge'),
-  sceneBadge:document.getElementById('sceneBadge'),
-  resetBtn:document.getElementById('resetBtn'),
-  stage:document.getElementById('stage'),
-  handle:document.getElementById('handle'),
-  leftClear:document.getElementById('leftClear'),
-  leftFar:document.getElementById('leftFar'),
-  leftNear:document.getElementById('leftNear'),
-  leftGhost:document.getElementById('leftGhost'),
-  rightClear:document.getElementById('rightClear'),
-  rightFar:document.getElementById('rightFar'),
-  rightNear:document.getElementById('rightNear'),
-  rightGhost:document.getElementById('rightGhost'),
-  leftStack:document.getElementById('leftStack'),
-  rightStack:document.getElementById('rightStack'),
-  nearShapesL:document.getElementById('nearShapesL'),
-  farHolesL:document.getElementById('farHolesL'),
-  nearShapesR:document.getElementById('nearShapesR'),
-  farHolesR:document.getElementById('farHolesR')
-};
-const allVideos=[dom.leftClear,dom.leftFar,dom.leftNear,dom.leftGhost,dom.rightClear,dom.rightFar,dom.rightNear,dom.rightGhost];
-
-function selectedFlags(){
-  return {
-    emmetrope:state.selected.includes('emmetrope'),
-    myopia:state.selected.includes('myopia'),
-    hyperopia:state.selected.includes('hyperopia'),
-    astigmatism:state.selected.includes('astigmatism'),
-    presbyopia:state.selected.includes('presbyopia')
-  };
-}
-function productOptions(){
-  const f=selectedFlags();
-  let ids=new Set(['none']);
-  if(f.emmetrope) return allProducts.filter(p=>ids.has(p.id));
-  if(f.myopia||f.hyperopia){ ids.add('oasys'); ids.add('max1day'); }
-  if(f.presbyopia){ ids.add('moistMulti'); ids.add('maxMulti'); }
-  if(f.astigmatism){ ids.add('oasysToric'); ids.add('maxToric'); }
-  if(f.astigmatism&&f.presbyopia){ ids.add('maxMultiToric'); }
-  return allProducts.filter(p=>ids.has(p.id));
-}
-function renderConditions(){
-  dom.conditionGrid.innerHTML='';
-  conditions.forEach(c=>{
-    const b=document.createElement('button');
-    b.className='chip'+(state.selected.includes(c.id)?' active':'');
-    b.textContent=c.label;
-    b.onclick=()=>toggleCondition(c.id);
-    dom.conditionGrid.appendChild(b);
-  });
-}
-function toggleCondition(id){
-  if(id==='emmetrope'){ state.selected=['emmetrope']; syncSelectOptions(); renderAll(); return; }
-  state.selected=state.selected.filter(v=>v!=='emmetrope');
-  if(id==='myopia') state.selected=state.selected.filter(v=>v!=='hyperopia');
-  if(id==='hyperopia') state.selected=state.selected.filter(v=>v!=='myopia');
-  if(state.selected.includes(id)) state.selected=state.selected.filter(v=>v!==id); else state.selected.push(id);
-  if(!state.selected.length) state.selected=['emmetrope'];
-  syncSelectOptions(); renderAll();
-}
-function renderSliders(){
-  const f=selectedFlags(); const items=[];
-  if(f.myopia) items.push(['myopia','근시 강도']);
-  if(f.hyperopia) items.push(['hyperopia','원시 강도']);
-  if(f.astigmatism) items.push(['astigmatism','난시 강도'],['axis','난시 축']);
-  if(f.presbyopia) items.push(['presbyopia','노안 강도']);
-  if(!items.length) items.push(['emmetrope','정시 상태']);
-  dom.sliderList.innerHTML='';
-  items.forEach(([key,label])=>{
-    const row=document.createElement('div'); row.className='slider-row';
-    if(key==='emmetrope'){
-      row.innerHTML='<div class="muted">정시 상태에서는 추가 증상 강도 조절이 없습니다.</div>';
-      dom.sliderList.appendChild(row); return;
-    }
-    const value=state.severity[key], max= key==='axis'?30:100;
-    row.innerHTML=`<div class="slider-head"><span>${label}</span><span>${value}${key==='axis'?'°':'%'}</span></div><input type="range" min="0" max="${max}" value="${value}" step="1">`;
-    row.querySelector('input').oninput=e=>{state.severity[key]=Number(e.target.value); renderSliders(); applyVisuals();};
-    dom.sliderList.appendChild(row);
-  });
-}
-function syncSelectBox(sel, keep){
-  const options=productOptions();
-  sel.innerHTML=options.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-  sel.value=options.some(p=>p.id===keep)?keep:'none';
-  return sel.value;
-}
-function syncSelectOptions(){
-  state.leftProduct = syncSelectBox(dom.leftProduct, state.leftProduct);
-  state.rightProduct = syncSelectBox(dom.rightProduct, state.rightProduct);
-  state.leftProduct = syncSelectBox(dom.leftInline, state.leftProduct);
-  state.rightProduct = syncSelectBox(dom.rightInline, state.rightProduct);
-}
-function renderProducts(){
-  syncSelectOptions();
-  function bindPair(a,b,key){
-    const fn=e=>{ state[key]=e.target.value; a.value=state[key]; b.value=state[key]; applyVisuals(); };
-    a.onchange=fn; b.onchange=fn;
-  }
-  bindPair(dom.leftProduct,dom.leftInline,'leftProduct');
-  bindPair(dom.rightProduct,dom.rightInline,'rightProduct');
-}
-function sceneTime(video){
-  const dur = isFinite(video.duration) && video.duration>0 ? video.duration : 4.0;
-  return (video.currentTime % dur) / dur;
-}
-function lerp(a,b,p){ return a + (b-a)*p; }
-function interp(frames, t){
-  if(!frames || !frames.length) return null;
-  if(t <= frames[0].t) return frames[0];
-  if(t >= frames[frames.length-1].t) return frames[frames.length-1];
-  for(let i=0;i<frames.length-1;i++){
-    const a=frames[i], b=frames[i+1];
-    if(t>=a.t && t<=b.t){
-      const p=(t-a.t)/(b.t-a.t);
-      const out={};
-      for(const k of Object.keys(a)){
-        if(k==='t') continue;
-        out[k]=typeof a[k]==='number' ? lerp(a[k], b[k], p) : a[k];
-      }
-      return out;
-    }
-  }
-  return frames[frames.length-1];
-}
-const tracks={
-  day:{
-    phone:[
-      {t:0.00,x:52,y:58,w:13,h:32,r:-4,visible:1},
-      {t:0.25,x:50,y:57,w:13,h:31,r:-3,visible:1},
-      {t:0.50,x:49,y:57,w:12.5,h:31,r:-2,visible:1},
-      {t:0.75,x:51,y:58,w:13,h:32,r:-4,visible:1},
-      {t:1.00,x:52,y:58,w:13,h:32,r:-4,visible:1}
-    ],
-    phoneScreen:[
-      {t:0.00,x:53.5,y:58,w:8,h:23,r:-4,visible:1},
-      {t:0.50,x:50.5,y:57,w:7.8,h:23,r:-2,visible:1},
-      {t:1.00,x:53.5,y:58,w:8,h:23,r:-4,visible:1}
-    ],
-    hand:[
-      {t:0.00,x:40,y:72,w:28,h:44,r:-12,visible:1},
-      {t:0.50,x:39,y:71,w:28,h:43,r:-10,visible:1},
-      {t:1.00,x:40,y:72,w:28,h:44,r:-12,visible:1}
-    ],
-    cart:[
-      {t:0.00,x:53,y:92,w:44,h:16,r:0,visible:1},
-      {t:1.00,x:53,y:92,w:44,h:16,r:0,visible:1}
-    ],
-    astMask:[{t:0,x:50,y:50,w:100,h:100,r:0,visible:1},{t:1,x:50,y:50,w:100,h:100,r:0,visible:1}]
-  },
-  dine:{
-    menu:[
-      {t:0.00,x:50,y:63,w:16,h:28,r:-2,visible:0},
-      {t:0.18,x:50,y:63,w:16,h:28,r:-2,visible:1},
-      {t:0.55,x:50.5,y:63,w:16,h:29,r:-1,visible:1},
-      {t:0.78,x:50,y:63,w:16,h:28,r:0,visible:1},
-      {t:0.92,x:50,y:63,w:16,h:28,r:0,visible:0},
-      {t:1.00,x:50,y:63,w:16,h:28,r:0,visible:0}
-    ],
-    hands:[
-      {t:0.00,x:49,y:78,w:22,h:14,r:0,visible:0},
-      {t:0.18,x:49,y:78,w:22,h:14,r:0,visible:1},
-      {t:0.78,x:49,y:78,w:22,h:14,r:0,visible:1},
-      {t:0.92,x:49,y:78,w:22,h:14,r:0,visible:0},
-      {t:1.00,x:49,y:78,w:22,h:14,r:0,visible:0}
-    ],
-    plate:[
-      {t:0.00,x:53,y:90,w:34,h:12,r:0,visible:0},
-      {t:0.30,x:53,y:90,w:34,h:12,r:0,visible:1},
-      {t:0.82,x:53,y:90,w:34,h:12,r:0,visible:1},
-      {t:0.94,x:53,y:90,w:34,h:12,r:0,visible:0},
-      {t:1.00,x:53,y:90,w:34,h:12,r:0,visible:0}
-    ],
-    astMask:[{t:0,x:50,y:50,w:100,h:100,r:0,visible:1},{t:1,x:50,y:50,w:100,h:100,r:0,visible:1}]
-  },
-  night:{
-    nav:[
-      {t:0.00,x:50,y:74,w:22,h:17,r:0,visible:1},
-      {t:0.40,x:50,y:74,w:22,h:17,r:0,visible:1},
-      {t:0.72,x:50,y:74,w:22,h:17,r:0,visible:1},
-      {t:1.00,x:50,y:74,w:22,h:17,r:0,visible:1}
-    ],
-    cluster:[
-      {t:0.00,x:28,y:79,w:16,h:14,r:-8,visible:1},
-      {t:1.00,x:28,y:79,w:16,h:14,r:-8,visible:1}
-    ],
-    dash:[
-      {t:0.00,x:50,y:90,w:58,h:18,r:0,visible:1},
-      {t:1.00,x:50,y:90,w:58,h:18,r:0,visible:1}
-    ],
-    astMask:[{t:0,x:50,y:50,w:100,h:100,r:0,visible:1},{t:1,x:50,y:50,w:100,h:100,r:0,visible:1}]
-  }
-};
-function gatherNearObjects(sceneKey, t){
-  const scene=tracks[sceneKey], out=[];
-  Object.keys(scene).forEach(key=>{
-    if(key==='astMask') return;
-    const k=interp(scene[key], t);
-    if(k && (k.visible??1) > 0.01) out.push(k);
-  });
-  return out;
-}
-function renderMaskShapes(group, shapes, hole=false){
-  group.innerHTML='';
-  shapes.forEach(s=>{
-    const vis = s.visible ?? 1;
-    if(vis<=0.01) return;
-    const e=document.createElementNS(SVG_NS,'rect');
-    e.setAttribute('x', ((s.x - s.w/2)/100).toFixed(4));
-    e.setAttribute('y', ((s.y - s.h/2)/100).toFixed(4));
-    e.setAttribute('width', (s.w/100).toFixed(4));
-    e.setAttribute('height', (s.h/100).toFixed(4));
-    e.setAttribute('rx', ((s.w*0.12)/100).toFixed(4));
-    e.setAttribute('ry', ((s.h*0.12)/100).toFixed(4));
-    e.setAttribute('transform', `rotate(${s.r||0} ${ (s.x/100).toFixed(4)} ${ (s.y/100).toFixed(4)})`);
-    const alpha = hole ? (1-vis) : vis;
-    e.setAttribute('fill', hole ? 'black' : 'white');
-    e.setAttribute('fill-opacity', alpha.toFixed(3));
-    group.appendChild(e);
-  });
-}
-function updateMasks(){
-  const t=sceneTime(dom.leftClear);
-  const shapes=gatherNearObjects(state.scene, t);
-  renderMaskShapes(dom.nearShapesL, shapes, false);
-  renderMaskShapes(dom.nearShapesR, shapes, false);
-  renderMaskShapes(dom.farHolesL, shapes, true);
-  renderMaskShapes(dom.farHolesR, shapes, true);
-}
-function computeEffect(productId){
-  const f=selectedFlags();
-  const myo=f.myopia ? state.severity.myopia/100 : 0;
-  const hyp=f.hyperopia ? state.severity.hyperopia/100 : 0;
-  const ast=f.astigmatism ? state.severity.astigmatism/100 : 0;
-  const pre=f.presbyopia ? state.severity.presbyopia/100 : 0;
-  const axis=state.severity.axis;
-
-  let residual={myopia:myo, hyperopia:hyp, astigmatism:ast, presbyopia:pre};
-  let maxGlow=false;
-
-  switch(productId){
-    case 'oasys':
-      residual.myopia*=0.08; residual.hyperopia*=0.10; break;
-    case 'max1day':
-      residual.myopia*=0.05; residual.hyperopia*=0.07; maxGlow=true; break;
-    case 'moistMulti':
-      residual.presbyopia*=0.07; residual.myopia*=0.25; residual.hyperopia*=0.25; break;
-    case 'maxMulti':
-      residual.presbyopia*=0.04; residual.myopia*=0.18; residual.hyperopia*=0.18; maxGlow=true; break;
-    case 'oasysToric':
-      residual.astigmatism*=0.10; residual.myopia*=0.25; residual.hyperopia*=0.25; break;
-    case 'maxToric':
-      residual.astigmatism*=0.06; residual.myopia*=0.18; residual.hyperopia*=0.18; maxGlow=true; break;
-    case 'maxMultiToric':
-      residual.astigmatism*=0.06; residual.presbyopia*=0.04; residual.myopia*=0.18; residual.hyperopia*=0.18; maxGlow=true; break;
-  }
-
-  let clearBlur = 0;
-  let farBlur = 0;
-  let nearBlur = 0;
-
-  // 근시: 약하면 원거리만, 강해지면 근거리도 일부
-  farBlur += residual.myopia * 11.5;
-  nearBlur += Math.max(0, residual.myopia - 0.55) * 6.0;
-
-  // 원시: 약하면 근거리만, 강하면 원거리도 일부
-  nearBlur += residual.hyperopia * 11.5;
-  farBlur += Math.max(0, residual.hyperopia - 0.58) * 5.2;
-
-  // 노안: 근거리만
-  nearBlur += residual.presbyopia * 10.0;
-
-  // 난시: near/far 둘다 ghost + blur
-  farBlur += residual.astigmatism * 2.0;
-  nearBlur += residual.astigmatism * 2.0;
-  clearBlur += residual.astigmatism * 0.25;
-
-  let contrast = 1 - (residual.myopia*0.05 + residual.hyperopia*0.05 + residual.presbyopia*0.015 + residual.astigmatism*0.03);
-  let brightness = 1 - (residual.myopia*0.02 + residual.hyperopia*0.02 + residual.astigmatism*0.01);
-  let saturate = 1 - (residual.myopia*0.025 + residual.hyperopia*0.02 + residual.astigmatism*0.015);
-
-  let haloOpacity = state.scene==='night' ? 0.22 : 0.04;
-  let haloBlur = state.scene==='night' ? 10 : 3.5;
-  let haloBrightness = state.scene==='night' ? 1.14 : 1.02;
-  if(maxGlow){
-    haloOpacity *= 0.3;
-    haloBlur *= 0.55;
-    haloBrightness = 1.01;
-    contrast += 0.04;
-    brightness += 0.02;
-    saturate += 0.01;
-    farBlur *= 0.88; nearBlur *= 0.88; clearBlur *= 0.9;
-  }
-
-  const dist = 3 + residual.astigmatism * 16;
-  const rad = axis * Math.PI / 180;
-  return {
-    clearFilter:`blur(${clearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farFilter:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    nearFilter:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farOpacity: farBlur>0.05 ? 1 : 0,
-    nearOpacity: nearBlur>0.05 ? 1 : 0,
-    ghostOpacity: residual.astigmatism ? Math.min(0.45, residual.astigmatism * 0.58) : 0,
-    ghostX:`${(Math.cos(rad)*dist).toFixed(1)}px`,
-    ghostY:`${(Math.sin(rad)*dist).toFixed(1)}px`,
-    ghostBlur:`${(0.8 + residual.astigmatism*3.0).toFixed(2)}px`,
-    haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness,
-    axisOpacity: residual.astigmatism ? 0.16 : 0,
-    axisDeg:`${axis}deg`
-  };
-}
-function applyStyle(stack,effect){
-  stack.style.setProperty('--clearFilter', effect.clearFilter);
-  stack.style.setProperty('--farFilter', effect.farFilter);
-  stack.style.setProperty('--nearFilter', effect.nearFilter);
-  stack.style.setProperty('--farOpacity', effect.farOpacity);
-  stack.style.setProperty('--nearOpacity', effect.nearOpacity);
-  stack.style.setProperty('--ghostOpacity', effect.ghostOpacity);
-  stack.style.setProperty('--ghostX', effect.ghostX);
-  stack.style.setProperty('--ghostY', effect.ghostY);
-  stack.style.setProperty('--ghostBlur', effect.ghostBlur);
-  stack.style.setProperty('--haloOpacity', effect.haloOpacity);
-  stack.style.setProperty('--haloBlur', effect.haloBlur);
-  stack.style.setProperty('--haloBrightness', effect.haloBrightness);
-  stack.style.setProperty('--axisOpacity', effect.axisOpacity);
-  stack.style.setProperty('--axisDeg', effect.axisDeg);
-}
-function applyVisuals(){
-  applyStyle(dom.leftStack, computeEffect(state.leftProduct));
-  applyStyle(dom.rightStack, computeEffect(state.rightProduct));
-  updateBadges();
-}
-function updateBadges(){
-  const label=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');
-  dom.conditionBadge.textContent=`상태 : ${label}`;
-  dom.sceneBadge.textContent=`Scene : ${scenes[state.scene].label}`;
-}
-function setScene(key){
-  state.scene=key;
-  dom.sceneSelect.value=key;
-  const src=scenes[key].url;
-  allVideos.forEach(v=>{ if(v.src!==src){ v.src=src; v.load(); } v.play().catch(()=>{}); });
-  updateBadges();
-  applyVisuals();
-}
-function syncVideos(){
-  const master=dom.leftClear;
-  allVideos.forEach(v=>{
-    if(v===master) return;
-    try{
-      if(Math.abs(master.currentTime-v.currentTime)>0.08) v.currentTime=master.currentTime;
-    }catch(e){}
-    if(master.paused && !v.paused) v.pause();
-    if(!master.paused && v.paused) v.play().catch(()=>{});
-  });
-}
-function renderAll(){ renderConditions(); renderSliders(); renderProducts(); applyVisuals(); updateBadges(); }
-function setSplit(percent){ state.split=Math.max(15,Math.min(85,percent)); dom.stage.style.setProperty('--split', state.split+'%'); }
-setSplit(50);
-let dragging=false;
-function moveSplit(clientX){ const rect=dom.stage.getBoundingClientRect(); setSplit(((clientX-rect.left)/rect.width)*100); }
-dom.handle.addEventListener('pointerdown',e=>{dragging=true; dom.handle.setPointerCapture(e.pointerId);});
-dom.handle.addEventListener('pointermove',e=>{if(dragging) moveSplit(e.clientX);});
-dom.handle.addEventListener('pointerup',()=>dragging=false);
-dom.stage.addEventListener('pointerdown',e=>{ if(e.target===dom.stage || e.target.classList.contains('divider')) moveSplit(e.clientX); });
-dom.sceneSelect.onchange=e=>setScene(e.target.value);
-dom.resetBtn.onclick=()=>{
-  state.selected=['emmetrope'];
-  state.severity={myopia:33,hyperopia:0,astigmatism:0,presbyopia:50,axis:14};
-  state.leftProduct='none'; state.rightProduct='none'; setSplit(50);
-  syncSelectOptions(); renderAll();
-};
-function tick(){
-  syncVideos();
-  updateMasks();
-  requestAnimationFrame(tick);
-}
-renderAll();
-setScene('day');
-requestAnimationFrame(tick);
-</script>
-</body>
-</html>
+const scenes={day:{label:'Day to Day',url:'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/bltf0b4b11efcbe4ec4/66a8b2b0a3b12e0a0b5f5da9/PureseeLens_dayToDay_High.mp4?branch=prod_alias',nearClip:'polygon(0% 100%, 0% 82%, 10% 72%, 18% 63%, 24% 58%, 31% 49%, 38% 42%, 45% 33%, 53% 23%, 61% 24%, 63% 34%, 62% 48%, 59% 61%, 57% 73%, 68% 78%, 80% 83%, 89% 89%, 100% 100%)',farClip:'polygon(0 0,100% 0,100% 100%,89% 89%,80% 83%,68% 78%,57% 73%,59% 61%,62% 48%,63% 34%,61% 24%,53% 23%,45% 33%,38% 42%,31% 49%,24% 58%,18% 63%,10% 72%,0% 82%)'},dine:{label:'Dine Out',url:'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blta6e961a6e0f6a90f/66a8b2ae90e89afe7d28ffc4/PureseeLens_dineOut_High.mp4?branch=prod_alias',nearClip:'polygon(30% 100%, 27% 87%, 31% 74%, 36% 60%, 40% 48%, 44% 38%, 50% 30%, 58% 31%, 62% 42%, 64% 58%, 66% 77%, 69% 89%, 75% 100%)',farClip:'polygon(0 0,100% 0,100% 100%,75% 100%,69% 89%,66% 77%,64% 58%,62% 42%,58% 31%,50% 30%,44% 38%,40% 48%,36% 60%,31% 74%,27% 87%,30% 100%,0 100%)'},night:{label:'Night Driving',url:'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blt1b4784f4566a173b/66a8b2b7971644620e9d0df9/PureseeLens_nightDriving_High.mp4?branch=prod_alias',nearClip:'polygon(5% 100%, 3% 86%, 5% 74%, 12% 66%, 23% 63%, 33% 64%, 41% 71%, 43% 84%, 43% 100%, 62% 100%, 62% 79%, 66% 68%, 73% 63%, 86% 63%, 97% 67%, 100% 100%)',farClip:'polygon(0 0,100% 0,100% 100%,97% 67%,86% 63%,73% 63%,66% 68%,62% 79%,62% 100%,43% 100%,43% 84%,41% 71%,33% 64%,23% 63%,12% 66%,5% 74%,3% 86%,5% 100%,0 100%)'}};
+const conditions=[{id:'emmetrope',label:'정시'},{id:'myopia',label:'근시'},{id:'hyperopia',label:'원시'},{id:'astigmatism',label:'난시'},{id:'presbyopia',label:'노안'}];
+const products=[{id:'none',name:'None (아무것도 선택 안함)'},{id:'oasys',name:'오아시스'},{id:'max1day',name:'맥스 원데이'},{id:'moistMulti',name:'모이스트 멀티포컬'},{id:'maxMulti',name:'맥스 멀티포컬'},{id:'oasysToric',name:'오아시스 난시'},{id:'maxToric',name:'맥스 난시'},{id:'maxMultiToric',name:'맥스 멀티 난시'}];
+const state={selected:['emmetrope'],severity:{myopia:35,hyperopia:35,astigmatism:35,presbyopia:50,axis:14},scene:'day',leftProduct:'none',rightProduct:'none',split:50};
+const dom={conditionGrid:document.getElementById('conditionGrid'),sliderList:document.getElementById('sliderList'),leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),leftInline:document.getElementById('leftInline'),rightInline:document.getElementById('rightInline'),sceneSelect:document.getElementById('sceneSelect'),resetBtn:document.getElementById('resetBtn'),stateBadge:document.getElementById('stateBadge'),sceneBadge:document.getElementById('sceneBadge'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),leftStack:document.getElementById('leftStack'),rightStack:document.getElementById('rightStack'),videos:[document.getElementById('leftBase'),document.getElementById('leftFar'),document.getElementById('leftNear'),document.getElementById('leftGhostFar'),document.getElementById('leftGhostNear'),document.getElementById('rightBase'),document.getElementById('rightFar'),document.getElementById('rightNear'),document.getElementById('rightGhostFar'),document.getElementById('rightGhostNear')]};
+function flags(){return{emmetrope:state.selected.includes('emmetrope'),myopia:state.selected.includes('myopia'),hyperopia:state.selected.includes('hyperopia'),astigmatism:state.selected.includes('astigmatism'),presbyopia:state.selected.includes('presbyopia')}}
+function renderConditions(){dom.conditionGrid.innerHTML='';conditions.forEach(c=>{const b=document.createElement('button');b.className='chip'+(state.selected.includes(c.id)?' active':'');b.textContent=c.label;b.onclick=()=>toggleCondition(c.id);dom.conditionGrid.appendChild(b)})}
+function toggleCondition(id){if(id==='emmetrope'){state.selected=['emmetrope'];syncProductOptions();renderAll();return}state.selected=state.selected.filter(v=>v!=='emmetrope');if(id==='myopia')state.selected=state.selected.filter(v=>v!=='hyperopia');if(id==='hyperopia')state.selected=state.selected.filter(v=>v!=='myopia');if(state.selected.includes(id))state.selected=state.selected.filter(v=>v!==id);else state.selected.push(id);if(!state.selected.length)state.selected=['emmetrope'];syncProductOptions();renderAll()}
+function renderSliders(){const f=flags(),list=[];if(f.myopia)list.push(['myopia','근시 강도',0,100,'%']);if(f.hyperopia)list.push(['hyperopia','원시 강도',0,100,'%']);if(f.astigmatism){list.push(['astigmatism','난시 강도',0,100,'%']);list.push(['axis','난시 축',0,30,'°'])}if(f.presbyopia)list.push(['presbyopia','노안 강도',0,100,'%']);dom.sliderList.innerHTML='';if(!list.length){const r=document.createElement('div');r.className='slider-row';r.innerHTML='<div class="muted">정시 상태에서는 추가 증상 강도 조절이 없습니다.</div>';dom.sliderList.appendChild(r);return}list.forEach(([key,label,min,max,suf])=>{const r=document.createElement('div');r.className='slider-row';r.innerHTML=`<div class="slider-head"><span>${label}</span><span>${state.severity[key]}${suf}</span></div><input type="range" min="${min}" max="${max}" step="1" value="${state.severity[key]}">`;r.querySelector('input').oninput=e=>{state.severity[key]=+e.target.value;renderSliders();applyVisuals();updateBadges()};dom.sliderList.appendChild(r)})}
+function availableProducts(){const f=flags(),ids=new Set(['none']);if(f.emmetrope)return products.filter(p=>ids.has(p.id));if(f.myopia||f.hyperopia){ids.add('oasys');ids.add('max1day')}if(f.presbyopia){ids.add('moistMulti');ids.add('maxMulti')}if(f.astigmatism){ids.add('oasysToric');ids.add('maxToric')}if(f.astigmatism&&f.presbyopia)ids.add('maxMultiToric');return products.filter(p=>ids.has(p.id))}
+function syncSelect(el,keep){const opts=availableProducts();el.innerHTML=opts.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');el.value=opts.some(p=>p.id===keep)?keep:'none';return el.value}
+function syncProductOptions(){state.leftProduct=syncSelect(dom.leftProduct,state.leftProduct);state.rightProduct=syncSelect(dom.rightProduct,state.rightProduct);state.leftProduct=syncSelect(dom.leftInline,state.leftProduct);state.rightProduct=syncSelect(dom.rightInline,state.rightProduct)}
+function bindProducts(){const bind=(a,b,key)=>{const fn=e=>{state[key]=e.target.value;a.value=state[key];b.value=state[key];applyVisuals()};a.onchange=fn;b.onchange=fn};bind(dom.leftProduct,dom.leftInline,'leftProduct');bind(dom.rightProduct,dom.rightInline,'rightProduct')}
+function correctedResiduals(pid){const f=flags();let r={myopia:f.myopia?state.severity.myopia/100:0,hyperopia:f.hyperopia?state.severity.hyperopia/100:0,astigmatism:f.astigmatism?state.severity.astigmatism/100:0,presbyopia:f.presbyopia?state.severity.presbyopia/100:0};let max=false;switch(pid){case'oasys':r.myopia*=.08;r.hyperopia*=.08;break;case'max1day':r.myopia*=.04;r.hyperopia*=.04;max=true;break;case'moistMulti':r.presbyopia*=.06;r.myopia*=.10;r.hyperopia*=.10;break;case'maxMulti':r.presbyopia*=.03;r.myopia*=.06;r.hyperopia*=.06;max=true;break;case'oasysToric':r.astigmatism*=.08;r.myopia*=.10;r.hyperopia*=.10;break;case'maxToric':r.astigmatism*=.04;r.myopia*=.06;r.hyperopia*=.06;max=true;break;case'maxMultiToric':r.astigmatism*=.04;r.presbyopia*=.03;r.myopia*=.05;r.hyperopia*=.05;max=true;break}return{r,max}}
+function effectFor(pid){const {r,max}=correctedResiduals(pid);const axis=state.severity.axis;let farBlur=r.myopia*14+Math.max(0,r.hyperopia-.55)*6.4+r.astigmatism*2.4;let nearBlur=Math.max(0,r.myopia-.45)*7.2+r.hyperopia*11.8+r.presbyopia*12.2+r.astigmatism*2.4;let baseBlur=r.astigmatism*.4+Math.max(0,r.myopia-.88)*1+Math.max(0,r.hyperopia-.88)*.8;let farOpacity=farBlur>.08?1:0,nearOpacity=nearBlur>.08?1:0;const dist=5+r.astigmatism*18,rad=axis*Math.PI/180;let ghostX=Math.cos(rad)*dist,ghostY=Math.sin(rad)*dist,ghostNearOpacity=r.astigmatism?Math.min(.56,r.astigmatism*.74):0,ghostFarOpacity=r.astigmatism?Math.min(.52,r.astigmatism*.66):0,axisOpacity=r.astigmatism?Math.min(.34,r.astigmatism*.5):0;let haloOpacity=state.scene==='night'?.18:.05,haloBlur=state.scene==='night'?8.5:3.5,haloBrightness=state.scene==='night'?1.08:1.02,contrast=1-(r.myopia*.06+r.hyperopia*.05+r.presbyopia*.02+r.astigmatism*.04),brightness=1-(r.myopia*.03+r.hyperopia*.02+r.astigmatism*.01);if(max){haloOpacity*=.32;haloBlur*=.5;haloBrightness=1.01;farBlur*=.9;nearBlur*=.9;baseBlur*=.9;ghostNearOpacity*=.8;ghostFarOpacity*=.8;contrast+=.04;brightness+=.015}const s=scenes[state.scene];return{baseFilter:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)})`,farFilter:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)})`,nearFilter:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)})`,farOpacity,nearOpacity,farClip:s.farClip,nearClip:s.nearClip,ghostX:`${ghostX.toFixed(1)}px`,ghostY:`${ghostY.toFixed(1)}px`,ghostNearOpacity,ghostFarOpacity,haloOpacity,haloBlur:`${haloBlur.toFixed(2)}px`,haloBrightness,axisOpacity,axisDeg:`${axis}deg`}}
+function applyStack(st,e){st.style.setProperty('--baseFilter',e.baseFilter);st.style.setProperty('--farFilter',e.farFilter);st.style.setProperty('--nearFilter',e.nearFilter);st.style.setProperty('--farOpacity',e.farOpacity);st.style.setProperty('--nearOpacity',e.nearOpacity);st.style.setProperty('--farClip',e.farClip);st.style.setProperty('--nearClip',e.nearClip);st.style.setProperty('--ghostX',e.ghostX);st.style.setProperty('--ghostY',e.ghostY);st.style.setProperty('--ghostNearOpacity',e.ghostNearOpacity);st.style.setProperty('--ghostFarOpacity',e.ghostFarOpacity);st.style.setProperty('--haloOpacity',e.haloOpacity);st.style.setProperty('--haloBlur',e.haloBlur);st.style.setProperty('--haloBrightness',e.haloBrightness);st.style.setProperty('--axisOpacity',e.axisOpacity);st.style.setProperty('--axisDeg',e.axisDeg)}
+function applyVisuals(){applyStack(dom.leftStack,effectFor(state.leftProduct));applyStack(dom.rightStack,effectFor(state.rightProduct));updateBadges()}
+function updateBadges(){const labels=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');dom.stateBadge.textContent=`상태 : ${labels}`;dom.sceneBadge.textContent=`Scene : ${scenes[state.scene].label}`}
+function setScene(id){state.scene=id;const src=scenes[id].url;dom.videos.forEach(v=>{if(v.src!==src){v.src=src;v.load()}v.play().catch(()=>{})});applyVisuals();updateBadges()}
+function renderAll(){renderConditions();renderSliders();syncProductOptions();bindProducts();applyVisuals();updateBadges()}
+dom.sceneSelect.onchange=e=>setScene(e.target.value);dom.resetBtn.onclick=()=>{state.selected=['emmetrope'];state.severity={myopia:35,hyperopia:35,astigmatism:35,presbyopia:50,axis:14};state.leftProduct='none';state.rightProduct='none';setSplit(50);renderAll();setScene('day')};
+function syncVideos(){const m=dom.videos[0];dom.videos.forEach(v=>{if(v===m)return;if(Math.abs(v.currentTime-m.currentTime)>.08){try{v.currentTime=m.currentTime}catch(e){}}if(m.paused&&!v.paused)v.pause();if(!m.paused&&v.paused)v.play().catch(()=>{})})}setInterval(syncVideos,450);
+function setSplit(p){state.split=Math.max(18,Math.min(82,p));dom.stage.style.setProperty('--split',state.split+'%')}setSplit(50);let dragging=false;function moveSplit(x){const r=dom.stage.getBoundingClientRect();setSplit(((x-r.left)/r.width)*100)}dom.handle.addEventListener('pointerdown',e=>{dragging=true;dom.handle.setPointerCapture(e.pointerId)});dom.handle.addEventListener('pointermove',e=>{if(dragging)moveSplit(e.clientX)});dom.handle.addEventListener('pointerup',()=>dragging=false);
+renderAll();setScene('day');
+</script></body></html>
