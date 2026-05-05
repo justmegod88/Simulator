@@ -66,7 +66,7 @@ select option[disabled]{color:#9bb5d8}
 .ghost-btn:hover{border-color:rgba(132,198,255,.6);background:rgba(15,123,255,.12)}
 .stage{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);aspect-ratio:16/9;background:#091a32}
 .main-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
-.compare-pane{position:absolute;inset:0;overflow:hidden;z-index:2;pointer-events:none}
+.compare-pane{position:absolute;inset:0;overflow:hidden;z-index:2;pointer-events:none;isolation:isolate}
 .compare-pane .stack{position:absolute;inset:0}
 
 /* 단일 영상 + 투명 blur 필터 레이어 구조 */
@@ -76,25 +76,33 @@ select option[disabled]{color:#9bb5d8}
 }
 .filter-layer{
   opacity:var(--filterOpacity,0);
-  background:rgba(255,255,255,.012);
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,.035), rgba(255,255,255,.012) 58%, rgba(255,255,255,.006) 100%);
   backdrop-filter:var(--filterBackdrop,none);
   -webkit-backdrop-filter:var(--filterBackdrop,none);
   transform:translate(var(--filterX,0px),var(--filterY,0px));
+  will-change:backdrop-filter, opacity, transform;
 }
 .filter-layer.base-filter{
   -webkit-mask-image:linear-gradient(#fff,#fff);mask-image:linear-gradient(#fff,#fff);
 }
 .filter-layer.far-filter{
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,.052), rgba(255,255,255,.018) 60%, rgba(255,255,255,.006) 100%);
   -webkit-mask-image:var(--farMask);mask-image:var(--farMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
 .filter-layer.near-filter{
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,.052), rgba(255,255,255,.018) 60%, rgba(255,255,255,.006) 100%);
   -webkit-mask-image:var(--nearMask);mask-image:var(--nearMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
 .filter-layer.astig-filter{
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.018), rgba(255,255,255,.045), rgba(255,255,255,.018));
   -webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
@@ -560,17 +568,18 @@ function computeEffect(productId){
   }
 
   const masks = sceneMasks(state.scene);
-  const astigBlur = Math.max(0, baseBlur * 0.60 + residual.astigmatism * 0.55);
-  const baseLayerOpacity = baseBlur > 0.05 ? Math.min(0.86, 0.26 + baseBlur / 5.2) : 0;
-  const farLayerOpacity = farBlur > 0.05 ? Math.min(0.92, 0.38 + farBlur / 18) : 0;
-  const nearLayerOpacity = nearBlur > 0.05 ? Math.min(0.92, 0.38 + nearBlur / 18) : 0;
-  const astigLayerOpacity = residual.astigmatism > 0.001 ? Math.min(0.42, 0.10 + residual.astigmatism * 0.24) : 0;
+  // backdrop-filter는 iOS Safari에서 너무 약하게 보일 수 있어 최소 blur/opacity를 보정합니다.
+  const astigBlur = Math.max(0, baseBlur * 0.70 + residual.astigmatism * 0.95);
+  const baseLayerOpacity = baseBlur > 0.05 ? Math.min(0.92, 0.34 + baseBlur / 4.2) : 0;
+  const farLayerOpacity = farBlur > 0.05 ? Math.min(0.96, 0.56 + farBlur / 16) : 0;
+  const nearLayerOpacity = nearBlur > 0.05 ? Math.min(0.96, 0.56 + nearBlur / 16) : 0;
+  const astigLayerOpacity = residual.astigmatism > 0.001 ? Math.min(0.58, 0.18 + residual.astigmatism * 0.32) : 0;
 
   return {
     baseBackdrop:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farBackdrop:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    nearBackdrop:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    astigBackdrop:`blur(${astigBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    farBackdrop:`blur(${(farBlur>0.05 ? Math.max(2.2,farBlur) : 0).toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    nearBackdrop:`blur(${(nearBlur>0.05 ? Math.max(2.2,nearBlur) : 0).toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    astigBackdrop:`blur(${(astigBlur>0.05 ? Math.max(1.2,astigBlur) : 0).toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
     baseLayerOpacity,
     farOpacity:farLayerOpacity,
     nearOpacity:nearLayerOpacity,
