@@ -65,27 +65,43 @@ select option[disabled]{color:#9bb5d8}
 .ghost-btn{border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(19,55,107,.90),rgba(12,35,69,.92));color:var(--text);border-radius:14px;padding:10px 14px;font-weight:800;cursor:pointer}
 .ghost-btn:hover{border-color:rgba(132,198,255,.6);background:rgba(15,123,255,.12)}
 .stage{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);aspect-ratio:16/9;background:#091a32}
-.compare-pane{position:absolute;inset:0;overflow:hidden}
+.main-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.compare-pane{position:absolute;inset:0;overflow:hidden;z-index:2;pointer-events:none}
 .compare-pane .stack{position:absolute;inset:0}
-.compare-pane video,.compare-pane .ghost,.compare-pane .halo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.compare-pane video.base{filter:var(--baseFilter)}
-.compare-pane video.far{
-  opacity:var(--farOpacity);filter:var(--farFilter);transform:translate(var(--farX),var(--farY));
+
+/* 단일 영상 + 투명 blur 필터 레이어 구조 */
+.filter-layer,.compare-pane .halo{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;
+}
+.filter-layer{
+  opacity:var(--filterOpacity,0);
+  background:rgba(255,255,255,.012);
+  backdrop-filter:var(--filterBackdrop,none);
+  -webkit-backdrop-filter:var(--filterBackdrop,none);
+  transform:translate(var(--filterX,0px),var(--filterY,0px));
+}
+.filter-layer.base-filter{
+  -webkit-mask-image:linear-gradient(#fff,#fff);mask-image:linear-gradient(#fff,#fff);
+}
+.filter-layer.far-filter{
   -webkit-mask-image:var(--farMask);mask-image:var(--farMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
-.compare-pane video.near{
-  opacity:var(--nearOpacity);filter:var(--nearFilter);transform:translate(var(--nearX),var(--nearY));
+.filter-layer.near-filter{
   -webkit-mask-image:var(--nearMask);mask-image:var(--nearMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
-.compare-pane .ghost{opacity:var(--ghostOpacity);transform:translate(var(--ghostX),var(--ghostY));filter:blur(var(--ghostBlur));mix-blend-mode:screen;-webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%}
-.compare-pane .ghost::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,.03);opacity:.06}
-.compare-pane .halo{pointer-events:none;opacity:var(--haloOpacity);background:
-  radial-gradient(circle at 50% 48%, rgba(255,255,255,.42) 0 5%, rgba(255,255,255,.16) 9%, rgba(255,255,255,0) 22%),
-  radial-gradient(circle at 74% 28%, rgba(255,255,255,.18) 0 4%, rgba(255,255,255,0) 18%);
+.filter-layer.astig-filter{
+  -webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+}
+.compare-pane .halo{opacity:var(--haloOpacity);background:
+  radial-gradient(circle at 50% 48%, rgba(255,255,255,.34) 0 5%, rgba(255,255,255,.12) 9%, rgba(255,255,255,0) 22%),
+  radial-gradient(circle at 74% 28%, rgba(255,255,255,.14) 0 4%, rgba(255,255,255,0) 18%);
   filter:blur(var(--haloBlur)) brightness(var(--haloBrightness));mix-blend-mode:screen}
 #leftPane{clip-path:polygon(0 0,var(--split) 0,var(--split) 100%,0 100%)}
 #rightPane{clip-path:polygon(var(--split) 0,100% 0,100% 100%,var(--split) 100%)}
@@ -259,21 +275,23 @@ select option[disabled]{color:#9bb5d8}
       </div>
 
       <div class="stage" id="stage">
+        <video class="main-video" id="mainVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+
         <div class="compare-pane" id="leftPane">
           <div class="stack" id="leftStack">
-            <video class="base" id="leftBase" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <video class="far" id="leftFar" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <video class="near" id="leftNear" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <div class="ghost"></div>
+            <div class="filter-layer base-filter"></div>
+            <div class="filter-layer far-filter"></div>
+            <div class="filter-layer near-filter"></div>
+            <div class="filter-layer astig-filter"></div>
             <div class="halo"></div>
           </div>
         </div>
         <div class="compare-pane" id="rightPane">
           <div class="stack" id="rightStack">
-            <video class="base" id="rightBase" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <video class="far" id="rightFar" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <video class="near" id="rightNear" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <div class="ghost"></div>
+            <div class="filter-layer base-filter"></div>
+            <div class="filter-layer far-filter"></div>
+            <div class="filter-layer near-filter"></div>
+            <div class="filter-layer astig-filter"></div>
             <div class="halo"></div>
           </div>
         </div>
@@ -322,11 +340,10 @@ const dom={
   leftInline:document.getElementById('leftInline'), rightInline:document.getElementById('rightInline'),
   sceneSelect:document.getElementById('sceneSelect'), conditionBadge:document.getElementById('conditionBadge'), sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'), stage:document.getElementById('stage'), handle:document.getElementById('handle'),
-  leftBase:document.getElementById('leftBase'), leftFar:document.getElementById('leftFar'), leftNear:document.getElementById('leftNear'),
-  rightBase:document.getElementById('rightBase'), rightFar:document.getElementById('rightFar'), rightNear:document.getElementById('rightNear'),
+  mainVideo:document.getElementById('mainVideo'),
   leftStack:document.getElementById('leftStack'), rightStack:document.getElementById('rightStack')
 };
-const allVideos=[dom.leftBase,dom.leftFar,dom.leftNear,dom.rightBase,dom.rightFar,dom.rightNear];
+const allVideos=[dom.mainVideo];
 
 function selectedFlags(){
   return {
@@ -488,9 +505,9 @@ function computeEffect(productId){
   nearBlur += residual.presbyopia * 12.5;
 
   // 난시: 원래 blur 느낌에 아주 약한 수평 겹침만 더해 자연스럽게 표현
-  baseBlur += residual.astigmatism * 0.28;
-  farBlur += residual.astigmatism * 0.75;
-  nearBlur += residual.astigmatism * 0.75;
+  baseBlur += residual.astigmatism * 0.75;
+  farBlur += residual.astigmatism * 1.45;
+  nearBlur += residual.astigmatism * 1.45;
 
   let contrast = 1 - (residual.myopia*0.06 + residual.hyperopia*0.06 + residual.presbyopia*0.015 + residual.astigmatism*0.03);
   let brightness = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.01);
@@ -514,12 +531,12 @@ function computeEffect(productId){
   }
 
   // 난시: 축 UI는 없애고 내부 기준은 90°로 고정. 상이 분리되지 않도록 미세한 세로 방향 겹침만 적용
-  const dist = residual.astigmatism ? 0.18 + residual.astigmatism * 0.9 : 0;
+  const dist = residual.astigmatism ? 0.45 + residual.astigmatism * 2.4 : 0;
   const rad = 90 * Math.PI / 180;
   let ghostX = Math.cos(rad) * dist;
   let ghostY = Math.sin(rad) * dist;
-  let ghostOpacity = residual.astigmatism ? Math.min(0.045, residual.astigmatism * 0.05) : 0;
-  let ghostBlur = 1.8 + residual.astigmatism * 0.6;
+  let ghostOpacity = residual.astigmatism ? Math.min(0.12, residual.astigmatism * 0.14) : 0;
+  let ghostBlur = 0.85 + residual.astigmatism * 1.25;
   let farX = residual.astigmatism ? `${ghostX.toFixed(1)}px` : '0px';
   let farY = residual.astigmatism ? `${ghostY.toFixed(1)}px` : '0px';
   let nearX = residual.astigmatism ? `${(-ghostX*0.45).toFixed(1)}px` : '0px';
@@ -538,19 +555,28 @@ function computeEffect(productId){
   let farOpacity = farBlur>0.1 ? 1 : 0;
   let nearOpacity = nearBlur>0.1 ? 1 : 0;
   if(residual.astigmatism>0.001 && residual.myopia<0.001 && residual.hyperopia<0.001 && residual.presbyopia<0.001){
-    farOpacity = Math.min(0.22, 0.08 + residual.astigmatism * 0.12);
-    nearOpacity = Math.min(0.22, 0.08 + residual.astigmatism * 0.12);
+    farOpacity = Math.min(0.46, 0.16 + residual.astigmatism * 0.30);
+    nearOpacity = Math.min(0.46, 0.16 + residual.astigmatism * 0.30);
   }
 
   const masks = sceneMasks(state.scene);
+  const astigBlur = Math.max(0, baseBlur * 0.60 + residual.astigmatism * 0.55);
+  const baseLayerOpacity = baseBlur > 0.05 ? Math.min(0.86, 0.26 + baseBlur / 5.2) : 0;
+  const farLayerOpacity = farBlur > 0.05 ? Math.min(0.92, 0.38 + farBlur / 18) : 0;
+  const nearLayerOpacity = nearBlur > 0.05 ? Math.min(0.92, 0.38 + nearBlur / 18) : 0;
+  const astigLayerOpacity = residual.astigmatism > 0.001 ? Math.min(0.42, 0.10 + residual.astigmatism * 0.24) : 0;
+
   return {
-    baseFilter:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farFilter:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    nearFilter:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farOpacity,
-    nearOpacity,
-    farX, farY, nearX, nearY,
-    ghostOpacity, ghostX:`${ghostX.toFixed(1)}px`, ghostY:`${ghostY.toFixed(1)}px`, ghostBlur:`${ghostBlur.toFixed(2)}px`,
+    baseBackdrop:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    farBackdrop:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    nearBackdrop:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    astigBackdrop:`blur(${astigBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    baseLayerOpacity,
+    farOpacity:farLayerOpacity,
+    nearOpacity:nearLayerOpacity,
+    astigOpacity:astigLayerOpacity,
+    astigX:`${ghostX.toFixed(1)}px`,
+    astigY:`${ghostY.toFixed(1)}px`,
     haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness,
     nearMask:masks.nearMask,
     farMask:masks.farMask,
@@ -558,20 +584,21 @@ function computeEffect(productId){
   };
 }
 
+function setLayer(stack, selector, backdrop, opacity, x='0px', y='0px'){
+  const layer = stack.querySelector(selector);
+  if(!layer) return;
+  layer.style.setProperty('--filterBackdrop', backdrop);
+  layer.style.setProperty('--filterOpacity', opacity);
+  layer.style.setProperty('--filterX', x);
+  layer.style.setProperty('--filterY', y);
+}
+
 function applyStyle(stack,effect){
-  stack.style.setProperty('--baseFilter', effect.baseFilter);
-  stack.style.setProperty('--farFilter', effect.farFilter);
-  stack.style.setProperty('--nearFilter', effect.nearFilter);
-  stack.style.setProperty('--farOpacity', effect.farOpacity);
-  stack.style.setProperty('--nearOpacity', effect.nearOpacity);
-  stack.style.setProperty('--farX', effect.farX);
-  stack.style.setProperty('--farY', effect.farY);
-  stack.style.setProperty('--nearX', effect.nearX);
-  stack.style.setProperty('--nearY', effect.nearY);
-  stack.style.setProperty('--ghostOpacity', effect.ghostOpacity);
-  stack.style.setProperty('--ghostX', effect.ghostX);
-  stack.style.setProperty('--ghostY', effect.ghostY);
-  stack.style.setProperty('--ghostBlur', effect.ghostBlur);
+  setLayer(stack,'.base-filter',effect.baseBackdrop,effect.baseLayerOpacity);
+  setLayer(stack,'.far-filter',effect.farBackdrop,effect.farOpacity);
+  setLayer(stack,'.near-filter',effect.nearBackdrop,effect.nearOpacity);
+  setLayer(stack,'.astig-filter',effect.astigBackdrop,effect.astigOpacity,effect.astigX,effect.astigY);
+
   stack.style.setProperty('--haloOpacity', effect.haloOpacity);
   stack.style.setProperty('--haloBlur', effect.haloBlur);
   stack.style.setProperty('--haloBrightness', effect.haloBrightness);
@@ -621,7 +648,8 @@ function safePlay(v){
 function setScene(key){
   state.scene=key; dom.sceneSelect.value=key;
   const src=scenes[key].url;
-  allVideos.forEach(v=>{ prepareVideo(v, src); safePlay(v); });
+  prepareVideo(dom.mainVideo, src);
+  safePlay(dom.mainVideo);
   setTimeout(resumeVideos,80);
   setTimeout(resumeVideos,420);
   updateBadges(); applyVisuals();
@@ -629,26 +657,18 @@ function setScene(key){
 
 function resumeVideos(){
   const src=scenes[state.scene].url;
-  allVideos.forEach(v=>{
-    prepareVideo(v, src);
-    if(v.readyState >= 2 || v.networkState !== HTMLMediaElement.NETWORK_LOADING){ safePlay(v); }
-    else { v.addEventListener('canplay',()=>safePlay(v),{once:true}); }
-  });
+  prepareVideo(dom.mainVideo, src);
+  if(dom.mainVideo.readyState >= 2 || dom.mainVideo.networkState !== HTMLMediaElement.NETWORK_LOADING){
+    safePlay(dom.mainVideo);
+  }else{
+    dom.mainVideo.addEventListener('canplay',()=>safePlay(dom.mainVideo),{once:true});
+  }
 }
 
 function syncVideos(){
-  const readyPlaying = allVideos.find(v=>v.readyState>=2 && !v.paused && !v.ended);
-  const readyAny = allVideos.find(v=>v.readyState>=2);
-  const master = readyPlaying || readyAny || dom.leftBase;
-  if(!master) return;
-  allVideos.forEach(v=>{
-    if(v!==master && master.readyState>=2 && v.readyState>=1){
-      if(Math.abs(master.currentTime-v.currentTime)>0.035){
-        try{v.currentTime=master.currentTime;}catch(e){}
-      }
-    }
-    if(v.paused || v.ended){ safePlay(v); }
-  });
+  if(dom.mainVideo && (dom.mainVideo.paused || dom.mainVideo.ended)){
+    safePlay(dom.mainVideo);
+  }
 }
 
 function renderAll(){renderConditions(); renderSliders(); renderProducts(); applyVisuals(); updateBadges();}
@@ -699,20 +719,15 @@ allVideos.forEach(v=>{
   v.addEventListener('loadeddata',()=>safePlay(v));
   v.addEventListener('canplay',()=>safePlay(v));
   v.addEventListener('pause',()=>{
-  try{
-    if(dom.leftBase && v!==dom.leftBase && dom.leftBase.readyState>=2){
-      v.currentTime = dom.leftBase.currentTime;
-    }
-    v.currentTime += 0.001;
-  }catch(e){}
-  safePlay(v);
-  setTimeout(()=>safePlay(v),120);
-});
+    try{ v.currentTime += 0.001; }catch(e){}
+    safePlay(v);
+    setTimeout(()=>safePlay(v),120);
+  });
   v.addEventListener('stalled',()=>{ setTimeout(resumeVideos,200); });
   v.addEventListener('error',()=>{ setTimeout(()=>{ v.dataset.sceneSrc=''; resumeVideos(); },500); });
 });
 
-setInterval(()=>{ syncVideos(); },120);
+setInterval(()=>{ syncVideos(); },250);
 renderAll(); setScene('day');
 </script>
 </body>
