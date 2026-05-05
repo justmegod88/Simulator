@@ -58,7 +58,7 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
 .stage{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);aspect-ratio:16/9;background:#091a32}
 .compare-pane{position:absolute;inset:0;overflow:hidden}
 .compare-pane .stack{position:absolute;inset:0}
-.compare-pane video,.compare-pane .ghost,.compare-pane .halo,.compare-pane .axis-line{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.compare-pane video,.compare-pane .ghost,.compare-pane .halo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .compare-pane video.base{filter:var(--baseFilter)}
 .compare-pane video.far{
   opacity:var(--farOpacity);filter:var(--farFilter);
@@ -72,13 +72,12 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
-.compare-pane .ghost{opacity:var(--ghostOpacity);transform:translate(var(--ghostX),var(--ghostY));filter:blur(var(--ghostBlur));mix-blend-mode:screen}
+.compare-pane .ghost{opacity:var(--ghostOpacity);transform:translate(var(--ghostX),var(--ghostY));filter:blur(var(--ghostBlur));mix-blend-mode:screen;-webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%}
 .compare-pane .ghost::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.05));opacity:.2}
 .compare-pane .halo{pointer-events:none;opacity:var(--haloOpacity);background:
   radial-gradient(circle at 50% 48%, rgba(255,255,255,.42) 0 5%, rgba(255,255,255,.16) 9%, rgba(255,255,255,0) 22%),
   radial-gradient(circle at 74% 28%, rgba(255,255,255,.18) 0 4%, rgba(255,255,255,0) 18%);
   filter:blur(var(--haloBlur)) brightness(var(--haloBrightness));mix-blend-mode:screen}
-.compare-pane .axis-line{pointer-events:none;opacity:var(--axisOpacity);background:linear-gradient(var(--axisDeg), transparent 48.7%, rgba(255,255,255,.95) 49.6%, transparent 50.4%);mix-blend-mode:screen}
 #leftPane{clip-path:polygon(0 0,var(--split) 0,var(--split) 100%,0 100%)}
 #rightPane{clip-path:polygon(var(--split) 0,100% 0,100% 100%,var(--split) 100%)}
 .divider{position:absolute;top:0;bottom:0;left:var(--split);width:2px;background:rgba(255,255,255,.78);transform:translateX(-1px);z-index:5}
@@ -150,7 +149,6 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
             <video class="near" id="leftNear" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <div class="ghost"></div>
             <div class="halo"></div>
-            <div class="axis-line"></div>
           </div>
         </div>
         <div class="compare-pane" id="rightPane">
@@ -160,7 +158,6 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
             <video class="near" id="rightNear" autoplay muted loop playsinline crossorigin="anonymous"></video>
             <div class="ghost"></div>
             <div class="halo"></div>
-            <div class="axis-line"></div>
           </div>
         </div>
         <div class="side-label left">좌측 <select class="label-select" id="leftInline"></select></div>
@@ -200,7 +197,7 @@ const allProducts=[
 
 const state={
   selected:['emmetrope'],
-  severity:{myopia:45,hyperopia:45,astigmatism:50,presbyopia:50,axis:14},
+  severity:{myopia:45,hyperopia:45,astigmatism:50,presbyopia:50},
   scene:'day', leftProduct:'none', rightProduct:'none', split:50
 };
 
@@ -262,7 +259,7 @@ function renderSliders(){
   const f=selectedFlags(); const items=[];
   if(f.myopia) items.push(['myopia','근시 강도']);
   if(f.hyperopia) items.push(['hyperopia','원시 강도']);
-  if(f.astigmatism) items.push(['astigmatism','난시 강도'],['axis','난시 축']);
+  if(f.astigmatism) items.push(['astigmatism','난시 강도']);
   if(f.presbyopia) items.push(['presbyopia','노안 강도']);
   if(!items.length) items.push(['emmetrope','정시 상태']);
   dom.sliderList.innerHTML='';
@@ -272,8 +269,8 @@ function renderSliders(){
       row.innerHTML='<div class="muted">정시 상태에서는 추가 증상 강도 조절이 없습니다.</div>';
       dom.sliderList.appendChild(row); return;
     }
-    const value=state.severity[key]; const min= key==='axis'?0:0; const max= key==='axis'?30:100;
-    row.innerHTML=`<div class="slider-head"><span>${label}</span><span>${value}${key==='axis'?'°':'%'}</span></div><input type="range" min="${min}" max="${max}" value="${value}" step="1">`;
+    const value=state.severity[key]; const min=0; const max=100;
+    row.innerHTML=`<div class="slider-head"><span>${label}</span><span>${value}%</span></div><input type="range" min="${min}" max="${max}" value="${value}" step="1">`;
     row.querySelector('input').oninput=e=>{state.severity[key]=Number(e.target.value); applyVisuals(); renderSliders(); updateBadges();};
     dom.sliderList.appendChild(row);
   });
@@ -341,7 +338,6 @@ function computeEffect(productId){
   const hyp=f.hyperopia ? state.severity.hyperopia/100 : 0;
   const ast=f.astigmatism ? state.severity.astigmatism/100 : 0;
   const pre=f.presbyopia ? state.severity.presbyopia/100 : 0;
-  const axis=state.severity.axis;
 
   let residual={myopia:myo, hyperopia:hyp, astigmatism:ast, presbyopia:pre};
   let maxGlow=false;
@@ -406,13 +402,13 @@ function computeEffect(productId){
     haloBlur = 2;
   }
 
-  const dist = 4 + residual.astigmatism * 20;
-  const rad = axis * Math.PI / 180;
+  // 난시: 축선은 표시하지 않고, 원거리/근거리 영역에 이중상처럼 겹쳐 보이도록 처리
+  const dist = 5 + residual.astigmatism * 24;
+  const rad = 18 * Math.PI / 180;
   let ghostX = Math.cos(rad) * dist;
   let ghostY = Math.sin(rad) * dist;
-  let ghostOpacity = residual.astigmatism ? Math.min(0.55, residual.astigmatism * 0.68) : 0;
-  let ghostBlur = 0.7 + residual.astigmatism * 3.3;
-  let axisOpacity = residual.astigmatism ? 0.30 : 0;
+  let ghostOpacity = residual.astigmatism ? Math.min(0.70, residual.astigmatism * 0.82) : 0;
+  let ghostBlur = 0.45 + residual.astigmatism * 2.4;
 
   if(maxGlow){
     ghostOpacity *= 0.75;
@@ -431,9 +427,9 @@ function computeEffect(productId){
     nearOpacity: nearBlur>0.1 ? 1 : 0,
     ghostOpacity, ghostX:`${ghostX.toFixed(1)}px`, ghostY:`${ghostY.toFixed(1)}px`, ghostBlur:`${ghostBlur.toFixed(2)}px`,
     haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness,
-    axisOpacity, axisDeg:`${axis}deg`,
     nearMask:masks.nearMask,
-    farMask:masks.farMask
+    farMask:masks.farMask,
+    astigMask:`${masks.farMask}, ${masks.nearMask}`
   };
 }
 
@@ -450,10 +446,9 @@ function applyStyle(stack,effect){
   stack.style.setProperty('--haloOpacity', effect.haloOpacity);
   stack.style.setProperty('--haloBlur', effect.haloBlur);
   stack.style.setProperty('--haloBrightness', effect.haloBrightness);
-  stack.style.setProperty('--axisOpacity', effect.axisOpacity);
-  stack.style.setProperty('--axisDeg', effect.axisDeg);
   stack.style.setProperty('--nearMask', effect.nearMask);
   stack.style.setProperty('--farMask', effect.farMask);
+  stack.style.setProperty('--astigMask', effect.astigMask);
 }
 
 function applyVisuals(){
@@ -498,7 +493,7 @@ dom.handle.addEventListener('pointerup',()=>dragging=false);
 dom.stage.addEventListener('pointerdown',e=>{ if(e.target===dom.stage || e.target.classList.contains('divider')) moveSplit(e.clientX); });
 
 dom.sceneSelect.onchange=e=>setScene(e.target.value);
-dom.resetBtn.onclick=()=>{ state.selected=['emmetrope']; state.severity={myopia:45,hyperopia:45,astigmatism:50,presbyopia:50,axis:14}; state.leftProduct='none'; state.rightProduct='none'; setSplit(50); syncSelectOptions(); renderAll(); };
+dom.resetBtn.onclick=()=>{ state.selected=['emmetrope']; state.severity={myopia:45,hyperopia:45,astigmatism:50,presbyopia:50}; state.leftProduct='none'; state.rightProduct='none'; setSplit(50); syncSelectOptions(); renderAll(); };
 
 setInterval(syncVideos,500);
 renderAll(); setScene('day');
