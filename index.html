@@ -65,24 +65,39 @@ select option[disabled]{color:#9bb5d8}
 .ghost-btn{border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(19,55,107,.90),rgba(12,35,69,.92));color:var(--text);border-radius:14px;padding:10px 14px;font-weight:800;cursor:pointer}
 .ghost-btn:hover{border-color:rgba(132,198,255,.6);background:rgba(15,123,255,.12)}
 .stage{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);aspect-ratio:16/9;background:#091a32}
-.compare-pane{position:absolute;inset:0;overflow:hidden}
+.main-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:var(--stageBaseFilter,none)}
+.compare-pane{position:absolute;inset:0;overflow:hidden;z-index:2;pointer-events:none}
 .compare-pane .stack{position:absolute;inset:0}
-.compare-pane video,.compare-pane .ghost,.compare-pane .halo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.compare-pane video.base{filter:var(--baseFilter)}
-.compare-pane video.far{
-  opacity:var(--farOpacity);filter:var(--farFilter);transform:translate(var(--farX),var(--farY));
+.effect-far,.effect-near,.compare-pane .ghost,.compare-pane .halo{position:absolute;inset:0;width:100%;height:100%}
+.effect-far{
+  opacity:var(--farOpacity);
+  transform:translate(var(--farX),var(--farY));
+  backdrop-filter:var(--farBackdrop);
+  -webkit-backdrop-filter:var(--farBackdrop);
   -webkit-mask-image:var(--farMask);mask-image:var(--farMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
-.compare-pane video.near{
-  opacity:var(--nearOpacity);filter:var(--nearFilter);transform:translate(var(--nearX),var(--nearY));
+.effect-near{
+  opacity:var(--nearOpacity);
+  transform:translate(var(--nearX),var(--nearY));
+  backdrop-filter:var(--nearBackdrop);
+  -webkit-backdrop-filter:var(--nearBackdrop);
   -webkit-mask-image:var(--nearMask);mask-image:var(--nearMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
-.compare-pane .ghost{opacity:var(--ghostOpacity);transform:translate(var(--ghostX),var(--ghostY));filter:blur(var(--ghostBlur));mix-blend-mode:screen;-webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%}
-.compare-pane .ghost::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.05));opacity:.2}
+.compare-pane .ghost{
+  opacity:var(--ghostOpacity);
+  transform:translate(var(--ghostX),var(--ghostY));
+  backdrop-filter:blur(var(--ghostBlur));
+  -webkit-backdrop-filter:blur(var(--ghostBlur));
+  mix-blend-mode:screen;
+  -webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+}
+.compare-pane .ghost::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,.08)}
 .compare-pane .halo{pointer-events:none;opacity:var(--haloOpacity);background:
   radial-gradient(circle at 50% 48%, rgba(255,255,255,.42) 0 5%, rgba(255,255,255,.16) 9%, rgba(255,255,255,0) 22%),
   radial-gradient(circle at 74% 28%, rgba(255,255,255,.18) 0 4%, rgba(255,255,255,0) 18%);
@@ -259,20 +274,21 @@ select option[disabled]{color:#9bb5d8}
       </div>
 
       <div class="stage" id="stage">
+        <!-- 단일 영상 구조: iOS/Safari에서 좌우 영상이 서로 다르게 멈추거나 섞이는 문제를 줄이기 위해 video는 1개만 사용합니다. -->
+        <video class="main-video" id="mainVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+
         <div class="compare-pane" id="leftPane">
           <div class="stack" id="leftStack">
-            <video class="base" id="leftBase" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <video class="far" id="leftFar" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <video class="near" id="leftNear" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <div class="effect-far"></div>
+            <div class="effect-near"></div>
             <div class="ghost"></div>
             <div class="halo"></div>
           </div>
         </div>
         <div class="compare-pane" id="rightPane">
           <div class="stack" id="rightStack">
-            <video class="base" id="rightBase" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <video class="far" id="rightFar" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-            <video class="near" id="rightNear" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <div class="effect-far"></div>
+            <div class="effect-near"></div>
             <div class="ghost"></div>
             <div class="halo"></div>
           </div>
@@ -322,11 +338,10 @@ const dom={
   leftInline:document.getElementById('leftInline'), rightInline:document.getElementById('rightInline'),
   sceneSelect:document.getElementById('sceneSelect'), conditionBadge:document.getElementById('conditionBadge'), sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'), stage:document.getElementById('stage'), handle:document.getElementById('handle'),
-  leftBase:document.getElementById('leftBase'), leftFar:document.getElementById('leftFar'), leftNear:document.getElementById('leftNear'),
-  rightBase:document.getElementById('rightBase'), rightFar:document.getElementById('rightFar'), rightNear:document.getElementById('rightNear'),
+  mainVideo:document.getElementById('mainVideo'),
   leftStack:document.getElementById('leftStack'), rightStack:document.getElementById('rightStack')
 };
-const allVideos=[dom.leftBase,dom.leftFar,dom.leftNear,dom.rightBase,dom.rightFar,dom.rightNear];
+const allVideos=[dom.mainVideo];
 
 function selectedFlags(){
   return {
@@ -532,7 +547,9 @@ function computeEffect(productId){
     farBlur *= 0.86;
     nearBlur *= 0.86;
     farX = residual.astigmatism ? `${(parseFloat(farX)*0.65).toFixed(1)}px` : '0px';
+    farY = residual.astigmatism ? `${(parseFloat(farY)*0.65).toFixed(1)}px` : '0px';
     nearX = residual.astigmatism ? `${(parseFloat(nearX)*0.65).toFixed(1)}px` : '0px';
+    nearY = residual.astigmatism ? `${(parseFloat(nearY)*0.65).toFixed(1)}px` : '0px';
   }
 
   let farOpacity = farBlur>0.1 ? 1 : 0;
@@ -544,9 +561,9 @@ function computeEffect(productId){
 
   const masks = sceneMasks(state.scene);
   return {
-    baseFilter:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farFilter:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    nearFilter:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    baseFilter:`contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    farFilter:`blur(${farBlur.toFixed(2)}px)`,
+    nearFilter:`blur(${nearBlur.toFixed(2)}px)`,
     farOpacity,
     nearOpacity,
     farX, farY, nearX, nearY,
@@ -559,9 +576,8 @@ function computeEffect(productId){
 }
 
 function applyStyle(stack,effect){
-  stack.style.setProperty('--baseFilter', effect.baseFilter);
-  stack.style.setProperty('--farFilter', effect.farFilter);
-  stack.style.setProperty('--nearFilter', effect.nearFilter);
+  stack.style.setProperty('--farBackdrop', effect.farFilter);
+  stack.style.setProperty('--nearBackdrop', effect.nearFilter);
   stack.style.setProperty('--farOpacity', effect.farOpacity);
   stack.style.setProperty('--nearOpacity', effect.nearOpacity);
   stack.style.setProperty('--farX', effect.farX);
@@ -583,6 +599,8 @@ function applyStyle(stack,effect){
 function applyVisuals(){
   applyStyle(dom.leftStack, computeEffect(state.leftProduct));
   applyStyle(dom.rightStack, computeEffect(state.rightProduct));
+  /* 단일 영상 구조에서는 좌/우 base 영상 필터를 분리하지 않고, 영역별 blur만 overlay로 적용합니다. */
+  dom.stage.style.setProperty('--stageBaseFilter', 'none');
   updateBadges();
 }
 
@@ -621,7 +639,8 @@ function safePlay(v){
 function setScene(key){
   state.scene=key; dom.sceneSelect.value=key;
   const src=scenes[key].url;
-  allVideos.forEach(v=>{ prepareVideo(v, src); safePlay(v); });
+  prepareVideo(dom.mainVideo, src);
+  safePlay(dom.mainVideo);
   setTimeout(resumeVideos,80);
   setTimeout(resumeVideos,420);
   updateBadges(); applyVisuals();
@@ -629,26 +648,19 @@ function setScene(key){
 
 function resumeVideos(){
   const src=scenes[state.scene].url;
-  allVideos.forEach(v=>{
-    prepareVideo(v, src);
-    if(v.readyState >= 2 || v.networkState !== HTMLMediaElement.NETWORK_LOADING){ safePlay(v); }
-    else { v.addEventListener('canplay',()=>safePlay(v),{once:true}); }
-  });
+  prepareVideo(dom.mainVideo, src);
+  if(dom.mainVideo.readyState >= 2 || dom.mainVideo.networkState !== HTMLMediaElement.NETWORK_LOADING){
+    safePlay(dom.mainVideo);
+  }else{
+    dom.mainVideo.addEventListener('canplay',()=>safePlay(dom.mainVideo),{once:true});
+  }
 }
 
 function syncVideos(){
-  const readyPlaying = allVideos.find(v=>v.readyState>=2 && !v.paused && !v.ended);
-  const readyAny = allVideos.find(v=>v.readyState>=2);
-  const master = readyPlaying || readyAny || dom.leftBase;
-  if(!master) return;
-  allVideos.forEach(v=>{
-    if(v!==master && master.readyState>=2 && v.readyState>=1){
-      if(Math.abs(master.currentTime-v.currentTime)>0.18){
-        try{v.currentTime=master.currentTime;}catch(e){}
-      }
-    }
-    if(v.paused || v.ended){ safePlay(v); }
-  });
+  /* 단일 영상 구조라 좌우 sync가 필요 없습니다. 멈춤 방지만 처리합니다. */
+  if(dom.mainVideo && (dom.mainVideo.paused || dom.mainVideo.ended)){
+    safePlay(dom.mainVideo);
+  }
 }
 
 function renderAll(){renderConditions(); renderSliders(); renderProducts(); applyVisuals(); updateBadges();}
@@ -703,7 +715,7 @@ allVideos.forEach(v=>{
   v.addEventListener('error',()=>{ setTimeout(()=>{ v.dataset.sceneSrc=''; resumeVideos(); },500); });
 });
 
-setInterval(()=>{ resumeVideos(); syncVideos(); },900);
+setInterval(()=>{ syncVideos(); },250);
 renderAll(); setScene('day');
 </script>
 </body>
