@@ -117,7 +117,8 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
 .rotate-text{font-size:15px;line-height:1.55;color:#dbe9ff}
 @media (max-width:900px) and (orientation:portrait){
   .rotate-guide{display:flex}
-  .app{display:none}
+  /* display:none으로 숨기면 iOS에서 영상 autoplay가 멈출 수 있어, 화면 뒤에 유지합니다. */
+  .app{visibility:hidden;pointer-events:none;position:fixed;inset:0;overflow:hidden}
   body{min-height:100vh;overflow:hidden}
 }
 @media (max-width:1180px) and (orientation:landscape){
@@ -576,8 +577,32 @@ function updateBadges(){
 function setScene(key){
   state.scene=key; dom.sceneSelect.value=key;
   const src=scenes[key].url;
-  allVideos.forEach(v=>{ if(v.src!==src){v.src=src; v.load();} v.play().catch(()=>{}); });
+  allVideos.forEach(v=>{
+    v.muted = true;
+    v.defaultMuted = true;
+    v.playsInline = true;
+    v.setAttribute('muted','');
+    v.setAttribute('playsinline','');
+    v.setAttribute('webkit-playsinline','');
+    if(v.src!==src){v.src=src; v.load();}
+  });
+  resumeVideos();
   updateBadges(); applyVisuals();
+}
+
+function resumeVideos(){
+  const src=scenes[state.scene].url;
+  allVideos.forEach(v=>{
+    v.muted = true;
+    v.defaultMuted = true;
+    v.playsInline = true;
+    v.setAttribute('muted','');
+    v.setAttribute('playsinline','');
+    v.setAttribute('webkit-playsinline','');
+    if(!v.src){ v.src=src; v.load(); }
+    const p=v.play();
+    if(p && typeof p.catch==='function') p.catch(()=>{});
+  });
 }
 
 function syncVideos(){
@@ -620,13 +645,19 @@ if(fullscreenHelp){
   fullscreenHelp.addEventListener('click', tryFullscreen);
 }
 window.addEventListener('orientationchange',()=>{
-  setTimeout(()=>{ window.scrollTo(0,1); applyVisuals(); },450);
+  setTimeout(()=>{ window.scrollTo(0,1); resumeVideos(); applyVisuals(); },250);
+  setTimeout(()=>{ resumeVideos(); syncVideos(); },700);
 });
 window.addEventListener('resize',()=>{
   if(window.matchMedia('(orientation: landscape)').matches){
-    setTimeout(()=>window.scrollTo(0,1),80);
+    setTimeout(()=>{ window.scrollTo(0,1); resumeVideos(); },80);
+    setTimeout(()=>resumeVideos(),450);
   }
 });
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) setTimeout(resumeVideos,80); });
+window.addEventListener('pageshow',()=>setTimeout(resumeVideos,80));
+document.addEventListener('touchstart',resumeVideos,{once:true,passive:true});
+document.addEventListener('click',resumeVideos,{once:true});
 
 setInterval(syncVideos,500);
 renderAll(); setScene('day');
