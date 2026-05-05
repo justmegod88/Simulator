@@ -55,6 +55,8 @@ select{
 select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255,.12)}
 select option{background:#0c2345;color:#ffffff}
 select option:checked{background:#005eb8;color:#ffffff}
+select:invalid{color:#dbe9ff}
+select option[disabled]{color:#9bb5d8}
 .toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
 .toolbar-left,.toolbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .badge{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(19,55,107,.90),rgba(12,35,69,.92));font-size:14px}
@@ -208,7 +210,6 @@ select option:checked{background:#005eb8;color:#ffffff}
   <div class="shell">
     <aside class="panel sidebar">
       <div>
-        <div class="kicker">ACUVUE Vision Simulator</div>
         <h1 class="visually-hidden-title"></h1>
       </div>
 
@@ -227,11 +228,11 @@ select option:checked{background:#005eb8;color:#ffffff}
         <div class="select-wrap">
           <div class="field">
             <label for="leftProduct">좌측 화면 제품</label>
-            <select id="leftProduct"></select>
+            <select id="leftProduct" aria-label="좌측 화면 제품 선택" required></select>
           </div>
           <div class="field">
             <label for="rightProduct">우측 화면 제품</label>
-            <select id="rightProduct"></select>
+            <select id="rightProduct" aria-label="우측 화면 제품 선택" required></select>
           </div>
           <div class="muted">제품을 선택하면 좌/우 화면에 각각 적용됩니다.</div>
         </div>
@@ -273,8 +274,8 @@ select option:checked{background:#005eb8;color:#ffffff}
             <div class="halo"></div>
           </div>
         </div>
-        <div class="side-label left">좌측 <select class="label-select" id="leftInline"></select></div>
-        <div class="side-label right">우측 <select class="label-select" id="rightInline"></select></div>
+        <div class="side-label left">좌측 <select class="label-select" id="leftInline" aria-label="좌측 제품 선택" required></select></div>
+        <div class="side-label right">우측 <select class="label-select" id="rightInline" aria-label="우측 제품 선택" required></select></div>
         <div class="divider"></div>
         <div class="handle" id="handle">‹›</div>
       </div>
@@ -380,8 +381,13 @@ function renderSliders(){
 
 function syncSelectBox(sel, keep){
   const options=productOptions();
-  sel.innerHTML = `<option value=""></option>` + options.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-  sel.value = options.some(p=>p.id===keep) ? keep : '';
+  const validKeep = options.some(p=>p.id===keep) ? keep : '';
+  sel.innerHTML = `<option value="" disabled hidden${validKeep ? '' : ' selected'}>제품 선택</option>` +
+    options.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  sel.value = validKeep;
+  if(!validKeep){
+    sel.selectedIndex = 0;
+  }
   return sel.value;
 }
 
