@@ -69,38 +69,22 @@ select option[disabled]{color:#9bb5d8}
 .compare-pane{position:absolute;inset:0;overflow:hidden;z-index:2;pointer-events:none}
 .compare-pane .stack{position:absolute;inset:0}
 
-/* 단일 video + 실시간 canvas 필터 레이어 구조
-   - video 태그는 1개만 사용
-   - canvas는 현재 video 프레임을 실시간으로 따라 그리며, 영역별 blur/filter만 담당
-   - 기존처럼 별도 video 6개를 돌리지 않아 모바일 Safari 싱크 문제를 줄임 */
-.live-filter,.compare-pane .halo{
+/* 최소 overlay video 구조
+   - 원본 video 1개 + 좌/우 효과 overlay video 1개씩
+   - 기존 6개 video 구조보다 싱크 부담이 적고, canvas 더블링보다 자연스럽게 보임 */
+.effect-video,.compare-pane .halo{
   position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;
   pointer-events:none;
 }
-.live-filter{
-  opacity:var(--filterOpacity,0);
-  filter:var(--filterCss,none);
-  transform:translate(var(--filterX,0px),var(--filterY,0px));
-  object-fit:cover;
+.effect-video{
+  opacity:var(--effectOpacity,0);
+  filter:var(--effectFilter,none);
+  transform:translate(var(--effectX,0px),var(--effectY,0px));
+  -webkit-mask-image:var(--effectMask);mask-image:var(--effectMask);
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
   will-change:filter,opacity,transform;
-}
-.live-filter.base-filter{
-  -webkit-mask-image:linear-gradient(#fff,#fff);mask-image:linear-gradient(#fff,#fff);
-}
-.live-filter.far-filter{
-  -webkit-mask-image:var(--farMask);mask-image:var(--farMask);
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  -webkit-mask-size:100% 100%;mask-size:100% 100%;
-}
-.live-filter.near-filter{
-  -webkit-mask-image:var(--nearMask);mask-image:var(--nearMask);
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  -webkit-mask-size:100% 100%;mask-size:100% 100%;
-}
-.live-filter.astig-filter{
-  -webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
 .compare-pane .halo{opacity:var(--haloOpacity);background:
   radial-gradient(circle at 50% 48%, rgba(255,255,255,.34) 0 5%, rgba(255,255,255,.12) 9%, rgba(255,255,255,0) 22%),
@@ -282,23 +266,16 @@ select option[disabled]{color:#9bb5d8}
 
         <div class="compare-pane" id="leftPane">
           <div class="stack" id="leftStack">
-            <canvas class="live-filter base-filter"></canvas>
-            <canvas class="live-filter far-filter"></canvas>
-            <canvas class="live-filter near-filter"></canvas>
-            <canvas class="live-filter astig-filter"></canvas>
+            <video class="effect-video" id="leftEffectVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
             <div class="halo"></div>
           </div>
         </div>
         <div class="compare-pane" id="rightPane">
           <div class="stack" id="rightStack">
-            <canvas class="live-filter base-filter"></canvas>
-            <canvas class="live-filter far-filter"></canvas>
-            <canvas class="live-filter near-filter"></canvas>
-            <canvas class="live-filter astig-filter"></canvas>
+            <video class="effect-video" id="rightEffectVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
             <div class="halo"></div>
           </div>
         </div>
-
         <div class="side-label left">좌측 <select class="label-select" id="leftInline" aria-label="좌측 제품 선택" required></select></div>
         <div class="side-label right">우측 <select class="label-select" id="rightInline" aria-label="우측 제품 선택" required></select></div>
         <div class="divider"></div>
@@ -345,10 +322,11 @@ const dom={
   sceneSelect:document.getElementById('sceneSelect'), conditionBadge:document.getElementById('conditionBadge'), sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'), stage:document.getElementById('stage'), handle:document.getElementById('handle'),
   mainVideo:document.getElementById('mainVideo'),
+  leftEffectVideo:document.getElementById('leftEffectVideo'),
+  rightEffectVideo:document.getElementById('rightEffectVideo'),
   leftStack:document.getElementById('leftStack'), rightStack:document.getElementById('rightStack')
 };
-const allVideos=[dom.mainVideo];
-const filterCanvases=Array.from(document.querySelectorAll('.live-filter'));
+const allVideos=[dom.mainVideo,dom.leftEffectVideo,dom.rightEffectVideo];
 
 function selectedFlags(){
   return {
@@ -435,33 +413,23 @@ function renderProducts(){
 
 
 function sceneMasks(scene){
+  // nearMask는 노안/원시에서 경계가 동그랗게 보이지 않도록
+  // 원형 radial 중심을 제거하고, 아래쪽으로 부드럽게 퍼지는 feather 형태로 구성합니다.
   if(scene==='day'){
     return {
-      nearMask:`radial-gradient(ellipse 18% 26% at 50% 61%, #fff 0 72%, transparent 77%),
-                radial-gradient(ellipse 24% 24% at 33% 74%, #fff 0 68%, transparent 74%),
-                radial-gradient(ellipse 28% 22% at 60% 86%, #fff 0 70%, transparent 78%),
-                linear-gradient(to bottom, transparent 0 48%, rgba(255,255,255,.72) 62%, #fff 100%)`,
-      farMask:`linear-gradient(to bottom, #fff 0 42%, rgba(255,255,255,.92) 54%, transparent 78%),
-               radial-gradient(ellipse 26% 24% at 15% 18%, #fff 0 52%, transparent 62%),
-               radial-gradient(ellipse 30% 16% at 78% 20%, #fff 0 54%, transparent 66%)`
+      nearMask:`linear-gradient(to bottom, transparent 0 43%, rgba(255,255,255,.18) 55%, rgba(255,255,255,.68) 70%, #fff 100%)`,
+      farMask:`linear-gradient(to bottom, #fff 0 44%, rgba(255,255,255,.86) 58%, transparent 82%)`
     };
   }
   if(scene==='dine'){
     return {
-      nearMask:`radial-gradient(ellipse 18% 32% at 49% 67%, #fff 0 70%, transparent 77%),
-                radial-gradient(ellipse 26% 18% at 62% 80%, #fff 0 68%, transparent 76%),
-                radial-gradient(ellipse 30% 20% at 22% 84%, #fff 0 68%, transparent 76%),
-                linear-gradient(to bottom, transparent 0 50%, rgba(255,255,255,.80) 66%, #fff 100%)`,
-      farMask:`linear-gradient(to bottom, #fff 0 46%, rgba(255,255,255,.95) 58%, transparent 80%),
-               radial-gradient(ellipse 35% 20% at 80% 18%, #fff 0 56%, transparent 66%)`
+      nearMask:`linear-gradient(to bottom, transparent 0 46%, rgba(255,255,255,.20) 58%, rgba(255,255,255,.72) 73%, #fff 100%)`,
+      farMask:`linear-gradient(to bottom, #fff 0 48%, rgba(255,255,255,.88) 62%, transparent 84%)`
     };
   }
   return {
-    nearMask:`radial-gradient(ellipse 24% 18% at 50% 76%, #fff 0 72%, transparent 80%),
-              radial-gradient(ellipse 40% 20% at 50% 90%, #fff 0 70%, transparent 80%),
-              linear-gradient(to bottom, transparent 0 58%, rgba(255,255,255,.84) 74%, #fff 100%)`,
-    farMask:`linear-gradient(to bottom, #fff 0 58%, rgba(255,255,255,.96) 66%, transparent 88%),
-             radial-gradient(ellipse 18% 14% at 74% 16%, #fff 0 54%, transparent 64%)`
+    nearMask:`linear-gradient(to bottom, transparent 0 54%, rgba(255,255,255,.22) 66%, rgba(255,255,255,.76) 80%, #fff 100%)`,
+    farMask:`linear-gradient(to bottom, #fff 0 60%, rgba(255,255,255,.88) 70%, transparent 90%)`
   };
 }
 
@@ -566,52 +534,48 @@ function computeEffect(productId){
 
   const masks = sceneMasks(state.scene);
 
-  // canvas 레이어용 필터: 실제 비디오 프레임을 실시간으로 그린 뒤 이 필터를 적용합니다.
-  const astigBlur = Math.max(0, baseBlur * 0.55 + residual.astigmatism * 0.70);
-  const baseLayerOpacity = baseBlur > 0.05 ? Math.min(0.82, 0.22 + baseBlur / 5.5) : 0;
-  const farLayerOpacity = farBlur > 0.05 ? Math.min(0.90, 0.42 + farBlur / 18) : 0;
-  const nearLayerOpacity = nearBlur > 0.05 ? Math.min(0.90, 0.42 + nearBlur / 18) : 0;
-  const astigLayerOpacity = residual.astigmatism > 0.001 ? Math.min(0.34, 0.08 + residual.astigmatism * 0.20) : 0;
+  // 한쪽 화면당 overlay video는 1개만 사용하므로,
+  // far/near/astig 중 필요한 영역을 하나의 mask로 합치고 blur는 가장 큰 값을 기준으로 적용합니다.
+  const effectBlur = Math.max(baseBlur, farBlur, nearBlur);
+  const hasFar = farBlur > 0.08;
+  const hasNear = nearBlur > 0.08;
+  const hasAstig = residual.astigmatism > 0.001;
+  const effectOpacity = effectBlur > 0.08 || hasAstig
+    ? Math.min(0.72, 0.26 + effectBlur / 20 + (hasAstig ? residual.astigmatism * 0.10 : 0))
+    : 0;
+
+  let effectMask = `linear-gradient(#fff,#fff)`;
+  if(hasFar && hasNear){
+    effectMask = `${masks.farMask}, ${masks.nearMask}`;
+  }else if(hasFar){
+    effectMask = masks.farMask;
+  }else if(hasNear){
+    effectMask = masks.nearMask;
+  }else if(hasAstig){
+    effectMask = `linear-gradient(#fff,#fff)`;
+  }
 
   return {
-    baseCss:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farCss:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    nearCss:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    astigCss:`blur(${astigBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    baseLayerOpacity,
-    farOpacity:farLayerOpacity,
-    nearOpacity:nearLayerOpacity,
-    astigOpacity:astigLayerOpacity,
-    astigX:`${ghostX.toFixed(1)}px`,
-    astigY:`${ghostY.toFixed(1)}px`,
+    effectFilter:`blur(${effectBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    effectOpacity,
+    effectX: hasAstig ? `${ghostX.toFixed(1)}px` : '0px',
+    effectY: hasAstig ? `${ghostY.toFixed(1)}px` : '0px',
+    effectMask,
     haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness,
     nearMask:masks.nearMask,
-    farMask:masks.farMask,
-    astigMask:`${masks.farMask}, ${masks.nearMask}`
+    farMask:masks.farMask
   };
 }
 
-function setLayer(stack, selector, cssFilter, opacity, x='0px', y='0px'){
-  const layer = stack.querySelector(selector);
-  if(!layer) return;
-  layer.style.setProperty('--filterCss', cssFilter);
-  layer.style.setProperty('--filterOpacity', opacity);
-  layer.style.setProperty('--filterX', x);
-  layer.style.setProperty('--filterY', y);
-}
-
 function applyStyle(stack,effect){
-  setLayer(stack,'.base-filter',effect.baseCss,effect.baseLayerOpacity);
-  setLayer(stack,'.far-filter',effect.farCss,effect.farOpacity);
-  setLayer(stack,'.near-filter',effect.nearCss,effect.nearOpacity);
-  setLayer(stack,'.astig-filter',effect.astigCss,effect.astigOpacity,effect.astigX,effect.astigY);
-
+  stack.style.setProperty('--effectFilter', effect.effectFilter);
+  stack.style.setProperty('--effectOpacity', effect.effectOpacity);
+  stack.style.setProperty('--effectX', effect.effectX);
+  stack.style.setProperty('--effectY', effect.effectY);
+  stack.style.setProperty('--effectMask', effect.effectMask);
   stack.style.setProperty('--haloOpacity', effect.haloOpacity);
   stack.style.setProperty('--haloBlur', effect.haloBlur);
   stack.style.setProperty('--haloBrightness', effect.haloBrightness);
-  stack.style.setProperty('--nearMask', effect.nearMask);
-  stack.style.setProperty('--farMask', effect.farMask);
-  stack.style.setProperty('--astigMask', effect.astigMask);
 }
 
 function applyVisuals(){
@@ -655,8 +619,14 @@ function safePlay(v){
 function setScene(key){
   state.scene=key; dom.sceneSelect.value=key;
   const src=scenes[key].url;
-  prepareVideo(dom.mainVideo, src);
+  allVideos.forEach(v=>{ prepareVideo(v, src); });
   safePlay(dom.mainVideo);
+  allVideos.forEach(v=>{
+    if(v!==dom.mainVideo){
+      try{ v.currentTime = dom.mainVideo.currentTime || 0; }catch(e){}
+      safePlay(v);
+    }
+  });
   setTimeout(resumeVideos,80);
   setTimeout(resumeVideos,420);
   updateBadges(); applyVisuals();
@@ -664,79 +634,33 @@ function setScene(key){
 
 function resumeVideos(){
   const src=scenes[state.scene].url;
-  prepareVideo(dom.mainVideo, src);
-  if(dom.mainVideo.readyState >= 2 || dom.mainVideo.networkState !== HTMLMediaElement.NETWORK_LOADING){
-    safePlay(dom.mainVideo);
-  }else{
-    dom.mainVideo.addEventListener('canplay',()=>safePlay(dom.mainVideo),{once:true});
-  }
-}
-
-function syncVideos(){
-  if(dom.mainVideo && (dom.mainVideo.paused || dom.mainVideo.ended)){
-    safePlay(dom.mainVideo);
-  }
-}
-
-
-function resizeFilterCanvases(){
-  const rect = dom.stage.getBoundingClientRect();
-  if(!rect.width || !rect.height) return;
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-  const w = Math.max(2, Math.round(rect.width * dpr));
-  const h = Math.max(2, Math.round(rect.height * dpr));
-  filterCanvases.forEach(c=>{
-    if(c.width !== w || c.height !== h){
-      c.width = w;
-      c.height = h;
+  allVideos.forEach(v=>prepareVideo(v, src));
+  safePlay(dom.mainVideo);
+  allVideos.forEach(v=>{
+    if(v!==dom.mainVideo && dom.mainVideo.readyState>=2 && v.readyState>=1){
+      try{
+        if(Math.abs(dom.mainVideo.currentTime-v.currentTime)>0.035) v.currentTime=dom.mainVideo.currentTime;
+      }catch(e){}
     }
+    if(v.readyState >= 2 || v.networkState !== HTMLMediaElement.NETWORK_LOADING){ safePlay(v); }
+    else { v.addEventListener('canplay',()=>safePlay(v),{once:true}); }
   });
 }
 
-function drawVideoToCanvas(canvas, video){
-  if(!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
-  const ctx = canvas.getContext('2d', { alpha:true });
-  if(!ctx) return;
-
-  const cw = canvas.width;
-  const ch = canvas.height;
-  const vw = video.videoWidth;
-  const vh = video.videoHeight;
-
-  ctx.clearRect(0,0,cw,ch);
-
-  // object-fit: cover와 동일한 방식으로 canvas에 비디오 현재 프레임을 그림
-  const scale = Math.max(cw / vw, ch / vh);
-  const dw = vw * scale;
-  const dh = vh * scale;
-  const dx = (cw - dw) / 2;
-  const dy = (ch - dh) / 2;
-
-  try{
-    ctx.drawImage(video, dx, dy, dw, dh);
-  }catch(e){}
+function syncVideos(){
+  const master=dom.mainVideo;
+  if(!master) return;
+  if(master.paused || master.ended) safePlay(master);
+  allVideos.forEach(v=>{
+    if(v===master) return;
+    if(master.readyState>=2 && v.readyState>=1){
+      try{
+        if(Math.abs(master.currentTime-v.currentTime)>0.035) v.currentTime=master.currentTime;
+      }catch(e){}
+    }
+    if(v.paused || v.ended) safePlay(v);
+  });
 }
-
-let filterDrawStarted=false;
-function drawFilterLoop(){
-  resizeFilterCanvases();
-  if(dom.mainVideo && dom.mainVideo.readyState >= 2){
-    filterCanvases.forEach(c=>drawVideoToCanvas(c, dom.mainVideo));
-  }
-
-  if(dom.mainVideo && typeof dom.mainVideo.requestVideoFrameCallback === 'function'){
-    dom.mainVideo.requestVideoFrameCallback(()=>drawFilterLoop());
-  }else{
-    requestAnimationFrame(drawFilterLoop);
-  }
-}
-
-function startFilterDrawing(){
-  if(filterDrawStarted) return;
-  filterDrawStarted=true;
-  drawFilterLoop();
-}
-
 
 function renderAll(){renderConditions(); renderSliders(); renderProducts(); applyVisuals(); updateBadges();}
 
@@ -786,7 +710,10 @@ allVideos.forEach(v=>{
   v.addEventListener('loadeddata',()=>safePlay(v));
   v.addEventListener('canplay',()=>safePlay(v));
   v.addEventListener('pause',()=>{
-    try{ v.currentTime += 0.001; }catch(e){}
+    try{
+      if(dom.mainVideo && v!==dom.mainVideo && dom.mainVideo.readyState>=2) v.currentTime = dom.mainVideo.currentTime;
+      v.currentTime += 0.001;
+    }catch(e){}
     safePlay(v);
     setTimeout(()=>safePlay(v),120);
   });
@@ -794,8 +721,8 @@ allVideos.forEach(v=>{
   v.addEventListener('error',()=>{ setTimeout(()=>{ v.dataset.sceneSrc=''; resumeVideos(); },500); });
 });
 
-setInterval(()=>{ syncVideos(); },250);
-renderAll(); setScene('day'); startFilterDrawing();
+setInterval(()=>{ syncVideos(); },120);
+renderAll(); setScene('day');
 </script>
 </body>
 </html>
