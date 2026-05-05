@@ -52,6 +52,8 @@ select{
   width:100%;height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,#0f3b78,#0b2d5c);color:var(--text);padding:0 14px;font-size:15px;outline:none
 }
 select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255,.12)}
+select option{background:#0c2345;color:#ffffff}
+select option:checked{background:#005eb8;color:#ffffff}
 .toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
 .toolbar-left,.toolbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .badge{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(19,55,107,.90),rgba(12,35,69,.92));font-size:14px}
@@ -63,13 +65,13 @@ select:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(132,198,255
 .compare-pane video,.compare-pane .ghost,.compare-pane .halo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .compare-pane video.base{filter:var(--baseFilter)}
 .compare-pane video.far{
-  opacity:var(--farOpacity);filter:var(--farFilter);
+  opacity:var(--farOpacity);filter:var(--farFilter);transform:translate(var(--farX),var(--farY));
   -webkit-mask-image:var(--farMask);mask-image:var(--farMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
 .compare-pane video.near{
-  opacity:var(--nearOpacity);filter:var(--nearFilter);
+  opacity:var(--nearOpacity);filter:var(--nearFilter);transform:translate(var(--nearX),var(--nearY));
   -webkit-mask-image:var(--nearMask);mask-image:var(--nearMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
@@ -295,14 +297,14 @@ const conditions=[
   {id:'presbyopia',label:'노안'}
 ];
 const allProducts=[
-  {id:'none',name:'None (아무것도 선택 안함)'},
-  {id:'oasys',name:'오아시스'},
-  {id:'max1day',name:'맥스 원데이'},
-  {id:'moistMulti',name:'모이스트 멀티포컬'},
-  {id:'maxMulti',name:'맥스 멀티포컬'},
-  {id:'oasysToric',name:'오아시스 난시'},
-  {id:'maxToric',name:'맥스 난시'},
-  {id:'maxMultiToric',name:'맥스 멀티 난시'}
+  {id:'none',name:'None (제품 미적용)'},
+  {id:'oasys',name:'아큐브 오아시스 원데이®'},
+  {id:'max1day',name:'아큐브® 오아시스 MAX 원데이'},
+  {id:'moistMulti',name:'원데이 아큐브 모이스트® 멀티포컬'},
+  {id:'maxMulti',name:'아큐브® 오아시스 MAX 원데이 멀티포컬'},
+  {id:'oasysToric',name:'아큐브 오아시스 원데이® 난시용'},
+  {id:'maxToric',name:'아큐브® 오아시스 MAX 원데이 난시용'},
+  {id:'maxMultiToric',name:'아큐브® 오아시스 MAX 원데이 멀티포컬 난시용'}
 ];
 
 const state={
@@ -486,10 +488,10 @@ function computeEffect(productId){
   // 노안: 근거리만 흐림, 강해질수록 근거리만 더 흐림
   nearBlur += residual.presbyopia * 12.5;
 
-  // 난시: 원/근거리 모두 방향성 중첩과 흐림
-  baseBlur += residual.astigmatism * 0.9;
-  farBlur += residual.astigmatism * 1.8;
-  nearBlur += residual.astigmatism * 1.8;
+  // 난시: 단순 흐림보다 180° 기준의 수평 이중상(겹쳐 보임)을 강조
+  baseBlur += residual.astigmatism * 0.22;
+  farBlur += residual.astigmatism * 0.85;
+  nearBlur += residual.astigmatism * 0.85;
 
   let contrast = 1 - (residual.myopia*0.06 + residual.hyperopia*0.06 + residual.presbyopia*0.015 + residual.astigmatism*0.03);
   let brightness = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.01);
@@ -512,13 +514,17 @@ function computeEffect(productId){
     haloBlur = 2;
   }
 
-  // 난시: 축선은 표시하지 않고, 원거리/근거리 영역에 이중상처럼 겹쳐 보이도록 처리
-  const dist = 5 + residual.astigmatism * 24;
-  const rad = 18 * Math.PI / 180;
+  // 난시: 축 UI는 없애되, 내부 기준은 180°로 고정하여 원/근거리 영역 영상 자체가 약간 수평으로 겹쳐 보이게 처리
+  const dist = residual.astigmatism ? 3 + residual.astigmatism * 18 : 0;
+  const rad = 180 * Math.PI / 180;
   let ghostX = Math.cos(rad) * dist;
   let ghostY = Math.sin(rad) * dist;
-  let ghostOpacity = residual.astigmatism ? Math.min(0.70, residual.astigmatism * 0.82) : 0;
-  let ghostBlur = 0.45 + residual.astigmatism * 2.4;
+  let ghostOpacity = residual.astigmatism ? Math.min(0.34, residual.astigmatism * 0.34) : 0;
+  let ghostBlur = 0.25 + residual.astigmatism * 1.2;
+  let farX = residual.astigmatism ? `${ghostX.toFixed(1)}px` : '0px';
+  let farY = residual.astigmatism ? `${ghostY.toFixed(1)}px` : '0px';
+  let nearX = residual.astigmatism ? `${(-ghostX*0.72).toFixed(1)}px` : '0px';
+  let nearY = residual.astigmatism ? `${(-ghostY*0.72).toFixed(1)}px` : '0px';
 
   if(maxGlow){
     ghostOpacity *= 0.75;
@@ -526,6 +532,15 @@ function computeEffect(productId){
     baseBlur *= 0.88;
     farBlur *= 0.86;
     nearBlur *= 0.86;
+    farX = residual.astigmatism ? `${(parseFloat(farX)*0.65).toFixed(1)}px` : '0px';
+    nearX = residual.astigmatism ? `${(parseFloat(nearX)*0.65).toFixed(1)}px` : '0px';
+  }
+
+  let farOpacity = farBlur>0.1 ? 1 : 0;
+  let nearOpacity = nearBlur>0.1 ? 1 : 0;
+  if(residual.astigmatism>0.001 && residual.myopia<0.001 && residual.hyperopia<0.001 && residual.presbyopia<0.001){
+    farOpacity = Math.min(0.82, 0.38 + residual.astigmatism * 0.55);
+    nearOpacity = Math.min(0.82, 0.38 + residual.astigmatism * 0.55);
   }
 
   const masks = sceneMasks(state.scene);
@@ -533,8 +548,9 @@ function computeEffect(productId){
     baseFilter:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
     farFilter:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
     nearFilter:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farOpacity: farBlur>0.1 ? 1 : 0,
-    nearOpacity: nearBlur>0.1 ? 1 : 0,
+    farOpacity,
+    nearOpacity,
+    farX, farY, nearX, nearY,
     ghostOpacity, ghostX:`${ghostX.toFixed(1)}px`, ghostY:`${ghostY.toFixed(1)}px`, ghostBlur:`${ghostBlur.toFixed(2)}px`,
     haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness,
     nearMask:masks.nearMask,
@@ -549,6 +565,10 @@ function applyStyle(stack,effect){
   stack.style.setProperty('--nearFilter', effect.nearFilter);
   stack.style.setProperty('--farOpacity', effect.farOpacity);
   stack.style.setProperty('--nearOpacity', effect.nearOpacity);
+  stack.style.setProperty('--farX', effect.farX);
+  stack.style.setProperty('--farY', effect.farY);
+  stack.style.setProperty('--nearX', effect.nearX);
+  stack.style.setProperty('--nearY', effect.nearY);
   stack.style.setProperty('--ghostOpacity', effect.ghostOpacity);
   stack.style.setProperty('--ghostX', effect.ghostX);
   stack.style.setProperty('--ghostY', effect.ghostY);
@@ -567,7 +587,7 @@ function applyVisuals(){
   updateBadges();
 }
 
-function productName(id){ const p=allProducts.find(x=>x.id===id); return p ? p.name.replace(' (아무것도 선택 안함)','') : 'None'; }
+function productName(id){ const p=allProducts.find(x=>x.id===id); return p ? p.name.replace(' (제품 미적용)','') : 'None'; }
 function updateBadges(){
   const label = conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');
   dom.conditionBadge.textContent=`상태 : ${label}`;
