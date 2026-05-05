@@ -65,39 +65,24 @@ select option[disabled]{color:#9bb5d8}
 .ghost-btn{border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(19,55,107,.90),rgba(12,35,69,.92));color:var(--text);border-radius:14px;padding:10px 14px;font-weight:800;cursor:pointer}
 .ghost-btn:hover{border-color:rgba(132,198,255,.6);background:rgba(15,123,255,.12)}
 .stage{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);aspect-ratio:16/9;background:#091a32}
-.main-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:var(--stageBaseFilter,none)}
-.compare-pane{position:absolute;inset:0;overflow:hidden;z-index:2;pointer-events:none}
+.compare-pane{position:absolute;inset:0;overflow:hidden}
 .compare-pane .stack{position:absolute;inset:0}
-.effect-far,.effect-near,.compare-pane .ghost,.compare-pane .halo{position:absolute;inset:0;width:100%;height:100%}
-.effect-far{
-  opacity:var(--farOpacity);
-  transform:translate(var(--farX),var(--farY));
-  backdrop-filter:var(--farBackdrop);
-  -webkit-backdrop-filter:var(--farBackdrop);
+.compare-pane video,.compare-pane .ghost,.compare-pane .halo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.compare-pane video.base{filter:var(--baseFilter)}
+.compare-pane video.far{
+  opacity:var(--farOpacity);filter:var(--farFilter);transform:translate(var(--farX),var(--farY));
   -webkit-mask-image:var(--farMask);mask-image:var(--farMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
-.effect-near{
-  opacity:var(--nearOpacity);
-  transform:translate(var(--nearX),var(--nearY));
-  backdrop-filter:var(--nearBackdrop);
-  -webkit-backdrop-filter:var(--nearBackdrop);
+.compare-pane video.near{
+  opacity:var(--nearOpacity);filter:var(--nearFilter);transform:translate(var(--nearX),var(--nearY));
   -webkit-mask-image:var(--nearMask);mask-image:var(--nearMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
-.compare-pane .ghost{
-  opacity:var(--ghostOpacity);
-  transform:translate(var(--ghostX),var(--ghostY));
-  backdrop-filter:blur(var(--ghostBlur));
-  -webkit-backdrop-filter:blur(var(--ghostBlur));
-  mix-blend-mode:screen;
-  -webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  -webkit-mask-size:100% 100%;mask-size:100% 100%;
-}
-.compare-pane .ghost::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,.08)}
+.compare-pane .ghost{opacity:var(--ghostOpacity);transform:translate(var(--ghostX),var(--ghostY));filter:blur(var(--ghostBlur));mix-blend-mode:screen;-webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%}
+.compare-pane .ghost::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.05));opacity:.2}
 .compare-pane .halo{pointer-events:none;opacity:var(--haloOpacity);background:
   radial-gradient(circle at 50% 48%, rgba(255,255,255,.42) 0 5%, rgba(255,255,255,.16) 9%, rgba(255,255,255,0) 22%),
   radial-gradient(circle at 74% 28%, rgba(255,255,255,.18) 0 4%, rgba(255,255,255,0) 18%);
@@ -274,21 +259,20 @@ select option[disabled]{color:#9bb5d8}
       </div>
 
       <div class="stage" id="stage">
-        <!-- 단일 영상 구조: iOS/Safari에서 좌우 영상이 서로 다르게 멈추거나 섞이는 문제를 줄이기 위해 video는 1개만 사용합니다. -->
-        <video class="main-video" id="mainVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
-
         <div class="compare-pane" id="leftPane">
           <div class="stack" id="leftStack">
-            <div class="effect-far"></div>
-            <div class="effect-near"></div>
+            <video class="base" id="leftBase" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <video class="far" id="leftFar" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <video class="near" id="leftNear" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
             <div class="ghost"></div>
             <div class="halo"></div>
           </div>
         </div>
         <div class="compare-pane" id="rightPane">
           <div class="stack" id="rightStack">
-            <div class="effect-far"></div>
-            <div class="effect-near"></div>
+            <video class="base" id="rightBase" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <video class="far" id="rightFar" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <video class="near" id="rightNear" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
             <div class="ghost"></div>
             <div class="halo"></div>
           </div>
@@ -338,10 +322,11 @@ const dom={
   leftInline:document.getElementById('leftInline'), rightInline:document.getElementById('rightInline'),
   sceneSelect:document.getElementById('sceneSelect'), conditionBadge:document.getElementById('conditionBadge'), sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'), stage:document.getElementById('stage'), handle:document.getElementById('handle'),
-  mainVideo:document.getElementById('mainVideo'),
+  leftBase:document.getElementById('leftBase'), leftFar:document.getElementById('leftFar'), leftNear:document.getElementById('leftNear'),
+  rightBase:document.getElementById('rightBase'), rightFar:document.getElementById('rightFar'), rightNear:document.getElementById('rightNear'),
   leftStack:document.getElementById('leftStack'), rightStack:document.getElementById('rightStack')
 };
-const allVideos=[dom.mainVideo];
+const allVideos=[dom.leftBase,dom.leftFar,dom.leftNear,dom.rightBase,dom.rightFar,dom.rightNear];
 
 function selectedFlags(){
   return {
@@ -547,9 +532,7 @@ function computeEffect(productId){
     farBlur *= 0.86;
     nearBlur *= 0.86;
     farX = residual.astigmatism ? `${(parseFloat(farX)*0.65).toFixed(1)}px` : '0px';
-    farY = residual.astigmatism ? `${(parseFloat(farY)*0.65).toFixed(1)}px` : '0px';
     nearX = residual.astigmatism ? `${(parseFloat(nearX)*0.65).toFixed(1)}px` : '0px';
-    nearY = residual.astigmatism ? `${(parseFloat(nearY)*0.65).toFixed(1)}px` : '0px';
   }
 
   let farOpacity = farBlur>0.1 ? 1 : 0;
@@ -561,9 +544,9 @@ function computeEffect(productId){
 
   const masks = sceneMasks(state.scene);
   return {
-    baseFilter:`contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farFilter:`blur(${farBlur.toFixed(2)}px)`,
-    nearFilter:`blur(${nearBlur.toFixed(2)}px)`,
+    baseFilter:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    farFilter:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    nearFilter:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
     farOpacity,
     nearOpacity,
     farX, farY, nearX, nearY,
@@ -576,8 +559,9 @@ function computeEffect(productId){
 }
 
 function applyStyle(stack,effect){
-  stack.style.setProperty('--farBackdrop', effect.farFilter);
-  stack.style.setProperty('--nearBackdrop', effect.nearFilter);
+  stack.style.setProperty('--baseFilter', effect.baseFilter);
+  stack.style.setProperty('--farFilter', effect.farFilter);
+  stack.style.setProperty('--nearFilter', effect.nearFilter);
   stack.style.setProperty('--farOpacity', effect.farOpacity);
   stack.style.setProperty('--nearOpacity', effect.nearOpacity);
   stack.style.setProperty('--farX', effect.farX);
@@ -599,8 +583,6 @@ function applyStyle(stack,effect){
 function applyVisuals(){
   applyStyle(dom.leftStack, computeEffect(state.leftProduct));
   applyStyle(dom.rightStack, computeEffect(state.rightProduct));
-  /* 단일 영상 구조에서는 좌/우 base 영상 필터를 분리하지 않고, 영역별 blur만 overlay로 적용합니다. */
-  dom.stage.style.setProperty('--stageBaseFilter', 'none');
   updateBadges();
 }
 
@@ -639,28 +621,58 @@ function safePlay(v){
 function setScene(key){
   state.scene=key; dom.sceneSelect.value=key;
   const src=scenes[key].url;
-  prepareVideo(dom.mainVideo, src);
-  safePlay(dom.mainVideo);
-  setTimeout(resumeVideos,80);
-  setTimeout(resumeVideos,420);
+
+  // 기준 영상 먼저 세팅 후, 나머지 레이어 영상을 같은 소스/시간으로 맞춥니다.
+  prepareVideo(dom.leftBase, src);
+  safePlay(dom.leftBase);
+  allVideos.forEach(v=>{
+    if(v===dom.leftBase) return;
+    prepareVideo(v, src);
+    try{ if(dom.leftBase.readyState>=1) v.currentTime = dom.leftBase.currentTime; }catch(e){}
+    safePlay(v);
+  });
+
+  setTimeout(()=>{ resumeVideos(); syncVideos(); },80);
+  setTimeout(()=>{ resumeVideos(); syncVideos(); },420);
   updateBadges(); applyVisuals();
 }
 
 function resumeVideos(){
   const src=scenes[state.scene].url;
-  prepareVideo(dom.mainVideo, src);
-  if(dom.mainVideo.readyState >= 2 || dom.mainVideo.networkState !== HTMLMediaElement.NETWORK_LOADING){
-    safePlay(dom.mainVideo);
-  }else{
-    dom.mainVideo.addEventListener('canplay',()=>safePlay(dom.mainVideo),{once:true});
-  }
+  prepareVideo(dom.leftBase, src);
+  safePlay(dom.leftBase);
+  allVideos.forEach(v=>{
+    prepareVideo(v, src);
+    if(v!==dom.leftBase && dom.leftBase.readyState>=2 && v.readyState>=1){
+      try{
+        if(Math.abs(dom.leftBase.currentTime-v.currentTime)>0.035) v.currentTime=dom.leftBase.currentTime;
+      }catch(e){}
+    }
+    if(v.readyState >= 2 || v.networkState !== HTMLMediaElement.NETWORK_LOADING){ safePlay(v); }
+    else { v.addEventListener('canplay',()=>safePlay(v),{once:true}); }
+  });
 }
 
 function syncVideos(){
-  /* 단일 영상 구조라 좌우 sync가 필요 없습니다. 멈춤 방지만 처리합니다. */
-  if(dom.mainVideo && (dom.mainVideo.paused || dom.mainVideo.ended)){
-    safePlay(dom.mainVideo);
-  }
+  // 영상 효과 구조는 유지하되, 기준 영상을 leftBase로 고정해 iOS/Safari에서 좌우 프레임이 섞이는 현상을 줄입니다.
+  const master = dom.leftBase;
+  if(!master) return;
+  if(master.paused || master.ended){ safePlay(master); }
+
+  allVideos.forEach(v=>{
+    if(v!==master && master.readyState>=2 && v.readyState>=1){
+      // 기존 0.18초는 모바일에서 눈에 보일 정도로 어긋날 수 있어 더 촘촘하게 보정합니다.
+      if(Math.abs(master.currentTime-v.currentTime)>0.035){
+        try{v.currentTime=master.currentTime;}catch(e){}
+      }
+    }
+    if(v.paused || v.ended){
+      try{
+        if(v.readyState>=1 && master.readyState>=2) v.currentTime = master.currentTime;
+      }catch(e){}
+      safePlay(v);
+    }
+  });
 }
 
 function renderAll(){renderConditions(); renderSliders(); renderProducts(); applyVisuals(); updateBadges();}
@@ -710,12 +722,20 @@ document.addEventListener('click',resumeVideos,{once:true});
 allVideos.forEach(v=>{
   v.addEventListener('loadeddata',()=>safePlay(v));
   v.addEventListener('canplay',()=>safePlay(v));
-  v.addEventListener('pause',()=>{ setTimeout(()=>safePlay(v),120); });
+  v.addEventListener('pause',()=>{
+    // iOS에서 일부 레이어 영상만 pause 되는 경우 즉시 재생을 재시도합니다.
+    try{
+      if(dom.leftBase && v!==dom.leftBase && dom.leftBase.readyState>=2) v.currentTime = dom.leftBase.currentTime;
+      v.currentTime += 0.001;
+    }catch(e){}
+    safePlay(v);
+    setTimeout(()=>safePlay(v),120);
+  });
   v.addEventListener('stalled',()=>{ setTimeout(resumeVideos,200); });
   v.addEventListener('error',()=>{ setTimeout(()=>{ v.dataset.sceneSrc=''; resumeVideos(); },500); });
 });
 
-setInterval(()=>{ syncVideos(); },250);
+setInterval(()=>{ syncVideos(); },120);
 renderAll(); setScene('day');
 </script>
 </body>
