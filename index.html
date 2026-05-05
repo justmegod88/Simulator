@@ -66,43 +66,38 @@ select option[disabled]{color:#9bb5d8}
 .ghost-btn:hover{border-color:rgba(132,198,255,.6);background:rgba(15,123,255,.12)}
 .stage{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);aspect-ratio:16/9;background:#091a32}
 .main-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
-.compare-pane{position:absolute;inset:0;overflow:hidden;z-index:2;pointer-events:none;isolation:isolate}
+.compare-pane{position:absolute;inset:0;overflow:hidden;z-index:2;pointer-events:none}
 .compare-pane .stack{position:absolute;inset:0}
 
-/* 단일 영상 + 투명 blur 필터 레이어 구조 */
-.filter-layer,.compare-pane .halo{
+/* 단일 video + 실시간 canvas 필터 레이어 구조
+   - video 태그는 1개만 사용
+   - canvas는 현재 video 프레임을 실시간으로 따라 그리며, 영역별 blur/filter만 담당
+   - 기존처럼 별도 video 6개를 돌리지 않아 모바일 Safari 싱크 문제를 줄임 */
+.live-filter,.compare-pane .halo{
   position:absolute;inset:0;width:100%;height:100%;
   pointer-events:none;
 }
-.filter-layer{
+.live-filter{
   opacity:var(--filterOpacity,0);
-  background:
-    radial-gradient(ellipse at center, rgba(255,255,255,.035), rgba(255,255,255,.012) 58%, rgba(255,255,255,.006) 100%);
-  backdrop-filter:var(--filterBackdrop,none);
-  -webkit-backdrop-filter:var(--filterBackdrop,none);
+  filter:var(--filterCss,none);
   transform:translate(var(--filterX,0px),var(--filterY,0px));
-  will-change:backdrop-filter, opacity, transform;
+  object-fit:cover;
+  will-change:filter,opacity,transform;
 }
-.filter-layer.base-filter{
+.live-filter.base-filter{
   -webkit-mask-image:linear-gradient(#fff,#fff);mask-image:linear-gradient(#fff,#fff);
 }
-.filter-layer.far-filter{
-  background:
-    radial-gradient(ellipse at center, rgba(255,255,255,.052), rgba(255,255,255,.018) 60%, rgba(255,255,255,.006) 100%);
+.live-filter.far-filter{
   -webkit-mask-image:var(--farMask);mask-image:var(--farMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
-.filter-layer.near-filter{
-  background:
-    radial-gradient(ellipse at center, rgba(255,255,255,.052), rgba(255,255,255,.018) 60%, rgba(255,255,255,.006) 100%);
+.live-filter.near-filter{
   -webkit-mask-image:var(--nearMask);mask-image:var(--nearMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
-.filter-layer.astig-filter{
-  background:
-    linear-gradient(90deg, rgba(255,255,255,.018), rgba(255,255,255,.045), rgba(255,255,255,.018));
+.live-filter.astig-filter{
   -webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
@@ -287,22 +282,23 @@ select option[disabled]{color:#9bb5d8}
 
         <div class="compare-pane" id="leftPane">
           <div class="stack" id="leftStack">
-            <div class="filter-layer base-filter"></div>
-            <div class="filter-layer far-filter"></div>
-            <div class="filter-layer near-filter"></div>
-            <div class="filter-layer astig-filter"></div>
+            <canvas class="live-filter base-filter"></canvas>
+            <canvas class="live-filter far-filter"></canvas>
+            <canvas class="live-filter near-filter"></canvas>
+            <canvas class="live-filter astig-filter"></canvas>
             <div class="halo"></div>
           </div>
         </div>
         <div class="compare-pane" id="rightPane">
           <div class="stack" id="rightStack">
-            <div class="filter-layer base-filter"></div>
-            <div class="filter-layer far-filter"></div>
-            <div class="filter-layer near-filter"></div>
-            <div class="filter-layer astig-filter"></div>
+            <canvas class="live-filter base-filter"></canvas>
+            <canvas class="live-filter far-filter"></canvas>
+            <canvas class="live-filter near-filter"></canvas>
+            <canvas class="live-filter astig-filter"></canvas>
             <div class="halo"></div>
           </div>
         </div>
+
         <div class="side-label left">좌측 <select class="label-select" id="leftInline" aria-label="좌측 제품 선택" required></select></div>
         <div class="side-label right">우측 <select class="label-select" id="rightInline" aria-label="우측 제품 선택" required></select></div>
         <div class="divider"></div>
@@ -352,6 +348,7 @@ const dom={
   leftStack:document.getElementById('leftStack'), rightStack:document.getElementById('rightStack')
 };
 const allVideos=[dom.mainVideo];
+const filterCanvases=Array.from(document.querySelectorAll('.live-filter'));
 
 function selectedFlags(){
   return {
@@ -568,18 +565,19 @@ function computeEffect(productId){
   }
 
   const masks = sceneMasks(state.scene);
-  // backdrop-filter는 iOS Safari에서 너무 약하게 보일 수 있어 최소 blur/opacity를 보정합니다.
-  const astigBlur = Math.max(0, baseBlur * 0.70 + residual.astigmatism * 0.95);
-  const baseLayerOpacity = baseBlur > 0.05 ? Math.min(0.92, 0.34 + baseBlur / 4.2) : 0;
-  const farLayerOpacity = farBlur > 0.05 ? Math.min(0.96, 0.56 + farBlur / 16) : 0;
-  const nearLayerOpacity = nearBlur > 0.05 ? Math.min(0.96, 0.56 + nearBlur / 16) : 0;
-  const astigLayerOpacity = residual.astigmatism > 0.001 ? Math.min(0.58, 0.18 + residual.astigmatism * 0.32) : 0;
+
+  // canvas 레이어용 필터: 실제 비디오 프레임을 실시간으로 그린 뒤 이 필터를 적용합니다.
+  const astigBlur = Math.max(0, baseBlur * 0.55 + residual.astigmatism * 0.70);
+  const baseLayerOpacity = baseBlur > 0.05 ? Math.min(0.82, 0.22 + baseBlur / 5.5) : 0;
+  const farLayerOpacity = farBlur > 0.05 ? Math.min(0.90, 0.42 + farBlur / 18) : 0;
+  const nearLayerOpacity = nearBlur > 0.05 ? Math.min(0.90, 0.42 + nearBlur / 18) : 0;
+  const astigLayerOpacity = residual.astigmatism > 0.001 ? Math.min(0.34, 0.08 + residual.astigmatism * 0.20) : 0;
 
   return {
-    baseBackdrop:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    farBackdrop:`blur(${(farBlur>0.05 ? Math.max(2.2,farBlur) : 0).toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    nearBackdrop:`blur(${(nearBlur>0.05 ? Math.max(2.2,nearBlur) : 0).toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    astigBackdrop:`blur(${(astigBlur>0.05 ? Math.max(1.2,astigBlur) : 0).toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    baseCss:`blur(${baseBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    farCss:`blur(${farBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    nearCss:`blur(${nearBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    astigCss:`blur(${astigBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
     baseLayerOpacity,
     farOpacity:farLayerOpacity,
     nearOpacity:nearLayerOpacity,
@@ -593,20 +591,20 @@ function computeEffect(productId){
   };
 }
 
-function setLayer(stack, selector, backdrop, opacity, x='0px', y='0px'){
+function setLayer(stack, selector, cssFilter, opacity, x='0px', y='0px'){
   const layer = stack.querySelector(selector);
   if(!layer) return;
-  layer.style.setProperty('--filterBackdrop', backdrop);
+  layer.style.setProperty('--filterCss', cssFilter);
   layer.style.setProperty('--filterOpacity', opacity);
   layer.style.setProperty('--filterX', x);
   layer.style.setProperty('--filterY', y);
 }
 
 function applyStyle(stack,effect){
-  setLayer(stack,'.base-filter',effect.baseBackdrop,effect.baseLayerOpacity);
-  setLayer(stack,'.far-filter',effect.farBackdrop,effect.farOpacity);
-  setLayer(stack,'.near-filter',effect.nearBackdrop,effect.nearOpacity);
-  setLayer(stack,'.astig-filter',effect.astigBackdrop,effect.astigOpacity,effect.astigX,effect.astigY);
+  setLayer(stack,'.base-filter',effect.baseCss,effect.baseLayerOpacity);
+  setLayer(stack,'.far-filter',effect.farCss,effect.farOpacity);
+  setLayer(stack,'.near-filter',effect.nearCss,effect.nearOpacity);
+  setLayer(stack,'.astig-filter',effect.astigCss,effect.astigOpacity,effect.astigX,effect.astigY);
 
   stack.style.setProperty('--haloOpacity', effect.haloOpacity);
   stack.style.setProperty('--haloBlur', effect.haloBlur);
@@ -680,6 +678,66 @@ function syncVideos(){
   }
 }
 
+
+function resizeFilterCanvases(){
+  const rect = dom.stage.getBoundingClientRect();
+  if(!rect.width || !rect.height) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  const w = Math.max(2, Math.round(rect.width * dpr));
+  const h = Math.max(2, Math.round(rect.height * dpr));
+  filterCanvases.forEach(c=>{
+    if(c.width !== w || c.height !== h){
+      c.width = w;
+      c.height = h;
+    }
+  });
+}
+
+function drawVideoToCanvas(canvas, video){
+  if(!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
+  const ctx = canvas.getContext('2d', { alpha:true });
+  if(!ctx) return;
+
+  const cw = canvas.width;
+  const ch = canvas.height;
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
+
+  ctx.clearRect(0,0,cw,ch);
+
+  // object-fit: cover와 동일한 방식으로 canvas에 비디오 현재 프레임을 그림
+  const scale = Math.max(cw / vw, ch / vh);
+  const dw = vw * scale;
+  const dh = vh * scale;
+  const dx = (cw - dw) / 2;
+  const dy = (ch - dh) / 2;
+
+  try{
+    ctx.drawImage(video, dx, dy, dw, dh);
+  }catch(e){}
+}
+
+let filterDrawStarted=false;
+function drawFilterLoop(){
+  resizeFilterCanvases();
+  if(dom.mainVideo && dom.mainVideo.readyState >= 2){
+    filterCanvases.forEach(c=>drawVideoToCanvas(c, dom.mainVideo));
+  }
+
+  if(dom.mainVideo && typeof dom.mainVideo.requestVideoFrameCallback === 'function'){
+    dom.mainVideo.requestVideoFrameCallback(()=>drawFilterLoop());
+  }else{
+    requestAnimationFrame(drawFilterLoop);
+  }
+}
+
+function startFilterDrawing(){
+  if(filterDrawStarted) return;
+  filterDrawStarted=true;
+  drawFilterLoop();
+}
+
+
 function renderAll(){renderConditions(); renderSliders(); renderProducts(); applyVisuals(); updateBadges();}
 
 function setSplit(percent){ state.split=Math.max(15,Math.min(85,percent)); dom.stage.style.setProperty('--split', state.split+'%'); }
@@ -737,7 +795,7 @@ allVideos.forEach(v=>{
 });
 
 setInterval(()=>{ syncVideos(); },250);
-renderAll(); setScene('day');
+renderAll(); setScene('day'); startFilterDrawing();
 </script>
 </body>
 </html>
