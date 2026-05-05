@@ -82,7 +82,7 @@ select option[disabled]{color:#9bb5d8}
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
 }
 .compare-pane .ghost{opacity:var(--ghostOpacity);transform:translate(var(--ghostX),var(--ghostY));filter:blur(var(--ghostBlur));mix-blend-mode:screen;-webkit-mask-image:var(--astigMask);mask-image:var(--astigMask);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%}
-.compare-pane .ghost::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.05));opacity:.2}
+.compare-pane .ghost::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,.03);opacity:.06}
 .compare-pane .halo{pointer-events:none;opacity:var(--haloOpacity);background:
   radial-gradient(circle at 50% 48%, rgba(255,255,255,.42) 0 5%, rgba(255,255,255,.16) 9%, rgba(255,255,255,0) 22%),
   radial-gradient(circle at 74% 28%, rgba(255,255,255,.18) 0 4%, rgba(255,255,255,0) 18%);
@@ -488,9 +488,9 @@ function computeEffect(productId){
   nearBlur += residual.presbyopia * 12.5;
 
   // 난시: 원래 blur 느낌에 아주 약한 수평 겹침만 더해 자연스럽게 표현
-  baseBlur += residual.astigmatism * 0.75;
-  farBlur += residual.astigmatism * 1.45;
-  nearBlur += residual.astigmatism * 1.45;
+  baseBlur += residual.astigmatism * 0.28;
+  farBlur += residual.astigmatism * 0.75;
+  nearBlur += residual.astigmatism * 0.75;
 
   let contrast = 1 - (residual.myopia*0.06 + residual.hyperopia*0.06 + residual.presbyopia*0.015 + residual.astigmatism*0.03);
   let brightness = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.01);
@@ -514,12 +514,12 @@ function computeEffect(productId){
   }
 
   // 난시: 축 UI는 없애고 내부 기준은 90°로 고정. 상이 분리되지 않도록 미세한 세로 방향 겹침만 적용
-  const dist = residual.astigmatism ? 0.45 + residual.astigmatism * 2.4 : 0;
+  const dist = residual.astigmatism ? 0.18 + residual.astigmatism * 0.9 : 0;
   const rad = 90 * Math.PI / 180;
   let ghostX = Math.cos(rad) * dist;
   let ghostY = Math.sin(rad) * dist;
-  let ghostOpacity = residual.astigmatism ? Math.min(0.12, residual.astigmatism * 0.14) : 0;
-  let ghostBlur = 0.85 + residual.astigmatism * 1.25;
+  let ghostOpacity = residual.astigmatism ? Math.min(0.045, residual.astigmatism * 0.05) : 0;
+  let ghostBlur = 1.8 + residual.astigmatism * 0.6;
   let farX = residual.astigmatism ? `${ghostX.toFixed(1)}px` : '0px';
   let farY = residual.astigmatism ? `${ghostY.toFixed(1)}px` : '0px';
   let nearX = residual.astigmatism ? `${(-ghostX*0.45).toFixed(1)}px` : '0px';
@@ -538,8 +538,8 @@ function computeEffect(productId){
   let farOpacity = farBlur>0.1 ? 1 : 0;
   let nearOpacity = nearBlur>0.1 ? 1 : 0;
   if(residual.astigmatism>0.001 && residual.myopia<0.001 && residual.hyperopia<0.001 && residual.presbyopia<0.001){
-    farOpacity = Math.min(0.46, 0.16 + residual.astigmatism * 0.30);
-    nearOpacity = Math.min(0.46, 0.16 + residual.astigmatism * 0.30);
+    farOpacity = Math.min(0.22, 0.08 + residual.astigmatism * 0.12);
+    nearOpacity = Math.min(0.22, 0.08 + residual.astigmatism * 0.12);
   }
 
   const masks = sceneMasks(state.scene);
@@ -621,57 +621,33 @@ function safePlay(v){
 function setScene(key){
   state.scene=key; dom.sceneSelect.value=key;
   const src=scenes[key].url;
-
-  // 기준 영상 먼저 세팅 후, 나머지 레이어 영상을 같은 소스/시간으로 맞춥니다.
-  prepareVideo(dom.leftBase, src);
-  safePlay(dom.leftBase);
-  allVideos.forEach(v=>{
-    if(v===dom.leftBase) return;
-    prepareVideo(v, src);
-    try{ if(dom.leftBase.readyState>=1) v.currentTime = dom.leftBase.currentTime; }catch(e){}
-    safePlay(v);
-  });
-
-  setTimeout(()=>{ resumeVideos(); syncVideos(); },80);
-  setTimeout(()=>{ resumeVideos(); syncVideos(); },420);
+  allVideos.forEach(v=>{ prepareVideo(v, src); safePlay(v); });
+  setTimeout(resumeVideos,80);
+  setTimeout(resumeVideos,420);
   updateBadges(); applyVisuals();
 }
 
 function resumeVideos(){
   const src=scenes[state.scene].url;
-  prepareVideo(dom.leftBase, src);
-  safePlay(dom.leftBase);
   allVideos.forEach(v=>{
     prepareVideo(v, src);
-    if(v!==dom.leftBase && dom.leftBase.readyState>=2 && v.readyState>=1){
-      try{
-        if(Math.abs(dom.leftBase.currentTime-v.currentTime)>0.035) v.currentTime=dom.leftBase.currentTime;
-      }catch(e){}
-    }
     if(v.readyState >= 2 || v.networkState !== HTMLMediaElement.NETWORK_LOADING){ safePlay(v); }
     else { v.addEventListener('canplay',()=>safePlay(v),{once:true}); }
   });
 }
 
 function syncVideos(){
-  // 영상 효과 구조는 유지하되, 기준 영상을 leftBase로 고정해 iOS/Safari에서 좌우 프레임이 섞이는 현상을 줄입니다.
-  const master = dom.leftBase;
+  const readyPlaying = allVideos.find(v=>v.readyState>=2 && !v.paused && !v.ended);
+  const readyAny = allVideos.find(v=>v.readyState>=2);
+  const master = readyPlaying || readyAny || dom.leftBase;
   if(!master) return;
-  if(master.paused || master.ended){ safePlay(master); }
-
   allVideos.forEach(v=>{
     if(v!==master && master.readyState>=2 && v.readyState>=1){
-      // 기존 0.18초는 모바일에서 눈에 보일 정도로 어긋날 수 있어 더 촘촘하게 보정합니다.
       if(Math.abs(master.currentTime-v.currentTime)>0.035){
         try{v.currentTime=master.currentTime;}catch(e){}
       }
     }
-    if(v.paused || v.ended){
-      try{
-        if(v.readyState>=1 && master.readyState>=2) v.currentTime = master.currentTime;
-      }catch(e){}
-      safePlay(v);
-    }
+    if(v.paused || v.ended){ safePlay(v); }
   });
 }
 
@@ -723,14 +699,15 @@ allVideos.forEach(v=>{
   v.addEventListener('loadeddata',()=>safePlay(v));
   v.addEventListener('canplay',()=>safePlay(v));
   v.addEventListener('pause',()=>{
-    // iOS에서 일부 레이어 영상만 pause 되는 경우 즉시 재생을 재시도합니다.
-    try{
-      if(dom.leftBase && v!==dom.leftBase && dom.leftBase.readyState>=2) v.currentTime = dom.leftBase.currentTime;
-      v.currentTime += 0.001;
-    }catch(e){}
-    safePlay(v);
-    setTimeout(()=>safePlay(v),120);
-  });
+  try{
+    if(dom.leftBase && v!==dom.leftBase && dom.leftBase.readyState>=2){
+      v.currentTime = dom.leftBase.currentTime;
+    }
+    v.currentTime += 0.001;
+  }catch(e){}
+  safePlay(v);
+  setTimeout(()=>safePlay(v),120);
+});
   v.addEventListener('stalled',()=>{ setTimeout(resumeVideos,200); });
   v.addEventListener('error',()=>{ setTimeout(()=>{ v.dataset.sceneSrc=''; resumeVideos(); },500); });
 });
