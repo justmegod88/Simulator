@@ -101,120 +101,18 @@ select option[disabled]{color:#9bb5d8}
 .side-label.left{left:18px}.side-label.right{right:18px}
 .label-select{height:36px;border-radius:12px;padding:0 12px;background:linear-gradient(180deg,#0d86ff,#005eb8);border:1px solid rgba(255,255,255,.6);color:#fff;font-weight:800}
 .footer-note{font-size:12px;color:#d8e7ff;text-align:center;padding-top:2px}
-@media (max-width:1180px){.shell{grid-template-columns:1fr}.sidebar{position:static}.app{padding:12px}}
-@media (max-width:760px){h1{font-size:24px}.badge{font-size:12px;padding:9px 12px}.chip{padding:9px 14px;font-size:13px}.handle{width:38px;height:38px}}
+.sidebar{position:static}.app{padding:12px}}
+.badge{font-size:12px;padding:9px 12px}.chip{padding:9px 14px;font-size:13px}.handle{width:38px;height:38px}}
 
-/* 모바일 세로 화면 안내 */
-.rotate-guide{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:99999;
-  background:linear-gradient(180deg,#071a34 0%,#0a2d63 56%,#06162d 100%);
-  color:#fff;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:28px;
-}
-.rotate-guide-card{
-  width:min(92vw,420px);
-  border:1px solid rgba(255,255,255,.18);
-  border-radius:24px;
-  background:rgba(255,255,255,.08);
-  box-shadow:0 20px 50px rgba(0,0,0,.28);
-  padding:30px 22px;
-}
-.rotate-icon{font-size:54px;margin-bottom:14px;line-height:1}
-.rotate-title{font-size:24px;font-weight:900;margin-bottom:10px}
-.rotate-text{font-size:15px;line-height:1.55;color:#dbe9ff}
-@media (max-width:900px) and (orientation:portrait){
-  .rotate-guide{display:flex}
-  /* display:none으로 숨기면 iOS에서 영상 autoplay가 멈출 수 있어, 화면 뒤에 유지합니다. */
+/* display:none으로 숨기면 iOS에서 영상 autoplay가 멈출 수 있어, 화면 뒤에 유지합니다. */
   .app{visibility:hidden;pointer-events:none;position:fixed;inset:0;overflow:hidden}
   body{min-height:100vh;overflow:hidden}
 }
-@media (max-width:1180px) and (orientation:landscape){
-  .app{max-width:none;width:100%;padding:8px}
-  .shell{grid-template-columns:270px minmax(0,1fr);gap:10px}
-  .sidebar{position:static;padding:10px;gap:9px;max-height:calc(100vh - 16px);overflow:auto}
-  .viewer{padding:9px;gap:8px}
-  .viewer-titlebar{padding:9px 12px;font-size:14px;border-radius:13px}
-  h1{font-size:20px}
-  .section{padding:9px;gap:7px}
-  .section h3{font-size:12px}
-  .chip{padding:8px 11px;font-size:12px;border-radius:12px}
-  .slider-row{padding:8px}
-  .slider-head{font-size:12px;margin-bottom:5px}
-  select{height:38px;font-size:13px}
-  .muted,.footer-note{font-size:10px}
-  .badge{font-size:11px;padding:8px 10px}
-  .ghost-btn{padding:8px 11px;font-size:12px}
-  .stage{min-height:calc(100vh - 86px);aspect-ratio:auto}
-  .side-label{display:none}
-}
-
-
-/* 모바일 가로 화면 최대화 보조 */
-.fullscreen-help{
-  display:none;
-  position:fixed;
-  right:12px;
-  bottom:12px;
-  z-index:9999;
-  border:1px solid rgba(255,255,255,.24);
-  background:linear-gradient(180deg,rgba(0,94,184,.96),rgba(0,55,120,.96));
-  color:#fff;
-  border-radius:999px;
-  padding:10px 14px;
-  font-size:13px;
-  font-weight:900;
-  box-shadow:0 10px 28px rgba(0,0,0,.28);
-  cursor:pointer;
-}
-@media (max-width:1180px) and (orientation:landscape){
-  html,body{
-    width:100%;
-    height:100%;
-    min-height:100dvh;
-    margin:0;
-    overflow:hidden;
-    overscroll-behavior:none;
-    background:#06162d;
-  }
-  .app{
-    position:fixed;
-    inset:0;
-    width:100vw;
-    height:100dvh;
-    max-width:none;
-    padding:6px;
-    overflow:hidden;
-  }
-  .shell{height:100%;grid-template-columns:260px minmax(0,1fr);gap:8px}
-  .sidebar{max-height:calc(100dvh - 12px)}
-  .viewer{height:calc(100dvh - 12px);min-height:0}
-  .stage{flex:1;min-height:0;height:auto;aspect-ratio:auto}
-  .side-label{display:none}
-  .footer-note{display:none}
-  .fullscreen-help{display:block}
-}
-@media (display-mode:fullscreen), (display-mode:standalone){
-  .fullscreen-help{display:none}
 }
 
 </style>
 </head>
 <body>
-<button class="fullscreen-help" id="fullscreenHelp" type="button">⛶ 전체화면</button>
-<div class="rotate-guide" aria-hidden="true">
-  <div class="rotate-guide-card">
-    <div class="rotate-icon">↻</div>
-    <div class="rotate-title">핸드폰을 가로로 돌려주세요</div>
-    <div class="rotate-text">이 시뮬레이터는 좌우 비교 화면이라<br>가로 화면에서 가장 안정적으로 보입니다.</div>
-  </div>
-</div>
-
 <div class="app">
   <div class="shell">
     <aside class="panel sidebar">
@@ -223,17 +121,12 @@ select option[disabled]{color:#9bb5d8}
       </div>
 
       <div class="section">
-        <h3>1단계 | 굴절 이상 선택 (중복 선택 가능)</h3>
+        <h3>1단계 | 굴절이상 선택</h3>
         <div class="grid-chip" id="conditionGrid"></div>
       </div>
 
       <div class="section">
-        <h3>2단계 | 증상 강도 조절</h3>
-        <div class="slider-list" id="sliderList"></div>
-      </div>
-
-      <div class="section">
-        <h3>3단계 | 제품 선택 (좌/우 비교)</h3>
+        <h3>2단계 | 렌즈 선택 (좌/우 비교)</h3>
         <div class="select-wrap">
           <div class="field">
             <label for="leftProduct">좌측 화면 제품</label>
@@ -243,8 +136,17 @@ select option[disabled]{color:#9bb5d8}
             <label for="rightProduct">우측 화면 제품</label>
             <select id="rightProduct" aria-label="우측 화면 제품 선택" required></select>
           </div>
-          <div class="muted">제품을 선택하면 좌/우 화면에 각각 적용됩니다.</div>
+          <div class="muted">오아시스® 원데이는 빛번짐이 더 퍼지고, 맥스 원데이는 더 선명하게 보이도록 비교합니다.</div>
         </div>
+      </div>
+
+      <div class="section">
+        <h3>3단계 | Scene 선택</h3>
+        <select id="sceneSelect" style="width:100%;height:46px">
+          <option value="day">Day to Day</option>
+          <option value="dine">Dine Out</option>
+          <option value="night">Night Driving</option>
+        </select>
       </div>
     </aside>
 
@@ -255,11 +157,6 @@ select option[disabled]{color:#9bb5d8}
           <span class="badge" id="sceneBadge">Scene : Day to Day</span>
         </div>
         <div class="toolbar-right">
-          <select id="sceneSelect" style="width:220px;height:44px">
-            <option value="day">Day to Day</option>
-            <option value="dine">Dine Out</option>
-            <option value="night">Night Driving</option>
-          </select>
           <button class="ghost-btn" id="resetBtn">초기화</button>
         </div>
       </div>
@@ -299,8 +196,7 @@ const scenes={
   night:{label:'Night Driving',url:'https://assets.contentstack.io/v3/assets/blta38a56f5447b1cc5/blt1b4784f4566a173b/66a8b2b7971644620e9d0df9/PureseeLens_nightDriving_High.mp4?branch=prod_alias'}
 };
 const conditions=[
-  {id:'myopia',label:'근시'},
-  {id:'hyperopia',label:'원시'},
+  {id:'myohyperopia',label:'근/원시'},
   {id:'astigmatism',label:'난시'},
   {id:'presbyopia',label:'노안'}
 ];
@@ -315,13 +211,16 @@ const allProducts=[
 ];
 
 const state={
-  selected:['myopia'],
-  severity:{myopia:45,hyperopia:45,astigmatism:50,presbyopia:50},
-  scene:'day', leftProduct:'', rightProduct:'', split:50
+  selected:['myohyperopia'],
+  severity:{myohyperopia:0,astigmatism:50,presbyopia:50},
+  scene:'day',
+  leftProduct:'max1day',
+  rightProduct:'oasys',
+  split:50
 };
 
 const dom={
-  conditionGrid:document.getElementById('conditionGrid'), sliderList:document.getElementById('sliderList'),
+  conditionGrid:document.getElementById('conditionGrid'),
   leftProduct:document.getElementById('leftProduct'), rightProduct:document.getElementById('rightProduct'),
   leftInline:document.getElementById('leftInline'), rightInline:document.getElementById('rightInline'),
   sceneSelect:document.getElementById('sceneSelect'), conditionBadge:document.getElementById('conditionBadge'), sceneBadge:document.getElementById('sceneBadge'),
@@ -337,15 +236,15 @@ const allVideos=[dom.mainVideo,dom.leftEffectVideo,dom.rightEffectVideo,dom.left
 
 function selectedFlags(){
   return {
-    myopia:state.selected.includes('myopia'), hyperopia:state.selected.includes('hyperopia'),
-    astigmatism:state.selected.includes('astigmatism'), presbyopia:state.selected.includes('presbyopia')
+    myohyperopia:state.selected.includes('myohyperopia'),
+    astigmatism:state.selected.includes('astigmatism'),
+    presbyopia:state.selected.includes('presbyopia')
   };
 }
 
 function productOptions(){
   const f=selectedFlags();
-  let ids=new Set();
-  if(f.myopia||f.hyperopia){ ids.add('oasys'); ids.add('max1day'); }
+  let ids=new Set(['oasys','max1day']);
   if(f.presbyopia){ ids.add('moistMulti'); ids.add('maxMulti'); }
   if(f.astigmatism){ ids.add('oasysToric'); ids.add('maxToric'); }
   if(f.astigmatism&&f.presbyopia){ ids.add('maxMultiToric'); }
@@ -364,29 +263,17 @@ function renderConditions(){
 }
 
 function toggleCondition(id){
-  if(id==='myopia') state.selected=state.selected.filter(v=>v!=='hyperopia');
-  if(id==='hyperopia') state.selected=state.selected.filter(v=>v!=='myopia');
-
-  if(state.selected.includes(id)) state.selected=state.selected.filter(v=>v!==id); else state.selected.push(id);
-  if(!state.selected.length) state.selected=['myopia'];
-
+  if(state.selected.includes(id)){
+    state.selected=state.selected.filter(v=>v!==id);
+  }else{
+    state.selected.push(id);
+  }
+  if(!state.selected.length) state.selected=['myohyperopia'];
   syncSelectOptions(); renderAll();
 }
 
 function renderSliders(){
-  const f=selectedFlags(); const items=[];
-  if(f.myopia) items.push(['myopia','근시 강도']);
-  if(f.hyperopia) items.push(['hyperopia','원시 강도']);
-  if(f.astigmatism) items.push(['astigmatism','난시 강도']);
-  if(f.presbyopia) items.push(['presbyopia','노안 강도']);
-  dom.sliderList.innerHTML='';
-  items.forEach(([key,label])=>{
-    const row=document.createElement('div'); row.className='slider-row';
-    const value=state.severity[key]; const min=0; const max=100;
-    row.innerHTML=`<div class="slider-head"><span>${label}</span><span>${value}%</span></div><input type="range" min="${min}" max="${max}" value="${value}" step="1">`;
-    row.querySelector('input').oninput=e=>{state.severity[key]=Number(e.target.value); applyVisuals(); renderSliders(); updateBadges();};
-    dom.sliderList.appendChild(row);
-  });
+  // 강도 조절 단계는 삭제했습니다. 효과 강도는 제품 비교용 고정값으로 적용됩니다.
 }
 
 function syncSelectBox(sel, keep){
@@ -442,150 +329,84 @@ function sceneMasks(scene){
 
 function computeEffect(productId){
   const f=selectedFlags();
-  // 교육용 시연에서는 기본값(45~47%)에서도 효과가 보여야 하므로
-  // 체감 강도를 약 1.7배로 보정합니다. 47% ≈ 기존 80% 수준.
-  const boostSeverity = v => Math.min(1, v * 1.7);
-  const myo=f.myopia ? boostSeverity(state.severity.myopia/100) : 0;
-  const hyp=f.hyperopia ? boostSeverity(state.severity.hyperopia/100) : 0;
-  const ast=f.astigmatism ? boostSeverity(state.severity.astigmatism/100) : 0;
-  const pre=f.presbyopia ? boostSeverity(state.severity.presbyopia/100) : 0;
+  const isMax = ['max1day','maxMulti','maxToric','maxMultiToric'].includes(productId);
+  const isOasys = ['oasys','moistMulti','oasysToric'].includes(productId);
 
-  let residual={myopia:myo, hyperopia:hyp, astigmatism:ast, presbyopia:pre};
-  let maxGlow=false;
-
-  switch(productId){
-    case 'oasys':
-      residual.myopia*=0.08; residual.hyperopia*=0.10; maxGlow=false; break;
-    case 'max1day':
-      residual.myopia*=0.05; residual.hyperopia*=0.07; maxGlow=true; break;
-    case 'moistMulti':
-      residual.presbyopia*=0.08; residual.myopia*=0.12; residual.hyperopia*=0.14; maxGlow=false; break;
-    case 'maxMulti':
-      residual.presbyopia*=0.04; residual.myopia*=0.08; residual.hyperopia*=0.10; maxGlow=true; break;
-    case 'oasysToric':
-      residual.astigmatism*=0.10; residual.myopia*=0.12; residual.hyperopia*=0.14; maxGlow=false; break;
-    case 'maxToric':
-      residual.astigmatism*=0.06; residual.myopia*=0.08; residual.hyperopia*=0.10; maxGlow=true; break;
-    case 'maxMultiToric':
-      residual.astigmatism*=0.06; residual.presbyopia*=0.04; residual.myopia*=0.08; residual.hyperopia*=0.10; maxGlow=true; break;
-  }
-  if(productId==='' || productId==='none'){ maxGlow=false; }
-
-  let baseBlur = 0;
-  let farBlur = 0, nearBlur = 0;
-
-  // 근시: 약하면 먼거리 위주, 강해질수록 근거리도 일부 흐림
-  farBlur += residual.myopia * 12.8;
-  nearBlur += Math.max(0, residual.myopia - 0.42) * 6.8;
-  baseBlur += Math.max(0, residual.myopia - 0.80) * 1.8;
-
-  // 원시: 핵심은 근거리/하단 흐림.
-  // 원거리 흐림은 갑자기 들어가지 않도록 78% 이후부터 아주 약하게만 점진 적용.
-  nearBlur += residual.hyperopia * 12.8;
-  // 원시는 근거리 흐림이 핵심. 원거리 흐림은 88% 이후 아주 약하게만 증가.
-  farBlur += Math.pow(Math.max(0, residual.hyperopia - 0.88) / 0.12, 2) * 0.85;
-  baseBlur += Math.pow(Math.max(0, residual.hyperopia - 0.94) / 0.06, 2) * 0.20;
-
-  // 노안: 근거리/하단만 흐림. 원시와 같이 선택되면 nearBlur가 자연스럽게 합산되어 더 강해짐.
-  nearBlur += residual.presbyopia * 13.2;
-  if(residual.hyperopia > 0 && residual.presbyopia > 0){
-    nearBlur += Math.min(residual.hyperopia, residual.presbyopia) * 2.0;
-  }
-
-  // 난시: 근시/원시처럼 특정 거리 blur를 만들지 않고, 별도 astig overlay에서만 아주 약한 겹침/번짐으로 표현
-  const astigBlurOnly = residual.astigmatism * 1.10;
-
-  let contrast = 1 - (residual.myopia*0.06 + residual.hyperopia*0.06 + residual.presbyopia*0.015 + residual.astigmatism*0.03);
-  let brightness = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.01);
-  let saturate = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.015);
-
-  let haloOpacity = state.scene==='night' ? 0.22 : 0.07;
-  let haloBlur = state.scene==='night' ? 10 : 4;
-  let haloBrightness = state.scene==='night' ? 1.14 : 1.03;
-
-  if(maxGlow){
-    haloOpacity *= 0.28;
-    haloBlur *= 0.50;
-    haloBrightness = 1.01;
-    contrast += 0.04;
-    brightness += 0.01;
-    saturate += 0.01;
-  }
-  if((productId==='' || productId==='none') && !f.myopia && !f.hyperopia && !f.astigmatism && !f.presbyopia){
-    haloOpacity = state.scene==='night' ? 0.03 : 0;
-    haloBlur = 2;
-  }
-
-  // 난시: 축 UI는 없애고 내부 기준은 90°로 고정. 상이 분리되지 않도록 미세한 세로 방향 겹침만 적용
-  const dist = residual.astigmatism ? 0.45 + residual.astigmatism * 2.4 : 0;
-  const rad = 90 * Math.PI / 180;
-  let ghostX = Math.cos(rad) * dist;
-  let ghostY = Math.sin(rad) * dist;
-  let ghostOpacity = residual.astigmatism ? Math.min(0.12, residual.astigmatism * 0.14) : 0;
-  let ghostBlur = 0.85 + residual.astigmatism * 1.25;
-  let farX = residual.astigmatism ? `${ghostX.toFixed(1)}px` : '0px';
-  let farY = residual.astigmatism ? `${ghostY.toFixed(1)}px` : '0px';
-  let nearX = residual.astigmatism ? `${(-ghostX*0.45).toFixed(1)}px` : '0px';
-  let nearY = residual.astigmatism ? `${(-ghostY*0.45).toFixed(1)}px` : '0px';
-
-  if(maxGlow){
-    ghostOpacity *= 0.75;
-    ghostBlur *= 0.85;
-    baseBlur *= 0.88;
-    farBlur *= 0.86;
-    nearBlur *= 0.86;
-    farX = residual.astigmatism ? `${(parseFloat(farX)*0.65).toFixed(1)}px` : '0px';
-    nearX = residual.astigmatism ? `${(parseFloat(nearX)*0.65).toFixed(1)}px` : '0px';
-  }
-
-  let farOpacity = farBlur>0.1 ? 1 : 0;
-  let nearOpacity = nearBlur>0.1 ? 1 : 0;
-  if(residual.astigmatism>0.001 && residual.myopia<0.001 && residual.hyperopia<0.001 && residual.presbyopia<0.001){
-    farOpacity = Math.min(0.46, 0.16 + residual.astigmatism * 0.30);
-    nearOpacity = Math.min(0.46, 0.16 + residual.astigmatism * 0.30);
-  }
-
-  const masks = sceneMasks(state.scene);
-
-  // 굴절 이상 효과는 역할별로 분리:
-  // 근시 = 원거리/상단 흐림, 원시/노안 = 근거리/하단 흐림, 난시 = 별도 약한 겹침
-  const myopiaActive = residual.myopia > 0.001;
-  const nearActive = residual.hyperopia > 0.001 || residual.presbyopia > 0.001;
-  const astigActive = residual.astigmatism > 0.001;
-
-  const refractiveBlur = Math.max(
-    myopiaActive ? farBlur : 0,
-    nearActive ? nearBlur : 0,
-    baseBlur
-  );
-
+  // 렌즈가 이미 선택된 상태이므로 근/원시 자체 흐림은 제거.
+  // 제품 차이만 표현: 오아시스는 빛번짐/halo가 더 퍼지고, 맥스는 더 선명.
+  let refractiveBlur = 0;
+  let refractiveOpacity = 0;
   let refractiveMask = `linear-gradient(#fff,#fff)`;
-  if(myopiaActive && nearActive){
-    refractiveMask = `${masks.farMask}, ${masks.nearMask}`;
-  }else if(myopiaActive){
-    refractiveMask = masks.farMask;
-  }else if(nearActive){
-    refractiveMask = masks.nearMask;
+  let astigOpacity = 0;
+  let astigX = '0px';
+  let astigY = '0px';
+  let astigFilter = 'none';
+
+  let contrast = 1;
+  let brightness = 1;
+  let saturate = 1;
+  let haloOpacity = 0.04;
+  let haloBlur = 3.5;
+  let haloBrightness = 1.04;
+
+  if(isOasys){
+    // 오아시스 원데이: 약간의 빛 퍼짐과 살짝 부드러운 시야
+    refractiveBlur = state.scene==='night' ? 1.65 : 0.95;
+    refractiveOpacity = state.scene==='night' ? 0.38 : 0.24;
+    contrast = state.scene==='night' ? 0.955 : 0.975;
+    brightness = state.scene==='night' ? 1.010 : 1.004;
+    saturate = 0.985;
+    haloOpacity = state.scene==='night' ? 0.34 : 0.15;
+    haloBlur = state.scene==='night' ? 15 : 8;
+    haloBrightness = state.scene==='night' ? 1.22 : 1.10;
+  }else if(isMax){
+    // 맥스 원데이: 빛번짐을 줄이고 선명하게
+    refractiveBlur = 0;
+    refractiveOpacity = 0;
+    contrast = 1.035;
+    brightness = 1.005;
+    saturate = 1.010;
+    haloOpacity = state.scene==='night' ? 0.055 : 0.02;
+    haloBlur = state.scene==='night' ? 4 : 2.2;
+    haloBrightness = 1.02;
+  }else{
+    haloOpacity = 0.05;
   }
 
-  const nearDominant = nearActive && (!myopiaActive || nearBlur >= farBlur);
-  const refractiveOpacity = refractiveBlur > 0.08
-    ? Math.min(0.80, (nearDominant ? 0.34 : 0.24) + refractiveBlur / (nearDominant ? 18 : 26))
-    : 0;
+  // 난시 선택 시: 복시처럼 크게 벌어지지 않고, 살짝 겹쳐 보이는 느낌만 추가
+  if(f.astigmatism){
+    const dist = 1.2;
+    const rad = 90 * Math.PI / 180;
+    astigX = `${(Math.cos(rad) * dist).toFixed(1)}px`;
+    astigY = `${(Math.sin(rad) * dist).toFixed(1)}px`;
+    astigOpacity = isMax ? 0.12 : 0.16;
+    astigFilter = `blur(${isMax ? 1.4 : 1.8}px) contrast(${isMax ? 0.99 : 0.96}) brightness(1.0) saturate(${isMax ? 1.0 : 0.98})`;
+  }
 
-  const astigOpacity = astigActive ? Math.min(0.26, 0.07 + residual.astigmatism * 0.14) : 0;
-  const astigMask = `linear-gradient(#fff,#fff)`;
+  // 노안 선택 시: 제품 비교를 방해하지 않는 수준에서 하단 근거리 부드러운 blur만 추가
+  if(f.presbyopia){
+    refractiveBlur = Math.max(refractiveBlur, isMax ? 1.4 : 2.2);
+    refractiveOpacity = Math.max(refractiveOpacity, isMax ? 0.18 : 0.30);
+    refractiveMask = sceneMasks(state.scene).nearMask;
+  }
+
+  // 근/원시만 선택된 기본 상태는 제품 halo/선명도 차이만 비교
+  if(!f.presbyopia){
+    refractiveMask = `linear-gradient(#fff,#fff)`;
+  }
 
   return {
     refractiveFilter:`blur(${refractiveBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
     refractiveOpacity,
     refractiveMask,
-    astigFilter:`blur(${astigBlurOnly.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    astigFilter,
     astigOpacity,
-    astigX: astigActive ? `${ghostX.toFixed(1)}px` : '0px',
-    astigY: astigActive ? `${ghostY.toFixed(1)}px` : '0px',
-    astigMask,
-    haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness
+    astigX,
+    astigY,
+    astigMask:`linear-gradient(#fff,#fff)`,
+    haloOpacity,
+    haloBlur:`${haloBlur.toFixed(2)}px`,
+    haloBrightness
   };
 }
 
@@ -706,33 +527,9 @@ dom.handle.addEventListener('pointerup',()=>dragging=false);
 dom.stage.addEventListener('pointerdown',e=>{ if(e.target===dom.stage || e.target.classList.contains('divider')) moveSplit(e.clientX); });
 
 dom.sceneSelect.onchange=e=>setScene(e.target.value);
-dom.resetBtn.onclick=()=>{ state.selected=['myopia']; state.severity={myopia:45,hyperopia:45,astigmatism:50,presbyopia:50}; state.leftProduct=''; state.rightProduct=''; setSplit(50); syncSelectOptions(); renderAll(); };
+dom.resetBtn.onclick=()=>{ state.selected=['myohyperopia']; state.severity={myohyperopia:0,astigmatism:50,presbyopia:50}; state.leftProduct='max1day'; state.rightProduct='oasys'; setSplit(50); syncSelectOptions(); renderAll(); }; state.leftProduct=''; state.rightProduct=''; setSplit(50); syncSelectOptions(); renderAll(); };
 
 
-function tryFullscreen(){
-  const root=document.documentElement;
-  if(root.requestFullscreen){
-    root.requestFullscreen().catch(()=>{});
-  }else if(root.webkitRequestFullscreen){
-    root.webkitRequestFullscreen();
-  }
-  setTimeout(()=>window.scrollTo(0,1),80);
-  setTimeout(()=>window.scrollTo(0,1),350);
-}
-const fullscreenHelp=document.getElementById('fullscreenHelp');
-if(fullscreenHelp){
-  fullscreenHelp.addEventListener('click', tryFullscreen);
-}
-window.addEventListener('orientationchange',()=>{
-  setTimeout(()=>{ window.scrollTo(0,1); resumeVideos(); applyVisuals(); },250);
-  setTimeout(()=>{ resumeVideos(); syncVideos(); },700);
-});
-window.addEventListener('resize',()=>{
-  if(window.matchMedia('(orientation: landscape)').matches){
-    setTimeout(()=>{ window.scrollTo(0,1); resumeVideos(); },80);
-    setTimeout(()=>resumeVideos(),450);
-  }
-});
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) setTimeout(resumeVideos,80); });
 window.addEventListener('pageshow',()=>setTimeout(resumeVideos,80));
 document.addEventListener('touchstart',resumeVideos,{once:true,passive:true});
