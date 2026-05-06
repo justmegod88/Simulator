@@ -413,32 +413,35 @@ function renderProducts(){
 
 
 function sceneMasks(scene){
-  // 원시/노안 모두 근거리 설명용으로 하단부가 자연스럽게 흐려지도록 처리.
-  // 원형/동그란 경계 없이 아래쪽으로 길게 feather 처리.
+  // 원시/노안: 하단 근거리 영역이 중간 높이까지 자연스럽게 흐려지도록 확장.
+  // 원형 경계 없이 위에서 아래로 부드럽게 feather 처리.
   if(scene==='day'){
     return {
-      nearMask:`linear-gradient(to bottom, transparent 0 39%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.34) 63%, rgba(255,255,255,.76) 78%, #fff 100%)`,
-      farMask:`linear-gradient(to bottom, #fff 0 45%, rgba(255,255,255,.64) 63%, transparent 88%)`
+      nearMask:`linear-gradient(to bottom, transparent 0 26%, rgba(255,255,255,.10) 38%, rgba(255,255,255,.36) 52%, rgba(255,255,255,.78) 70%, #fff 100%)`,
+      farMask:`linear-gradient(to bottom, #fff 0 48%, rgba(255,255,255,.56) 68%, transparent 92%)`
     };
   }
   if(scene==='dine'){
     return {
-      nearMask:`linear-gradient(to bottom, transparent 0 41%, rgba(255,255,255,.10) 53%, rgba(255,255,255,.38) 66%, rgba(255,255,255,.78) 80%, #fff 100%)`,
-      farMask:`linear-gradient(to bottom, #fff 0 49%, rgba(255,255,255,.62) 67%, transparent 90%)`
+      nearMask:`linear-gradient(to bottom, transparent 0 28%, rgba(255,255,255,.12) 40%, rgba(255,255,255,.40) 55%, rgba(255,255,255,.80) 72%, #fff 100%)`,
+      farMask:`linear-gradient(to bottom, #fff 0 51%, rgba(255,255,255,.54) 70%, transparent 93%)`
     };
   }
   return {
-    nearMask:`linear-gradient(to bottom, transparent 0 50%, rgba(255,255,255,.12) 62%, rgba(255,255,255,.42) 74%, rgba(255,255,255,.82) 86%, #fff 100%)`,
-    farMask:`linear-gradient(to bottom, #fff 0 62%, rgba(255,255,255,.58) 76%, transparent 94%)`
+    nearMask:`linear-gradient(to bottom, transparent 0 36%, rgba(255,255,255,.14) 49%, rgba(255,255,255,.44) 64%, rgba(255,255,255,.82) 80%, #fff 100%)`,
+    farMask:`linear-gradient(to bottom, #fff 0 64%, rgba(255,255,255,.50) 80%, transparent 96%)`
   };
 }
 
 function computeEffect(productId){
   const f=selectedFlags();
-  const myo=f.myopia ? state.severity.myopia/100 : 0;
-  const hyp=f.hyperopia ? state.severity.hyperopia/100 : 0;
-  const ast=f.astigmatism ? state.severity.astigmatism/100 : 0;
-  const pre=f.presbyopia ? state.severity.presbyopia/100 : 0;
+  // 교육용 시연에서는 기본값(45~47%)에서도 효과가 보여야 하므로
+  // 체감 강도를 약 1.7배로 보정합니다. 47% ≈ 기존 80% 수준.
+  const boostSeverity = v => Math.min(1, v * 1.7);
+  const myo=f.myopia ? boostSeverity(state.severity.myopia/100) : 0;
+  const hyp=f.hyperopia ? boostSeverity(state.severity.hyperopia/100) : 0;
+  const ast=f.astigmatism ? boostSeverity(state.severity.astigmatism/100) : 0;
+  const pre=f.presbyopia ? boostSeverity(state.severity.presbyopia/100) : 0;
 
   let residual={myopia:myo, hyperopia:hyp, astigmatism:ast, presbyopia:pre};
   let maxGlow=false;
@@ -465,26 +468,27 @@ function computeEffect(productId){
   let farBlur = 0, nearBlur = 0;
 
   // 근시: 약하면 먼거리 위주, 강해질수록 근거리도 일부 흐림
-  farBlur += residual.myopia * 12.0;
-  nearBlur += Math.max(0, residual.myopia - 0.38) * 7.8;
+  farBlur += residual.myopia * 12.8;
+  nearBlur += Math.max(0, residual.myopia - 0.42) * 6.8;
   baseBlur += Math.max(0, residual.myopia - 0.80) * 1.8;
 
   // 원시: 핵심은 근거리/하단 흐림.
   // 원거리 흐림은 갑자기 들어가지 않도록 78% 이후부터 아주 약하게만 점진 적용.
-  nearBlur += residual.hyperopia * 12.0;
-  farBlur += Math.pow(Math.max(0, residual.hyperopia - 0.78) / 0.22, 2) * 1.4;
-  baseBlur += Math.pow(Math.max(0, residual.hyperopia - 0.90) / 0.10, 2) * 0.35;
+  nearBlur += residual.hyperopia * 12.8;
+  // 원시는 근거리 흐림이 핵심. 원거리 흐림은 88% 이후 아주 약하게만 증가.
+  farBlur += Math.pow(Math.max(0, residual.hyperopia - 0.88) / 0.12, 2) * 0.85;
+  baseBlur += Math.pow(Math.max(0, residual.hyperopia - 0.94) / 0.06, 2) * 0.20;
 
   // 노안: 근거리/하단만 흐림. 원시와 같이 선택되면 nearBlur가 자연스럽게 합산되어 더 강해짐.
-  nearBlur += residual.presbyopia * 12.5;
+  nearBlur += residual.presbyopia * 13.2;
   if(residual.hyperopia > 0 && residual.presbyopia > 0){
     nearBlur += Math.min(residual.hyperopia, residual.presbyopia) * 2.0;
   }
 
   // 난시: 원래 blur 느낌에 아주 약한 수평 겹침만 더해 자연스럽게 표현
-  baseBlur += residual.astigmatism * 0.75;
-  farBlur += residual.astigmatism * 1.45;
-  nearBlur += residual.astigmatism * 1.45;
+  baseBlur += residual.astigmatism * 0.95;
+  farBlur += residual.astigmatism * 1.65;
+  nearBlur += residual.astigmatism * 1.65;
 
   let contrast = 1 - (residual.myopia*0.06 + residual.hyperopia*0.06 + residual.presbyopia*0.015 + residual.astigmatism*0.03);
   let brightness = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.01);
@@ -546,7 +550,7 @@ function computeEffect(productId){
   const hasAstig = residual.astigmatism > 0.001;
   const nearDominant = nearBlur >= farBlur;
   const effectOpacity = effectBlur > 0.08 || hasAstig
-    ? Math.min(0.72, (nearDominant ? 0.26 : 0.16) + effectBlur / (nearDominant ? 20 : 28) + (hasAstig ? residual.astigmatism * 0.10 : 0))
+    ? Math.min(0.80, (nearDominant ? 0.34 : 0.24) + effectBlur / (nearDominant ? 18 : 26) + (hasAstig ? residual.astigmatism * 0.12 : 0))
     : 0;
 
   let effectMask = `linear-gradient(#fff,#fff)`;
