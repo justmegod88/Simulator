@@ -413,23 +413,23 @@ function renderProducts(){
 
 
 function sceneMasks(scene){
-  // nearMask는 노안/원시에서 경계가 동그랗게 보이지 않도록
-  // 원형 radial 중심을 제거하고, 아래쪽으로 부드럽게 퍼지는 feather 형태로 구성합니다.
+  // 원시/노안 모두 근거리 설명용으로 하단부가 자연스럽게 흐려지도록 처리.
+  // 원형/동그란 경계 없이 아래쪽으로 길게 feather 처리.
   if(scene==='day'){
     return {
-      nearMask:`linear-gradient(to bottom, transparent 0 43%, rgba(255,255,255,.18) 55%, rgba(255,255,255,.68) 70%, #fff 100%)`,
-      farMask:`linear-gradient(to bottom, #fff 0 44%, rgba(255,255,255,.86) 58%, transparent 82%)`
+      nearMask:`linear-gradient(to bottom, transparent 0 39%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.34) 63%, rgba(255,255,255,.76) 78%, #fff 100%)`,
+      farMask:`linear-gradient(to bottom, #fff 0 45%, rgba(255,255,255,.64) 63%, transparent 88%)`
     };
   }
   if(scene==='dine'){
     return {
-      nearMask:`linear-gradient(to bottom, transparent 0 46%, rgba(255,255,255,.20) 58%, rgba(255,255,255,.72) 73%, #fff 100%)`,
-      farMask:`linear-gradient(to bottom, #fff 0 48%, rgba(255,255,255,.88) 62%, transparent 84%)`
+      nearMask:`linear-gradient(to bottom, transparent 0 41%, rgba(255,255,255,.10) 53%, rgba(255,255,255,.38) 66%, rgba(255,255,255,.78) 80%, #fff 100%)`,
+      farMask:`linear-gradient(to bottom, #fff 0 49%, rgba(255,255,255,.62) 67%, transparent 90%)`
     };
   }
   return {
-    nearMask:`linear-gradient(to bottom, transparent 0 54%, rgba(255,255,255,.22) 66%, rgba(255,255,255,.76) 80%, #fff 100%)`,
-    farMask:`linear-gradient(to bottom, #fff 0 60%, rgba(255,255,255,.88) 70%, transparent 90%)`
+    nearMask:`linear-gradient(to bottom, transparent 0 50%, rgba(255,255,255,.12) 62%, rgba(255,255,255,.42) 74%, rgba(255,255,255,.82) 86%, #fff 100%)`,
+    farMask:`linear-gradient(to bottom, #fff 0 62%, rgba(255,255,255,.58) 76%, transparent 94%)`
   };
 }
 
@@ -469,13 +469,17 @@ function computeEffect(productId){
   nearBlur += Math.max(0, residual.myopia - 0.38) * 7.8;
   baseBlur += Math.max(0, residual.myopia - 0.80) * 1.8;
 
-  // 원시: 약하면 근거리 위주, 강해질수록 먼거리도 흐림
-  nearBlur += residual.hyperopia * 11.0;
-  farBlur += Math.max(0, residual.hyperopia - 0.52) * 7.0;
-  baseBlur += Math.max(0, residual.hyperopia - 0.82) * 1.2;
+  // 원시: 핵심은 근거리/하단 흐림.
+  // 원거리 흐림은 갑자기 들어가지 않도록 78% 이후부터 아주 약하게만 점진 적용.
+  nearBlur += residual.hyperopia * 12.0;
+  farBlur += Math.pow(Math.max(0, residual.hyperopia - 0.78) / 0.22, 2) * 1.4;
+  baseBlur += Math.pow(Math.max(0, residual.hyperopia - 0.90) / 0.10, 2) * 0.35;
 
-  // 노안: 근거리만 흐림, 강해질수록 근거리만 더 흐림
+  // 노안: 근거리/하단만 흐림. 원시와 같이 선택되면 nearBlur가 자연스럽게 합산되어 더 강해짐.
   nearBlur += residual.presbyopia * 12.5;
+  if(residual.hyperopia > 0 && residual.presbyopia > 0){
+    nearBlur += Math.min(residual.hyperopia, residual.presbyopia) * 2.0;
+  }
 
   // 난시: 원래 blur 느낌에 아주 약한 수평 겹침만 더해 자연스럽게 표현
   baseBlur += residual.astigmatism * 0.75;
@@ -537,11 +541,12 @@ function computeEffect(productId){
   // 한쪽 화면당 overlay video는 1개만 사용하므로,
   // far/near/astig 중 필요한 영역을 하나의 mask로 합치고 blur는 가장 큰 값을 기준으로 적용합니다.
   const effectBlur = Math.max(baseBlur, farBlur, nearBlur);
-  const hasFar = farBlur > 0.08;
+  const hasFar = farBlur > 0.35;
   const hasNear = nearBlur > 0.08;
   const hasAstig = residual.astigmatism > 0.001;
+  const nearDominant = nearBlur >= farBlur;
   const effectOpacity = effectBlur > 0.08 || hasAstig
-    ? Math.min(0.72, 0.26 + effectBlur / 20 + (hasAstig ? residual.astigmatism * 0.10 : 0))
+    ? Math.min(0.72, (nearDominant ? 0.26 : 0.16) + effectBlur / (nearDominant ? 20 : 28) + (hasAstig ? residual.astigmatism * 0.10 : 0))
     : 0;
 
   let effectMask = `linear-gradient(#fff,#fff)`;
