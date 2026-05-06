@@ -86,6 +86,9 @@ select option[disabled]{color:#9bb5d8}
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
   will-change:filter,opacity,transform;
 }
+.astig-effect{
+  mix-blend-mode:normal;
+}
 .compare-pane .halo{opacity:var(--haloOpacity);background:
   radial-gradient(circle at 50% 48%, rgba(255,255,255,.34) 0 5%, rgba(255,255,255,.12) 9%, rgba(255,255,255,0) 22%),
   radial-gradient(circle at 74% 28%, rgba(255,255,255,.14) 0 4%, rgba(255,255,255,0) 18%);
@@ -266,13 +269,15 @@ select option[disabled]{color:#9bb5d8}
 
         <div class="compare-pane" id="leftPane">
           <div class="stack" id="leftStack">
-            <video class="effect-video" id="leftEffectVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <video class="effect-video refractive-effect" id="leftEffectVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <video class="effect-video astig-effect" id="leftAstigVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
             <div class="halo"></div>
           </div>
         </div>
         <div class="compare-pane" id="rightPane">
           <div class="stack" id="rightStack">
-            <video class="effect-video" id="rightEffectVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <video class="effect-video refractive-effect" id="rightEffectVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
+            <video class="effect-video astig-effect" id="rightAstigVideo" autoplay muted loop playsinline preload="auto" crossorigin="anonymous"></video>
             <div class="halo"></div>
           </div>
         </div>
@@ -324,9 +329,11 @@ const dom={
   mainVideo:document.getElementById('mainVideo'),
   leftEffectVideo:document.getElementById('leftEffectVideo'),
   rightEffectVideo:document.getElementById('rightEffectVideo'),
+  leftAstigVideo:document.getElementById('leftAstigVideo'),
+  rightAstigVideo:document.getElementById('rightAstigVideo'),
   leftStack:document.getElementById('leftStack'), rightStack:document.getElementById('rightStack')
 };
-const allVideos=[dom.mainVideo,dom.leftEffectVideo,dom.rightEffectVideo];
+const allVideos=[dom.mainVideo,dom.leftEffectVideo,dom.rightEffectVideo,dom.leftAstigVideo,dom.rightAstigVideo];
 
 function selectedFlags(){
   return {
@@ -485,10 +492,8 @@ function computeEffect(productId){
     nearBlur += Math.min(residual.hyperopia, residual.presbyopia) * 2.0;
   }
 
-  // 난시: 원래 blur 느낌에 아주 약한 수평 겹침만 더해 자연스럽게 표현
-  baseBlur += residual.astigmatism * 0.95;
-  farBlur += residual.astigmatism * 1.65;
-  nearBlur += residual.astigmatism * 1.65;
+  // 난시: 근시/원시처럼 특정 거리 blur를 만들지 않고, 별도 astig overlay에서만 아주 약한 겹침/번짐으로 표현
+  const astigBlurOnly = residual.astigmatism * 1.10;
 
   let contrast = 1 - (residual.myopia*0.06 + residual.hyperopia*0.06 + residual.presbyopia*0.015 + residual.astigmatism*0.03);
   let brightness = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.01);
@@ -542,54 +547,72 @@ function computeEffect(productId){
 
   const masks = sceneMasks(state.scene);
 
-  // 한쪽 화면당 overlay video는 1개만 사용하므로,
-  // far/near/astig 중 필요한 영역을 하나의 mask로 합치고 blur는 가장 큰 값을 기준으로 적용합니다.
-  const effectBlur = Math.max(baseBlur, farBlur, nearBlur);
-  const hasFar = farBlur > 0.35;
-  const hasNear = nearBlur > 0.08;
-  const hasAstig = residual.astigmatism > 0.001;
-  const nearDominant = nearBlur >= farBlur;
-  const effectOpacity = effectBlur > 0.08 || hasAstig
-    ? Math.min(0.80, (nearDominant ? 0.34 : 0.24) + effectBlur / (nearDominant ? 18 : 26) + (hasAstig ? residual.astigmatism * 0.12 : 0))
-    : 0;
+  // 굴절 이상 효과는 역할별로 분리:
+  // 근시 = 원거리/상단 흐림, 원시/노안 = 근거리/하단 흐림, 난시 = 별도 약한 겹침
+  const myopiaActive = residual.myopia > 0.001;
+  const nearActive = residual.hyperopia > 0.001 || residual.presbyopia > 0.001;
+  const astigActive = residual.astigmatism > 0.001;
 
-  let effectMask = `linear-gradient(#fff,#fff)`;
-  if(hasFar && hasNear){
-    effectMask = `${masks.farMask}, ${masks.nearMask}`;
-  }else if(hasFar){
-    effectMask = masks.farMask;
-  }else if(hasNear){
-    effectMask = masks.nearMask;
-  }else if(hasAstig){
-    effectMask = `linear-gradient(#fff,#fff)`;
+  const refractiveBlur = Math.max(
+    myopiaActive ? farBlur : 0,
+    nearActive ? nearBlur : 0,
+    baseBlur
+  );
+
+  let refractiveMask = `linear-gradient(#fff,#fff)`;
+  if(myopiaActive && nearActive){
+    refractiveMask = `${masks.farMask}, ${masks.nearMask}`;
+  }else if(myopiaActive){
+    refractiveMask = masks.farMask;
+  }else if(nearActive){
+    refractiveMask = masks.nearMask;
   }
 
+  const nearDominant = nearActive && (!myopiaActive || nearBlur >= farBlur);
+  const refractiveOpacity = refractiveBlur > 0.08
+    ? Math.min(0.80, (nearDominant ? 0.34 : 0.24) + refractiveBlur / (nearDominant ? 18 : 26))
+    : 0;
+
+  const astigOpacity = astigActive ? Math.min(0.26, 0.07 + residual.astigmatism * 0.14) : 0;
+  const astigMask = `linear-gradient(#fff,#fff)`;
+
   return {
-    effectFilter:`blur(${effectBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
-    effectOpacity,
-    effectX: hasAstig ? `${ghostX.toFixed(1)}px` : '0px',
-    effectY: hasAstig ? `${ghostY.toFixed(1)}px` : '0px',
-    effectMask,
-    haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness,
-    nearMask:masks.nearMask,
-    farMask:masks.farMask
+    refractiveFilter:`blur(${refractiveBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    refractiveOpacity,
+    refractiveMask,
+    astigFilter:`blur(${astigBlurOnly.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    astigOpacity,
+    astigX: astigActive ? `${ghostX.toFixed(1)}px` : '0px',
+    astigY: astigActive ? `${ghostY.toFixed(1)}px` : '0px',
+    astigMask,
+    haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness
   };
 }
 
-function applyStyle(stack,effect){
-  stack.style.setProperty('--effectFilter', effect.effectFilter);
-  stack.style.setProperty('--effectOpacity', effect.effectOpacity);
-  stack.style.setProperty('--effectX', effect.effectX);
-  stack.style.setProperty('--effectY', effect.effectY);
-  stack.style.setProperty('--effectMask', effect.effectMask);
+function setVideoLayer(video, filter, opacity, mask, x='0px', y='0px'){
+  if(!video) return;
+  video.style.setProperty('--effectFilter', filter);
+  video.style.setProperty('--effectOpacity', opacity);
+  video.style.setProperty('--effectMask', mask);
+  video.style.setProperty('--effectX', x);
+  video.style.setProperty('--effectY', y);
+}
+
+function applyStyle(stack,effect, side){
+  const refractiveVideo = side === 'left' ? dom.leftEffectVideo : dom.rightEffectVideo;
+  const astigVideo = side === 'left' ? dom.leftAstigVideo : dom.rightAstigVideo;
+
+  setVideoLayer(refractiveVideo, effect.refractiveFilter, effect.refractiveOpacity, effect.refractiveMask);
+  setVideoLayer(astigVideo, effect.astigFilter, effect.astigOpacity, effect.astigMask, effect.astigX, effect.astigY);
+
   stack.style.setProperty('--haloOpacity', effect.haloOpacity);
   stack.style.setProperty('--haloBlur', effect.haloBlur);
   stack.style.setProperty('--haloBrightness', effect.haloBrightness);
 }
 
 function applyVisuals(){
-  applyStyle(dom.leftStack, computeEffect(state.leftProduct));
-  applyStyle(dom.rightStack, computeEffect(state.rightProduct));
+  applyStyle(dom.leftStack, computeEffect(state.leftProduct), 'left');
+  applyStyle(dom.rightStack, computeEffect(state.rightProduct), 'right');
   updateBadges();
 }
 
