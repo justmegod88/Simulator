@@ -493,7 +493,7 @@ function computeEffect(productId){
   }
 
   // 난시: 근시/원시처럼 특정 거리 blur를 만들지 않고, 별도 astig overlay에서만 아주 약한 겹침/번짐으로 표현
-  const astigBlurOnly = residual.astigmatism * 1.10;
+  const astigBlurOnly = 0.45 + residual.astigmatism * 1.45;
 
   let contrast = 1 - (residual.myopia*0.06 + residual.hyperopia*0.06 + residual.presbyopia*0.015 + residual.astigmatism*0.03);
   let brightness = 1 - (residual.myopia*0.03 + residual.hyperopia*0.02 + residual.astigmatism*0.01);
@@ -551,7 +551,7 @@ function computeEffect(productId){
   // 근시 = 원거리/상단 흐림, 원시/노안 = 근거리/하단 흐림, 난시 = 별도 약한 겹침
   const myopiaActive = residual.myopia > 0.001;
   const nearActive = residual.hyperopia > 0.001 || residual.presbyopia > 0.001;
-  const astigActive = residual.astigmatism > 0.001;
+  const astigActive = residual.astigmatism > 0.0005;
 
   const refractiveBlur = Math.max(
     myopiaActive ? farBlur : 0,
@@ -573,17 +573,17 @@ function computeEffect(productId){
     ? Math.min(0.80, (nearDominant ? 0.34 : 0.24) + refractiveBlur / (nearDominant ? 18 : 26))
     : 0;
 
-  const astigOpacity = astigActive ? Math.min(0.26, 0.07 + residual.astigmatism * 0.14) : 0;
+  const astigOpacity = astigActive ? Math.min(0.18, 0.045 + residual.astigmatism * 0.09) : 0;
   const astigMask = `linear-gradient(#fff,#fff)`;
 
   return {
     refractiveFilter:`blur(${refractiveBlur.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
     refractiveOpacity,
     refractiveMask,
-    astigFilter:`blur(${astigBlurOnly.toFixed(2)}px) contrast(${contrast.toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)})`,
+    astigFilter:`blur(${astigBlurOnly.toFixed(2)}px) contrast(${(contrast*0.96).toFixed(3)}) brightness(${brightness.toFixed(3)}) saturate(${(saturate*0.97).toFixed(3)})`,
     astigOpacity,
-    astigX: astigActive ? `${ghostX.toFixed(1)}px` : '0px',
-    astigY: astigActive ? `${ghostY.toFixed(1)}px` : '0px',
+    astigX: astigActive ? `${(ghostX * 0.38).toFixed(1)}px` : '0px',
+    astigY: astigActive ? `${(ghostY * 0.22).toFixed(1)}px` : '0px',
     astigMask,
     haloOpacity, haloBlur:`${haloBlur.toFixed(2)}px`, haloBrightness
   };
