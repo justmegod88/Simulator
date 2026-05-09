@@ -65,7 +65,7 @@ select option{background:#0c2345;color:#fff}
 <div class="video-label left" id="leftVideoLabel"></div><div class="video-label right" id="rightVideoLabel"></div>
 <div class="divider"></div><div class="handle" id="handle">‹›</div>
 </div>
-<div class="footer-note">* index.html과 같은 폴더에 1.mp4 ~ 21.mp4 파일을 넣으면 선택 조합에 따라 자동 재생됩니다.</div>
+<div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션 영상입니다. 실제 시야와 차이가 있을 수 있습니다.</div>
 </section>
 </div></div>
 <script>
@@ -93,22 +93,68 @@ function toggleCondition(id){if(state.selected.includes(id))state.selected=state
 function keepProductsValid(){const ids=productOptions().map(p=>p.id);if(!ids.includes(state.leftProduct))state.leftProduct=ids.includes('max1day')?'max1day':ids[0];if(!ids.includes(state.rightProduct))state.rightProduct=ids.includes('oasys')?'oasys':ids[1]||ids[0];}
 function fillSelect(sel,value){const opts=productOptions();sel.innerHTML=opts.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');sel.value=value;}
 function renderProducts(){keepProductsValid();fillSelect(dom.leftProduct,state.leftProduct);fillSelect(dom.rightProduct,state.rightProduct);fillSelect(dom.leftInline,state.leftProduct);fillSelect(dom.rightInline,state.rightProduct);const bind=(a,b,key)=>{const fn=e=>{state[key]=e.target.value;a.value=state[key];b.value=state[key];updateVideos();updateBadges();};a.onchange=fn;b.onchange=fn;};bind(dom.leftProduct,dom.leftInline,'leftProduct');bind(dom.rightProduct,dom.rightInline,'rightProduct');}
-function prepareVideo(video,src){if(video.dataset.src===src)return;video.dataset.src=src;video.src=src;video.muted=true;video.loop=true;video.playsInline=true;video.setAttribute('muted','');video.setAttribute('playsinline','');video.setAttribute('webkit-playsinline','');try{video.load();}catch(e){}safePlay(video);}
+function prepareVideo(video,src){
+  if(video.dataset.src===src)return;
+  video.dataset.src=src;
+  video.src=src;
+  video.muted=true;
+  video.loop=true;
+  video.playsInline=true;
+  video.setAttribute('muted','');
+  video.setAttribute('playsinline','');
+  video.setAttribute('webkit-playsinline','');
+  try{video.load();}catch(e){}
+  safePlay(video);
+}
 function safePlay(video){try{const p=video.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch(e){}}
 function restartBothVideos(){
-  try{dom.leftVideo.pause();dom.rightVideo.pause();}catch(e){}
-  try{dom.leftVideo.currentTime=0;dom.rightVideo.currentTime=0;}catch(e){}
-  setTimeout(()=>{
-    try{dom.leftVideo.currentTime=0;dom.rightVideo.currentTime=0;}catch(e){}
-    safePlay(dom.leftVideo);
-    safePlay(dom.rightVideo);
-  },80);
+  const left=dom.leftVideo;
+  const right=dom.rightVideo;
+
+  try{left.pause();}catch(e){}
+  try{right.pause();}catch(e){}
+  try{left.currentTime=0;}catch(e){}
+  try{right.currentTime=0;}catch(e){}
+
+  let started=false;
+  const startTogether=()=>{
+    if(started) return;
+    started=true;
+
+    try{left.pause();right.pause();}catch(e){}
+    try{left.currentTime=0;right.currentTime=0;}catch(e){}
+
+    requestAnimationFrame(()=>{
+      try{left.currentTime=0;right.currentTime=0;}catch(e){}
+      safePlay(left);
+      safePlay(right);
+
+      setTimeout(()=>{
+        try{left.currentTime=0;right.currentTime=0;}catch(e){}
+        safePlay(left);
+        safePlay(right);
+      },80);
+    });
+  };
+
+  const leftReady=()=>left.readyState>=1;
+  const rightReady=()=>right.readyState>=1;
+
+  if(leftReady() && rightReady()){
+    startTogether();
+  }else{
+    left.addEventListener('loadedmetadata',()=>{if(leftReady()&&rightReady())startTogether();},{once:true});
+    right.addEventListener('loadedmetadata',()=>{if(leftReady()&&rightReady())startTogether();},{once:true});
+    left.addEventListener('canplay',()=>{if(leftReady()&&rightReady())startTogether();},{once:true});
+    right.addEventListener('canplay',()=>{if(leftReady()&&rightReady())startTogether();},{once:true});
+    setTimeout(startTogether,350);
+  }
 }
 function syncVideoTiming(){
   try{
     if(dom.leftVideo.readyState>=2 && dom.rightVideo.readyState>=2){
       const diff=Math.abs(dom.leftVideo.currentTime-dom.rightVideo.currentTime);
-      if(diff>0.08){
+      if(diff>0.12){
         const t=Math.min(dom.leftVideo.currentTime,dom.rightVideo.currentTime);
         dom.leftVideo.currentTime=t;
         dom.rightVideo.currentTime=t;
@@ -116,7 +162,23 @@ function syncVideoTiming(){
     }
   }catch(e){}
 }
-function updateVideos(){prepareVideo(dom.leftVideo,videoSrc(state.leftProduct));prepareVideo(dom.rightVideo,videoSrc(state.rightProduct));dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4`;dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4`;restartBothVideos();}
+
+function updateVideos(){
+  const leftNum=videoNumber(state.leftProduct);
+  const rightNum=videoNumber(state.rightProduct);
+  const leftSrc=videoSrc(state.leftProduct);
+  const rightSrc=videoSrc(state.rightProduct);
+
+  prepareVideo(dom.leftVideo,leftSrc);
+  prepareVideo(dom.rightVideo,rightSrc);
+
+  dom.leftVideoLabel.textContent=`좌측 ${leftNum}.mp4`;
+  dom.rightVideoLabel.textContent=`우측 ${rightNum}.mp4`;
+
+  // 좌측/우측 중 어느 하나만 변경되어도 양쪽 모두 0초부터 다시 시작
+  restartBothVideos();
+}
+
 function updateBadges(){const conditionText=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');dom.conditionBadge.textContent=`상태 : ${conditionText}`;dom.sceneBadge.textContent=`Scene : ${scenes[state.scene].label}`;}
 function renderAll(){renderConditions();renderProducts();updateVideos();updateBadges();}
 function setSplit(percent){state.split=Math.max(15,Math.min(85,percent));dom.stage.style.setProperty('--split',state.split+'%');}
@@ -125,7 +187,10 @@ dom.handle.addEventListener('pointerdown',e=>{dragging=true;dom.handle.setPointe
 dom.sceneSelect.onchange=e=>{state.scene=e.target.value;updateVideos();updateBadges();};
 dom.resetBtn.onclick=()=>{state.selected=['myohyperopia'];state.scene='day';state.leftProduct='max1day';state.rightProduct='oasys';dom.sceneSelect.value='day';setSplit(50);renderAll();};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){safePlay(dom.leftVideo);safePlay(dom.rightVideo);}});document.addEventListener('click',()=>{safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true});document.addEventListener('touchstart',()=>{safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true,passive:true});
-dom.leftVideo.addEventListener('canplay',()=>safePlay(dom.leftVideo));dom.rightVideo.addEventListener('canplay',()=>safePlay(dom.rightVideo));
+dom.leftVideo.addEventListener('canplay',()=>safePlay(dom.leftVideo));
+dom.rightVideo.addEventListener('canplay',()=>safePlay(dom.rightVideo));
+dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4 파일 확인 필요`;});
+dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4 파일 확인 필요`;});
 setInterval(syncVideoTiming,250);
 renderAll();
 </script>
