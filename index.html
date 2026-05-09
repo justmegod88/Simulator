@@ -93,75 +93,30 @@ function toggleCondition(id){if(state.selected.includes(id))state.selected=state
 function keepProductsValid(){const ids=productOptions().map(p=>p.id);if(!ids.includes(state.leftProduct))state.leftProduct=ids.includes('max1day')?'max1day':ids[0];if(!ids.includes(state.rightProduct))state.rightProduct=ids.includes('oasys')?'oasys':ids[1]||ids[0];}
 function fillSelect(sel,value){const opts=productOptions();sel.innerHTML=opts.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');sel.value=value;}
 function renderProducts(){keepProductsValid();fillSelect(dom.leftProduct,state.leftProduct);fillSelect(dom.rightProduct,state.rightProduct);fillSelect(dom.leftInline,state.leftProduct);fillSelect(dom.rightInline,state.rightProduct);const bind=(a,b,key)=>{const fn=e=>{state[key]=e.target.value;a.value=state[key];b.value=state[key];updateVideos();updateBadges();};a.onchange=fn;b.onchange=fn;};bind(dom.leftProduct,dom.leftInline,'leftProduct');bind(dom.rightProduct,dom.rightInline,'rightProduct');}
-function prepareVideo(video,src){
-  video.muted=true;
-  video.loop=true;
-  video.playsInline=true;
-  video.setAttribute('muted','');
-  video.setAttribute('playsinline','');
-  video.setAttribute('webkit-playsinline','');
-  if(video.dataset.src!==src){
-    video.dataset.src=src;
-    video.src=src;
-    try{video.load();}catch(e){}
-  }
-}
-
-function safePlay(video){
-  try{
-    const p=video.play();
-    if(p&&typeof p.catch==='function')p.catch(()=>{});
-  }catch(e){}
-}
-
-function restartTogether(){
-  try{dom.leftVideo.pause();}catch(e){}
-  try{dom.rightVideo.pause();}catch(e){}
-
-  try{dom.leftVideo.currentTime=0;}catch(e){}
-  try{dom.rightVideo.currentTime=0;}catch(e){}
-
-  requestAnimationFrame(()=>{
-    try{dom.leftVideo.currentTime=0;}catch(e){}
-    try{dom.rightVideo.currentTime=0;}catch(e){}
-
+function prepareVideo(video,src){if(video.dataset.src===src)return;video.dataset.src=src;video.src=src;video.muted=true;video.loop=true;video.playsInline=true;video.setAttribute('muted','');video.setAttribute('playsinline','');video.setAttribute('webkit-playsinline','');try{video.load();}catch(e){}safePlay(video);}
+function safePlay(video){try{const p=video.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch(e){}}
+function restartBothVideos(){
+  try{dom.leftVideo.pause();dom.rightVideo.pause();}catch(e){}
+  try{dom.leftVideo.currentTime=0;dom.rightVideo.currentTime=0;}catch(e){}
+  setTimeout(()=>{
+    try{dom.leftVideo.currentTime=0;dom.rightVideo.currentTime=0;}catch(e){}
     safePlay(dom.leftVideo);
     safePlay(dom.rightVideo);
-
-    setTimeout(()=>{
-      try{
-        dom.leftVideo.currentTime=0;
-        dom.rightVideo.currentTime=0;
-      }catch(e){}
-      safePlay(dom.leftVideo);
-      safePlay(dom.rightVideo);
-    },120);
-  });
+  },80);
 }
-
-function syncPair(){
-  if(!dom.leftVideo||!dom.rightVideo)return;
-  if(dom.leftVideo.readyState>=2&&dom.rightVideo.readyState>=2){
-    try{
-      const diff=dom.leftVideo.currentTime-dom.rightVideo.currentTime;
-      if(Math.abs(diff)>0.035){
-        const t=Math.min(dom.leftVideo.currentTime||0,dom.rightVideo.currentTime||0);
+function syncVideoTiming(){
+  try{
+    if(dom.leftVideo.readyState>=2 && dom.rightVideo.readyState>=2){
+      const diff=Math.abs(dom.leftVideo.currentTime-dom.rightVideo.currentTime);
+      if(diff>0.08){
+        const t=Math.min(dom.leftVideo.currentTime,dom.rightVideo.currentTime);
         dom.leftVideo.currentTime=t;
         dom.rightVideo.currentTime=t;
       }
-    }catch(e){}
-  }
-  if(dom.leftVideo.paused)safePlay(dom.leftVideo);
-  if(dom.rightVideo.paused)safePlay(dom.rightVideo);
+    }
+  }catch(e){}
 }
-
-function updateVideos(){
-  prepareVideo(dom.leftVideo,videoSrc(state.leftProduct));
-  prepareVideo(dom.rightVideo,videoSrc(state.rightProduct));
-  dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4`;
-  dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4`;
-  restartTogether();
-}.mp4`;dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4`;setTimeout(()=>{safePlay(dom.leftVideo);safePlay(dom.rightVideo);},80);}
+function updateVideos(){prepareVideo(dom.leftVideo,videoSrc(state.leftProduct));prepareVideo(dom.rightVideo,videoSrc(state.rightProduct));dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4`;dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4`;restartBothVideos();}
 function updateBadges(){const conditionText=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');dom.conditionBadge.textContent=`상태 : ${conditionText}`;dom.sceneBadge.textContent=`Scene : ${scenes[state.scene].label}`;}
 function renderAll(){renderConditions();renderProducts();updateVideos();updateBadges();}
 function setSplit(percent){state.split=Math.max(15,Math.min(85,percent));dom.stage.style.setProperty('--split',state.split+'%');}
@@ -169,9 +124,9 @@ setSplit(50);let dragging=false;function moveSplit(clientX){const rect=dom.stage
 dom.handle.addEventListener('pointerdown',e=>{dragging=true;dom.handle.setPointerCapture(e.pointerId);});dom.handle.addEventListener('pointermove',e=>{if(dragging)moveSplit(e.clientX);});dom.handle.addEventListener('pointerup',()=>dragging=false);dom.stage.addEventListener('pointerdown',e=>{if(e.target===dom.stage||e.target.classList.contains('divider'))moveSplit(e.clientX);});
 dom.sceneSelect.onchange=e=>{state.scene=e.target.value;updateVideos();updateBadges();};
 dom.resetBtn.onclick=()=>{state.selected=['myohyperopia'];state.scene='day';state.leftProduct='max1day';state.rightProduct='oasys';dom.sceneSelect.value='day';setSplit(50);renderAll();};
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){syncPair();safePlay(dom.leftVideo);safePlay(dom.rightVideo);}});document.addEventListener('click',()=>{syncPair();safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true});document.addEventListener('touchstart',()=>{syncPair();safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true,passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){safePlay(dom.leftVideo);safePlay(dom.rightVideo);}});document.addEventListener('click',()=>{safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true});document.addEventListener('touchstart',()=>{safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true,passive:true});
 dom.leftVideo.addEventListener('canplay',()=>safePlay(dom.leftVideo));dom.rightVideo.addEventListener('canplay',()=>safePlay(dom.rightVideo));
-setInterval(syncPair,160);
+setInterval(syncVideoTiming,250);
 renderAll();
 </script>
 </body>
