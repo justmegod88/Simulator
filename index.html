@@ -31,7 +31,7 @@ select option{background:#0c2345;color:#fff}
 .ghost-btn{border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(19,55,107,.90),rgba(12,35,69,.92));color:#fff;border-radius:14px;padding:10px 14px;font-weight:800;cursor:pointer}
 .stage{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);aspect-ratio:16/9;background:#091a32;--split:50%}
 .compare-pane{position:absolute;inset:0;overflow:hidden}
-.compare-pane video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+.compare-pane video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center;}
 #leftPane{clip-path:polygon(0 0,var(--split) 0,var(--split) 100%,0 100%)}
 #rightPane{clip-path:polygon(var(--split) 0,100% 0,100% 100%,var(--split) 100%)}
 .divider{position:absolute;top:0;bottom:0;left:var(--split);width:2px;background:rgba(255,255,255,.78);transform:translateX(-1px);z-index:5}
@@ -72,6 +72,16 @@ select option{background:#0c2345;color:#fff}
 const conditions=[{id:'myohyperopia',label:'근/원시'},{id:'astigmatism',label:'난시'},{id:'presbyopia',label:'노안'}];
 const scenes={day:{label:'Day to Day'},night:{label:'Night Driving'},dine:{label:'Dine Out'}};
 const sceneColumn={day:0,night:1,dine:2};
+
+// 영상 번호별 위치/확대 보정값
+// 다이닝에서 17.mp4 / 19.mp4 프레이밍이 서로 달라 보여서 우선 보정값을 넣었습니다.
+// 필요 시 숫자만 조정하면 됩니다. x/y는 px, scale은 확대/축소입니다.
+const VIDEO_ADJUST={
+  // 예: 19번이 상대적으로 확대되어 보이면 scale을 0.98~0.96으로 낮추고,
+  // 위치가 위/아래로 틀어지면 y 값을 조정합니다.
+  17:{x:0,y:0,scale:1},
+  19:{x:0,y:0,scale:0.985}
+};
 const products=[
 {id:'oasys',name:'아큐브® 오아시스® 원데이'},
 {id:'max1day',name:'아큐브® 오아시스 맥스 원데이'},
@@ -93,6 +103,13 @@ function toggleCondition(id){if(state.selected.includes(id))state.selected=state
 function keepProductsValid(){const ids=productOptions().map(p=>p.id);if(!ids.includes(state.leftProduct))state.leftProduct=ids.includes('max1day')?'max1day':ids[0];if(!ids.includes(state.rightProduct))state.rightProduct=ids.includes('oasys')?'oasys':ids[1]||ids[0];}
 function fillSelect(sel,value){const opts=productOptions();sel.innerHTML=opts.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');sel.value=value;}
 function renderProducts(){keepProductsValid();fillSelect(dom.leftProduct,state.leftProduct);fillSelect(dom.rightProduct,state.rightProduct);fillSelect(dom.leftInline,state.leftProduct);fillSelect(dom.rightInline,state.rightProduct);const bind=(a,b,key)=>{const fn=e=>{state[key]=e.target.value;a.value=state[key];b.value=state[key];updateVideos();updateBadges();};a.onchange=fn;b.onchange=fn;};bind(dom.leftProduct,dom.leftInline,'leftProduct');bind(dom.rightProduct,dom.rightInline,'rightProduct');}
+function applyVideoAdjust(video,num){
+  const adj=VIDEO_ADJUST[num] || {x:0,y:0,scale:1};
+  video.style.setProperty('--video-x',`${adj.x||0}px`);
+  video.style.setProperty('--video-y',`${adj.y||0}px`);
+  video.style.setProperty('--video-scale',adj.scale||1);
+}
+
 function prepareVideo(video,src){
   if(video.dataset.src===src)return;
   video.dataset.src=src;
@@ -174,13 +191,16 @@ function updateVideos(){
   const leftSrc=videoSrc(state.leftProduct);
   const rightSrc=videoSrc(state.rightProduct);
 
+  applyVideoAdjust(dom.leftVideo,leftNum);
+  applyVideoAdjust(dom.rightVideo,rightNum);
+
   prepareVideo(dom.leftVideo,leftSrc);
   prepareVideo(dom.rightVideo,rightSrc);
 
   dom.leftVideoLabel.textContent=`좌측 ${leftNum}.mp4`;
   dom.rightVideoLabel.textContent=`우측 ${rightNum}.mp4`;
 
-  // Day / Night / Dine 및 좌우 제품 변경 모두 동일하게 양쪽 영상 0초 재시작
+  // 좌측/우측 중 어느 하나만 변경되어도 양쪽 모두 0초부터 다시 시작
   restartBothVideos();
 }
 
