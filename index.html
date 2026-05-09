@@ -107,54 +107,59 @@ function prepareVideo(video,src){
   safePlay(video);
 }
 function safePlay(video){try{const p=video.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch(e){}}
+let restartToken=0;
+
 function restartBothVideos(){
+  const token=++restartToken;
   const left=dom.leftVideo;
   const right=dom.rightVideo;
 
-  try{left.pause();}catch(e){}
-  try{right.pause();}catch(e){}
-  try{left.currentTime=0;}catch(e){}
-  try{right.currentTime=0;}catch(e){}
+  const forceZero=()=>{
+    try{left.pause();}catch(e){}
+    try{right.pause();}catch(e){}
+    try{left.currentTime=0;}catch(e){}
+    try{right.currentTime=0;}catch(e){}
+  };
 
-  let started=false;
-  const startTogether=()=>{
-    if(started) return;
-    started=true;
-
-    try{left.pause();right.pause();}catch(e){}
-    try{left.currentTime=0;right.currentTime=0;}catch(e){}
-
+  const playBoth=()=>{
+    if(token!==restartToken) return;
+    forceZero();
     requestAnimationFrame(()=>{
+      if(token!==restartToken) return;
       try{left.currentTime=0;right.currentTime=0;}catch(e){}
       safePlay(left);
       safePlay(right);
 
+      // 일부 브라우저에서 Night/Dine 전환 시 한쪽만 먼저 진행되는 경우가 있어 한 번 더 0초 고정
       setTimeout(()=>{
+        if(token!==restartToken) return;
         try{left.currentTime=0;right.currentTime=0;}catch(e){}
         safePlay(left);
         safePlay(right);
-      },80);
+      },120);
     });
   };
 
-  const leftReady=()=>left.readyState>=1;
-  const rightReady=()=>right.readyState>=1;
+  forceZero();
 
-  if(leftReady() && rightReady()){
-    startTogether();
+  // loadedmetadata가 이미 지나간 경우도 있어서 readyState와 timeout 둘 다 사용
+  if(left.readyState>=1 && right.readyState>=1){
+    playBoth();
   }else{
-    left.addEventListener('loadedmetadata',()=>{if(leftReady()&&rightReady())startTogether();},{once:true});
-    right.addEventListener('loadedmetadata',()=>{if(leftReady()&&rightReady())startTogether();},{once:true});
-    left.addEventListener('canplay',()=>{if(leftReady()&&rightReady())startTogether();},{once:true});
-    right.addEventListener('canplay',()=>{if(leftReady()&&rightReady())startTogether();},{once:true});
-    setTimeout(startTogether,350);
+    const tryPlay=()=>{ if(left.readyState>=1 && right.readyState>=1) playBoth(); };
+    left.addEventListener('loadedmetadata',tryPlay,{once:true});
+    right.addEventListener('loadedmetadata',tryPlay,{once:true});
+    left.addEventListener('canplay',tryPlay,{once:true});
+    right.addEventListener('canplay',tryPlay,{once:true});
+    setTimeout(playBoth,400);
   }
 }
+
 function syncVideoTiming(){
   try{
     if(dom.leftVideo.readyState>=2 && dom.rightVideo.readyState>=2){
       const diff=Math.abs(dom.leftVideo.currentTime-dom.rightVideo.currentTime);
-      if(diff>0.12){
+      if(diff>0.06){
         const t=Math.min(dom.leftVideo.currentTime,dom.rightVideo.currentTime);
         dom.leftVideo.currentTime=t;
         dom.rightVideo.currentTime=t;
@@ -175,7 +180,7 @@ function updateVideos(){
   dom.leftVideoLabel.textContent=`좌측 ${leftNum}.mp4`;
   dom.rightVideoLabel.textContent=`우측 ${rightNum}.mp4`;
 
-  // 좌측/우측 중 어느 하나만 변경되어도 양쪽 모두 0초부터 다시 시작
+  // Day / Night / Dine 및 좌우 제품 변경 모두 동일하게 양쪽 영상 0초 재시작
   restartBothVideos();
 }
 
@@ -184,7 +189,11 @@ function renderAll(){renderConditions();renderProducts();updateVideos();updateBa
 function setSplit(percent){state.split=Math.max(15,Math.min(85,percent));dom.stage.style.setProperty('--split',state.split+'%');}
 setSplit(50);let dragging=false;function moveSplit(clientX){const rect=dom.stage.getBoundingClientRect();setSplit(((clientX-rect.left)/rect.width)*100);}
 dom.handle.addEventListener('pointerdown',e=>{dragging=true;dom.handle.setPointerCapture(e.pointerId);});dom.handle.addEventListener('pointermove',e=>{if(dragging)moveSplit(e.clientX);});dom.handle.addEventListener('pointerup',()=>dragging=false);dom.stage.addEventListener('pointerdown',e=>{if(e.target===dom.stage||e.target.classList.contains('divider'))moveSplit(e.clientX);});
-dom.sceneSelect.onchange=e=>{state.scene=e.target.value;updateVideos();updateBadges();};
+dom.sceneSelect.onchange=e=>{
+  state.scene=e.target.value;
+  updateVideos();
+  updateBadges();
+};
 dom.resetBtn.onclick=()=>{state.selected=['myohyperopia'];state.scene='day';state.leftProduct='max1day';state.rightProduct='oasys';dom.sceneSelect.value='day';setSplit(50);renderAll();};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){safePlay(dom.leftVideo);safePlay(dom.rightVideo);}});document.addEventListener('click',()=>{safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true});document.addEventListener('touchstart',()=>{safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true,passive:true});
 dom.leftVideo.addEventListener('canplay',()=>safePlay(dom.leftVideo));
