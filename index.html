@@ -41,6 +41,49 @@ select option{background:#0c2345;color:#fff}
 .label-select{height:36px;border-radius:12px;padding:0 12px;background:linear-gradient(180deg,#0d86ff,#005eb8);border:1px solid rgba(255,255,255,.6);color:#fff;font-weight:800}
 .video-label{position:absolute;bottom:10px;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.42);font-size:12px;font-weight:800;z-index:4;color:#fff}.video-label.left{left:14px}.video-label.right{right:14px}
 .footer-note{font-size:12px;color:#d8e7ff;text-align:center;padding-top:2px}
+
+.info-btn{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(0,94,184,.22);
+  background:rgba(255,255,255,.92);
+  color:#005eb8;font-weight:950;font-size:18px;
+  display:inline-grid;place-items:center;
+  cursor:pointer;box-shadow:0 6px 18px rgba(0,94,184,.12);
+}
+.info-btn:hover{background:#fff;box-shadow:0 0 0 3px rgba(0,94,184,.12)}
+.info-modal{
+  position:fixed;inset:0;z-index:9999;display:none;
+  align-items:center;justify-content:center;
+  background:rgba(0,12,30,.58);backdrop-filter:blur(6px);
+  padding:22px;
+}
+.info-modal.open{display:flex}
+.info-card{
+  width:min(560px,94vw);max-height:88vh;overflow:auto;
+  background:#ffffff;color:#12203a;border-radius:22px;
+  box-shadow:0 30px 80px rgba(0,0,0,.38);
+  border:1px solid rgba(0,94,184,.16);position:relative;
+}
+.info-close{
+  position:absolute;right:16px;top:14px;width:38px;height:38px;
+  border-radius:50%;border:0;background:#f0f3f7;color:#203047;
+  font-size:26px;line-height:1;cursor:pointer;
+}
+.info-head{padding:24px 26px 12px;border-bottom:1px solid #e3e8ef}
+.info-title{margin:0 48px 0 0;font-size:22px;line-height:1.25;font-weight:900;color:#15294d}
+.info-body{padding:18px 26px 24px}
+.info-pack{
+  width:100%;height:150px;object-fit:contain;
+  border-radius:14px;background:#f8fafc;border:1px solid #e5ebf4;
+  margin-bottom:18px;padding:12px;
+}
+.info-section{border-top:1px solid #e3e8ef;padding-top:14px;margin-top:14px}
+.info-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.info-section h4{margin:0 0 8px;font-size:17px;color:#15294d}
+.info-overview{margin:0;color:#34445f;font-size:15px;line-height:1.6}
+.info-features{margin:0;padding-left:20px;color:#34445f;font-size:15px;line-height:1.7}
+.info-packnote{margin:12px 0 0;font-size:12px;color:#718096}
+
 @media(max-width:1180px){.app{padding:12px}.shell{grid-template-columns:1fr}.sidebar{position:static}}
 </style>
 </head>
@@ -60,14 +103,36 @@ select option{background:#0c2345;color:#fff}
 <div class="stage" id="stage">
 <div class="compare-pane" id="leftPane"><video id="leftVideo" autoplay muted loop playsinline preload="auto"></video></div>
 <div class="compare-pane" id="rightPane"><video id="rightVideo" autoplay muted loop playsinline preload="auto"></video></div>
-<div class="side-label left">좌측 <select class="label-select" id="leftInline"></select></div>
-<div class="side-label right">우측 <select class="label-select" id="rightInline"></select></div>
+<div class="side-label left">좌측 <select class="label-select" id="leftInline"></select><button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button></div>
+<div class="side-label right">우측 <select class="label-select" id="rightInline"></select><button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button></div>
 <div class="video-label left" id="leftVideoLabel"></div><div class="video-label right" id="rightVideoLabel"></div>
 <div class="divider"></div><div class="handle" id="handle">‹›</div>
 </div>
 <div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션 영상입니다. 실제 시야와 차이가 있을 수 있습니다.</div>
 </section>
 </div></div>
+
+<div class="info-modal" id="productInfoModal" aria-hidden="true">
+  <div class="info-card" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <button class="info-close" id="infoCloseBtn" type="button" aria-label="닫기">×</button>
+    <div class="info-head">
+      <h3 class="info-title" id="infoTitle"></h3>
+    </div>
+    <div class="info-body">
+      <img class="info-pack" id="infoPackshot" alt="제품 팩샷" />
+      <div class="info-section">
+        <h4>Overview</h4>
+        <p class="info-overview" id="infoOverview"></p>
+      </div>
+      <div class="info-section">
+        <h4>Features</h4>
+        <ul class="info-features" id="infoFeatures"></ul>
+        <p class="info-packnote" id="infoPackNote"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const conditions=[{id:'myohyperopia',label:'근/원시'},{id:'astigmatism',label:'난시'},{id:'presbyopia',label:'노안'}];
 const scenes={day:{label:'Day to Day'},night:{label:'Night Driving'},dine:{label:'Dine Out'}};
@@ -91,8 +156,27 @@ const products=[
 {id:'maxMulti',name:'아큐브® 오아시스 맥스 원데이 멀티포컬'},
 {id:'maxMultiToric',name:'아큐브® 오아시스 맥스 원데이 멀티포컬 난시용'}
 ];
+
+const PRODUCT_INFO={
+  oasys:{pack:1,title:'아큐브® 오아시스® 원데이',overview:'HydraLuxe® 기술이 적용된 매일 착용·교체용 콘택트렌즈입니다. 일상적인 근/원시 교정 상황에서 편안한 착용감과 선명한 시야를 설명하기 위한 제품입니다.',features:['HydraLuxe® 기술 기반의 tear-inspired design','매일 새 렌즈로 교체하는 원데이 타입','UV 차단 기능 포함','30개입 / 90개입 팩 구성']},
+  max1day:{pack:2,title:'아큐브® 오아시스 맥스 원데이',overview:'TearStable™ Technology와 OptiBlue™ Light Filter가 적용된 원데이 렌즈입니다. 빛번짐·눈부심 상황에서 더 선명한 시야 비교를 보여주기 위한 제품입니다.',features:['OptiBlue™ Light Filter로 청자색광 약 60% 필터링','TearStable™ Technology로 눈물막 안정성 지원','UV 차단 기능 포함','일상 및 디지털 환경에서 선명한 시야 설명에 적합']},
+  oasysToric:{pack:3,title:'아큐브® 오아시스® 원데이 난시용',overview:'난시 교정을 위한 원데이 렌즈입니다. 자연스러운 눈꺼풀 움직임을 활용해 렌즈가 안정적으로 위치하도록 설계된 제품입니다.',features:['난시 교정용 디자인','눈꺼풀 움직임을 활용한 안정화 설계','HydraLuxe® 기술 기반 착용감','UV 차단 기능 포함']},
+  maxToric:{pack:4,title:'아큐브® 오아시스 맥스 원데이 난시용',overview:'난시 교정에 맥스 원데이의 선명도와 빛 필터링 특성을 더한 제품입니다. 안정적인 축 위치와 빛번짐 저감 비교에 사용할 수 있습니다.',features:['OptiBlue™ Light Filter로 청자색광 약 60% 필터링','난시용 안정화 설계','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
+  moistMulti:{pack:5,title:'원데이 아큐브® 모이스트 멀티포컬',overview:'노안 교정을 위한 원데이 멀티포컬 렌즈입니다. 동공 크기 변화를 고려한 디자인으로 근거리·중간거리·원거리 시야 설명에 사용할 수 있습니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','LACREON® 기술로 촉촉함 유지 지원','근거리부터 원거리까지 시야 설명 가능','원데이 교체 타입']},
+  maxMulti:{pack:6,title:'아큐브® 오아시스 맥스 원데이 멀티포컬',overview:'노안 교정을 위한 맥스 원데이 멀티포컬 렌즈입니다. 다양한 거리와 조명 조건에서 선명한 시야를 설명하기 위한 제품입니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','OptiBlue™ Light Filter로 청자색광 약 60% 필터링','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
+  maxMultiToric:{pack:7,title:'아큐브® 오아시스 맥스 원데이 멀티포컬 난시용',overview:'노안과 난시를 함께 고려한 맥스 원데이 렌즈입니다. 여러 거리, 다양한 조명 조건, 안정적인 난시 교정 설명에 활용할 수 있습니다.',features:['멀티포컬 + 난시 교정 조합','모든 거리와 조명 조건에서의 선명도 설명 가능','안정적인 난시 교정 설명에 적합','TearStable™ 및 OptiBlue™ 기반 제품군']}
+};
 const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50};
-const dom={conditionGrid:document.getElementById('conditionGrid'),leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),leftInline:document.getElementById('leftInline'),rightInline:document.getElementById('rightInline'),sceneSelect:document.getElementById('sceneSelect'),conditionBadge:document.getElementById('conditionBadge'),sceneBadge:document.getElementById('sceneBadge'),resetBtn:document.getElementById('resetBtn'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),leftVideo:document.getElementById('leftVideo'),rightVideo:document.getElementById('rightVideo'),leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel')};
+const dom={conditionGrid:document.getElementById('conditionGrid'),leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),leftInline:document.getElementById('leftInline'),rightInline:document.getElementById('rightInline'),sceneSelect:document.getElementById('sceneSelect'),conditionBadge:document.getElementById('conditionBadge'),sceneBadge:document.getElementById('sceneBadge'),resetBtn:document.getElementById('resetBtn'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),leftVideo:document.getElementById('leftVideo'),rightVideo:document.getElementById('rightVideo'),leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel'),
+leftInfoBtn:document.getElementById('leftInfoBtn'),
+rightInfoBtn:document.getElementById('rightInfoBtn'),
+productInfoModal:document.getElementById('productInfoModal'),
+infoCloseBtn:document.getElementById('infoCloseBtn'),
+infoTitle:document.getElementById('infoTitle'),
+infoPackshot:document.getElementById('infoPackshot'),
+infoOverview:document.getElementById('infoOverview'),
+infoFeatures:document.getElementById('infoFeatures'),
+infoPackNote:document.getElementById('infoPackNote')};
 function flags(){return{myohyperopia:state.selected.includes('myohyperopia'),astigmatism:state.selected.includes('astigmatism'),presbyopia:state.selected.includes('presbyopia')};}
 function productById(id){return products.find(p=>p.id===id);}
 function productOptions(){const f=flags();let ids;if(f.presbyopia&&f.astigmatism)ids=['maxMultiToric','maxMulti','moistMulti','maxToric','oasysToric','max1day','oasys'];else if(f.presbyopia&&f.myohyperopia)ids=['maxMulti','moistMulti','max1day','oasys'];else if(f.presbyopia)ids=['maxMulti','moistMulti'];else if(f.astigmatism)ids=['oasys','oasysToric','max1day','maxToric'];else ids=['oasys','max1day'];return ids.map(productById).filter(Boolean);}
@@ -204,6 +288,30 @@ function updateVideos(){
   restartBothVideos();
 }
 
+
+function openProductInfo(productId){
+  const info=PRODUCT_INFO[productId];
+  if(!info)return;
+  dom.infoTitle.textContent=info.title;
+  dom.infoOverview.textContent=info.overview;
+  dom.infoFeatures.innerHTML=info.features.map(v=>`<li>${v}</li>`).join('');
+  dom.infoPackNote.textContent=`팩샷 파일: ${info.pack}.png / 제품 매칭: ${info.title}`;
+  const packBase=`./${info.pack}`;
+  dom.infoPackshot.onerror=function(){
+    if(this.dataset.try==='png'){this.dataset.try='jpg';this.src=packBase+'.jpg';}
+    else if(this.dataset.try==='jpg'){this.dataset.try='jpeg';this.src=packBase+'.jpeg';}
+    else{this.onerror=null;this.removeAttribute('src');this.alt='팩샷 이미지를 찾을 수 없습니다';}
+  };
+  dom.infoPackshot.dataset.try='png';
+  dom.infoPackshot.src=packBase+'.png';
+  dom.productInfoModal.classList.add('open');
+  dom.productInfoModal.setAttribute('aria-hidden','false');
+}
+function closeProductInfo(){
+  dom.productInfoModal.classList.remove('open');
+  dom.productInfoModal.setAttribute('aria-hidden','true');
+}
+
 function updateBadges(){const conditionText=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');dom.conditionBadge.textContent=`상태 : ${conditionText}`;dom.sceneBadge.textContent=`Scene : ${scenes[state.scene].label}`;}
 function renderAll(){renderConditions();renderProducts();updateVideos();updateBadges();}
 function setSplit(percent){state.split=Math.max(15,Math.min(85,percent));dom.stage.style.setProperty('--split',state.split+'%');}
@@ -221,6 +329,11 @@ dom.rightVideo.addEventListener('canplay',()=>safePlay(dom.rightVideo));
 dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4 파일 확인 필요`;});
 dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4 파일 확인 필요`;});
 setInterval(syncVideoTiming,250);
+dom.leftInfoBtn.onclick=()=>openProductInfo(state.leftProduct);
+dom.rightInfoBtn.onclick=()=>openProductInfo(state.rightProduct);
+dom.infoCloseBtn.onclick=closeProductInfo;
+dom.productInfoModal.addEventListener('click',e=>{if(e.target===dom.productInfoModal)closeProductInfo();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProductInfo();});
 renderAll();
 </script>
 </body>
