@@ -51,38 +51,49 @@ select option{background:#0c2345;color:#fff}
   cursor:pointer;box-shadow:0 6px 18px rgba(0,94,184,.12);
 }
 .info-btn:hover{background:#fff;box-shadow:0 0 0 3px rgba(0,94,184,.12)}
-.info-modal{
-  position:fixed;inset:0;z-index:9999;display:none;
-  align-items:center;justify-content:center;
-  background:rgba(0,12,30,.58);backdrop-filter:blur(6px);
-  padding:22px;
+.info-btn{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(0,94,184,.22);
+  background:rgba(255,255,255,.92);
+  color:#005eb8;font-weight:950;font-size:18px;
+  display:inline-grid;place-items:center;
+  cursor:pointer;box-shadow:0 6px 18px rgba(0,94,184,.12);
 }
-.info-modal.open{display:flex}
-.info-card{
-  width:min(560px,94vw);max-height:88vh;overflow:auto;
-  background:#ffffff;color:#12203a;border-radius:22px;
-  box-shadow:0 30px 80px rgba(0,0,0,.38);
-  border:1px solid rgba(0,94,184,.16);position:relative;
+.info-btn:hover{background:#fff;box-shadow:0 0 0 3px rgba(0,94,184,.12)}
+.product-pop{
+  position:absolute;top:78px;z-index:8;
+  width:min(330px,36%);
+  max-height:calc(100% - 104px);
+  overflow:auto;
+  display:none;
+  background:#ffffff;color:#12203a;border-radius:18px;
+  box-shadow:0 18px 44px rgba(0,0,0,.34);
+  border:1px solid rgba(0,94,184,.18);
 }
-.info-close{
-  position:absolute;right:16px;top:14px;width:38px;height:38px;
+.product-pop.open{display:block}
+.product-pop.left-pop{left:18px}
+.product-pop.right-pop{right:18px}
+.product-pop .pop-close{
+  position:absolute;right:12px;top:10px;width:34px;height:34px;
   border-radius:50%;border:0;background:#f0f3f7;color:#203047;
-  font-size:26px;line-height:1;cursor:pointer;
+  font-size:24px;line-height:1;cursor:pointer;
 }
-.info-head{padding:24px 26px 12px;border-bottom:1px solid #e3e8ef}
-.info-title{margin:0 48px 0 0;font-size:22px;line-height:1.25;font-weight:900;color:#15294d}
-.info-body{padding:18px 26px 24px}
-.info-pack{
-  width:100%;height:150px;object-fit:contain;
-  border-radius:14px;background:#f8fafc;border:1px solid #e5ebf4;
-  margin-bottom:18px;padding:12px;
+.product-pop .pop-head{padding:18px 18px 8px;border-bottom:1px solid #e3e8ef}
+.product-pop .pop-title{
+  margin:0 40px 0 0;font-size:17px;line-height:1.25;font-weight:900;color:#15294d;
 }
-.info-section{border-top:1px solid #e3e8ef;padding-top:14px;margin-top:14px}
-.info-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
-.info-section h4{margin:0 0 8px;font-size:17px;color:#15294d}
-.info-overview{margin:0;color:#34445f;font-size:15px;line-height:1.6}
-.info-features{margin:0;padding-left:20px;color:#34445f;font-size:15px;line-height:1.7}
-.info-packnote{margin:12px 0 0;font-size:12px;color:#718096}
+.product-pop .pop-body{padding:12px 18px 16px}
+.product-pop .pop-pack{
+  width:100%;height:120px;object-fit:contain;
+  border-radius:12px;background:#f8fafc;border:1px solid #e5ebf4;
+  margin-bottom:12px;padding:10px;
+}
+.product-pop .pop-section{border-top:1px solid #e3e8ef;padding-top:10px;margin-top:10px}
+.product-pop .pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.product-pop .pop-section h4{margin:0 0 6px;font-size:15px;color:#15294d}
+.product-pop .pop-overview{margin:0;color:#34445f;font-size:13px;line-height:1.48}
+.product-pop .pop-features{margin:0;padding-left:18px;color:#34445f;font-size:13px;line-height:1.5}
+.product-pop .pop-note{margin:10px 0 0;font-size:11px;color:#718096}
 
 @media(max-width:1180px){.app{padding:12px}.shell{grid-template-columns:1fr}.sidebar{position:static}}
 </style>
@@ -106,31 +117,32 @@ select option{background:#0c2345;color:#fff}
 <div class="side-label left">좌측 <select class="label-select" id="leftInline"></select><button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button></div>
 <div class="side-label right">우측 <select class="label-select" id="rightInline"></select><button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button></div>
 <div class="video-label left" id="leftVideoLabel"></div><div class="video-label right" id="rightVideoLabel"></div>
+
+<div class="product-pop left-pop" id="leftProductPop">
+  <button class="pop-close" id="leftPopClose" type="button" aria-label="닫기">×</button>
+  <div class="pop-head"><h3 class="pop-title" id="leftPopTitle"></h3></div>
+  <div class="pop-body">
+    <img class="pop-pack" id="leftPopPack" alt="좌측 제품 팩샷" />
+    <div class="pop-section"><h4>Overview</h4><p class="pop-overview" id="leftPopOverview"></p></div>
+    <div class="pop-section"><h4>Features</h4><ul class="pop-features" id="leftPopFeatures"></ul><p class="pop-note" id="leftPopNote"></p></div>
+  </div>
+</div>
+<div class="product-pop right-pop" id="rightProductPop">
+  <button class="pop-close" id="rightPopClose" type="button" aria-label="닫기">×</button>
+  <div class="pop-head"><h3 class="pop-title" id="rightPopTitle"></h3></div>
+  <div class="pop-body">
+    <img class="pop-pack" id="rightPopPack" alt="우측 제품 팩샷" />
+    <div class="pop-section"><h4>Overview</h4><p class="pop-overview" id="rightPopOverview"></p></div>
+    <div class="pop-section"><h4>Features</h4><ul class="pop-features" id="rightPopFeatures"></ul><p class="pop-note" id="rightPopNote"></p></div>
+  </div>
+</div>
+
 <div class="divider"></div><div class="handle" id="handle">‹›</div>
 </div>
 <div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션 영상입니다. 실제 시야와 차이가 있을 수 있습니다.</div>
 </section>
 </div></div>
 
-<div class="info-modal" id="productInfoModal" aria-hidden="true">
-  <div class="info-card" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
-    <button class="info-close" id="infoCloseBtn" type="button" aria-label="닫기">×</button>
-    <div class="info-head">
-      <h3 class="info-title" id="infoTitle"></h3>
-    </div>
-    <div class="info-body">
-      <img class="info-pack" id="infoPackshot" alt="제품 팩샷" />
-      <div class="info-section">
-        <h4>Overview</h4>
-        <p class="info-overview" id="infoOverview"></p>
-      </div>
-      <div class="info-section">
-        <h4>Features</h4>
-        <ul class="info-features" id="infoFeatures"></ul>
-        <p class="info-packnote" id="infoPackNote"></p>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -170,13 +182,20 @@ const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightPr
 const dom={conditionGrid:document.getElementById('conditionGrid'),leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),leftInline:document.getElementById('leftInline'),rightInline:document.getElementById('rightInline'),sceneSelect:document.getElementById('sceneSelect'),conditionBadge:document.getElementById('conditionBadge'),sceneBadge:document.getElementById('sceneBadge'),resetBtn:document.getElementById('resetBtn'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),leftVideo:document.getElementById('leftVideo'),rightVideo:document.getElementById('rightVideo'),leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel'),
 leftInfoBtn:document.getElementById('leftInfoBtn'),
 rightInfoBtn:document.getElementById('rightInfoBtn'),
-productInfoModal:document.getElementById('productInfoModal'),
-infoCloseBtn:document.getElementById('infoCloseBtn'),
-infoTitle:document.getElementById('infoTitle'),
-infoPackshot:document.getElementById('infoPackshot'),
-infoOverview:document.getElementById('infoOverview'),
-infoFeatures:document.getElementById('infoFeatures'),
-infoPackNote:document.getElementById('infoPackNote')};
+leftProductPop:document.getElementById('leftProductPop'),
+rightProductPop:document.getElementById('rightProductPop'),
+leftPopClose:document.getElementById('leftPopClose'),
+rightPopClose:document.getElementById('rightPopClose'),
+leftPopTitle:document.getElementById('leftPopTitle'),
+rightPopTitle:document.getElementById('rightPopTitle'),
+leftPopPack:document.getElementById('leftPopPack'),
+rightPopPack:document.getElementById('rightPopPack'),
+leftPopOverview:document.getElementById('leftPopOverview'),
+rightPopOverview:document.getElementById('rightPopOverview'),
+leftPopFeatures:document.getElementById('leftPopFeatures'),
+rightPopFeatures:document.getElementById('rightPopFeatures'),
+leftPopNote:document.getElementById('leftPopNote'),
+rightPopNote:document.getElementById('rightPopNote')};
 function flags(){return{myohyperopia:state.selected.includes('myohyperopia'),astigmatism:state.selected.includes('astigmatism'),presbyopia:state.selected.includes('presbyopia')};}
 function productById(id){return products.find(p=>p.id===id);}
 function productOptions(){const f=flags();let ids;if(f.presbyopia&&f.astigmatism)ids=['maxMultiToric','maxMulti','moistMulti','maxToric','oasysToric','max1day','oasys'];else if(f.presbyopia&&f.myohyperopia)ids=['maxMulti','moistMulti','max1day','oasys'];else if(f.presbyopia)ids=['maxMulti','moistMulti'];else if(f.astigmatism)ids=['oasys','oasysToric','max1day','maxToric'];else ids=['oasys','max1day'];return ids.map(productById).filter(Boolean);}
@@ -186,7 +205,7 @@ function renderConditions(){dom.conditionGrid.innerHTML='';conditions.forEach(c=
 function toggleCondition(id){if(state.selected.includes(id))state.selected=state.selected.filter(v=>v!==id);else state.selected.push(id);if(!state.selected.length)state.selected=['myohyperopia'];keepProductsValid();renderAll();}
 function keepProductsValid(){const ids=productOptions().map(p=>p.id);if(!ids.includes(state.leftProduct))state.leftProduct=ids.includes('max1day')?'max1day':ids[0];if(!ids.includes(state.rightProduct))state.rightProduct=ids.includes('oasys')?'oasys':ids[1]||ids[0];}
 function fillSelect(sel,value){const opts=productOptions();sel.innerHTML=opts.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');sel.value=value;}
-function renderProducts(){keepProductsValid();fillSelect(dom.leftProduct,state.leftProduct);fillSelect(dom.rightProduct,state.rightProduct);fillSelect(dom.leftInline,state.leftProduct);fillSelect(dom.rightInline,state.rightProduct);const bind=(a,b,key)=>{const fn=e=>{state[key]=e.target.value;a.value=state[key];b.value=state[key];updateVideos();updateBadges();};a.onchange=fn;b.onchange=fn;};bind(dom.leftProduct,dom.leftInline,'leftProduct');bind(dom.rightProduct,dom.rightInline,'rightProduct');}
+function renderProducts(){keepProductsValid();fillSelect(dom.leftProduct,state.leftProduct);fillSelect(dom.rightProduct,state.rightProduct);fillSelect(dom.leftInline,state.leftProduct);fillSelect(dom.rightInline,state.rightProduct);const bind=(a,b,key)=>{const fn=e=>{state[key]=e.target.value;a.value=state[key];b.value=state[key];updateVideos();updateBadges();if(key==='leftProduct'&&dom.leftProductPop.classList.contains('open'))fillProductPop('left',state.leftProduct);if(key==='rightProduct'&&dom.rightProductPop.classList.contains('open'))fillProductPop('right',state.rightProduct);};a.onchange=fn;b.onchange=fn;};bind(dom.leftProduct,dom.leftInline,'leftProduct');bind(dom.rightProduct,dom.rightInline,'rightProduct');}
 function applyVideoAdjust(video,num){
   const adj=VIDEO_ADJUST[num] || {x:0,y:0,scale:1};
   video.style.setProperty('--video-x',`${adj.x||0}px`);
@@ -289,28 +308,46 @@ function updateVideos(){
 }
 
 
-function openProductInfo(productId){
+function fillProductPop(side,productId){
   const info=PRODUCT_INFO[productId];
   if(!info)return;
-  dom.infoTitle.textContent=info.title;
-  dom.infoOverview.textContent=info.overview;
-  dom.infoFeatures.innerHTML=info.features.map(v=>`<li>${v}</li>`).join('');
-  dom.infoPackNote.textContent=`팩샷 파일: ${info.pack}.png / 제품 매칭: ${info.title}`;
+  const isLeft=side==='left';
+  const title=isLeft?dom.leftPopTitle:dom.rightPopTitle;
+  const pack=isLeft?dom.leftPopPack:dom.rightPopPack;
+  const overview=isLeft?dom.leftPopOverview:dom.rightPopOverview;
+  const features=isLeft?dom.leftPopFeatures:dom.rightPopFeatures;
+  const note=isLeft?dom.leftPopNote:dom.rightPopNote;
+
+  title.textContent=info.title;
+  overview.textContent=info.overview;
+  features.innerHTML=info.features.map(v=>`<li>${v}</li>`).join('');
+  note.textContent=`팩샷 파일: ${info.pack}.png / 제품 매칭: ${info.title}`;
+
   const packBase=`./${info.pack}`;
-  dom.infoPackshot.onerror=function(){
+  pack.onerror=function(){
     if(this.dataset.try==='png'){this.dataset.try='jpg';this.src=packBase+'.jpg';}
     else if(this.dataset.try==='jpg'){this.dataset.try='jpeg';this.src=packBase+'.jpeg';}
     else{this.onerror=null;this.removeAttribute('src');this.alt='팩샷 이미지를 찾을 수 없습니다';}
   };
-  dom.infoPackshot.dataset.try='png';
-  dom.infoPackshot.src=packBase+'.png';
-  dom.productInfoModal.classList.add('open');
-  dom.productInfoModal.setAttribute('aria-hidden','false');
+  pack.dataset.try='png';
+  pack.src=packBase+'.png';
 }
-function closeProductInfo(){
-  dom.productInfoModal.classList.remove('open');
-  dom.productInfoModal.setAttribute('aria-hidden','true');
+
+function toggleProductPop(side){
+  if(side==='left'){
+    fillProductPop('left',state.leftProduct);
+    dom.leftProductPop.classList.toggle('open');
+  }else{
+    fillProductPop('right',state.rightProduct);
+    dom.rightProductPop.classList.toggle('open');
+  }
 }
+
+function closeProductPop(side){
+  if(side==='left') dom.leftProductPop.classList.remove('open');
+  if(side==='right') dom.rightProductPop.classList.remove('open');
+}
+
 
 function updateBadges(){const conditionText=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');dom.conditionBadge.textContent=`상태 : ${conditionText}`;dom.sceneBadge.textContent=`Scene : ${scenes[state.scene].label}`;}
 function renderAll(){renderConditions();renderProducts();updateVideos();updateBadges();}
@@ -329,11 +366,11 @@ dom.rightVideo.addEventListener('canplay',()=>safePlay(dom.rightVideo));
 dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4 파일 확인 필요`;});
 dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4 파일 확인 필요`;});
 setInterval(syncVideoTiming,250);
-dom.leftInfoBtn.onclick=()=>openProductInfo(state.leftProduct);
-dom.rightInfoBtn.onclick=()=>openProductInfo(state.rightProduct);
-dom.infoCloseBtn.onclick=closeProductInfo;
-dom.productInfoModal.addEventListener('click',e=>{if(e.target===dom.productInfoModal)closeProductInfo();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProductInfo();});
+dom.leftInfoBtn.onclick=()=>toggleProductPop('left');
+dom.rightInfoBtn.onclick=()=>toggleProductPop('right');
+dom.leftPopClose.onclick=()=>closeProductPop('left');
+dom.rightPopClose.onclick=()=>closeProductPop('right');
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left');closeProductPop('right');}});
 renderAll();
 </script>
 </body>
