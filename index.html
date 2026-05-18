@@ -199,7 +199,7 @@ select option{
 }
 .side-label.left{left:16px}.side-label.right{right:16px}
 .side-name{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:32px;padding:0 8px;border-radius:12px;background:#EAF4FF;color:#005EB8;font-size:12px;font-weight:900}
-.label-select{height:34px;border-radius:12px;padding:0 34px 0 12px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;font-size:13px;min-width:0;width:190px;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.label-select{height:34px;border-radius:12px;padding:0 34px 0 12px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;font-size:12px;min-width:0;width:210px;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .info-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08);flex:0 0 32px}
 .info-btn:hover{background:#F1F7FF}
 .video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
@@ -221,8 +221,8 @@ select option{
 .pop-pack{width:100%;height:132px;object-fit:contain;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:16px;padding:10px}
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
 .pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;color:#718096}
-@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.side-label{max-width:calc(50% - 16px)}.label-select{width:170px;max-width:170px;font-size:12px}}
-@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px;max-width:calc(50% - 12px)}.side-name{min-width:34px;height:28px;font-size:11px}.label-select{height:30px;width:132px;max-width:132px;font-size:11px;padding:0 28px 0 8px}.info-btn{width:28px;height:28px;font-size:13px}}
+@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.side-label{max-width:calc(50% - 16px)}.label-select{width:190px;max-width:190px;font-size:11px}}
+@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px;max-width:calc(50% - 12px)}.side-name{min-width:34px;height:28px;font-size:11px}.label-select{height:30px;width:150px;max-width:150px;font-size:10px;padding:0 28px 0 8px}.info-btn{width:28px;height:28px;font-size:13px}}
 </style>
 </head>
 <body>
@@ -434,18 +434,7 @@ function productOptions(){
   return ids.map(productById).filter(Boolean);
 }
 function compactProductNameForOverlay(name){
-  return String(name||'')
-    .replace(/<sup[^>]*>.*?<\/sup>/gi,'')
-    .replace(/아큐브®?\s*/g,'아큐브 ')
-    .replace(/오아시스\s*MAX\s*원데이\s*멀티포컬\s*난시용/g,'MAX 멀티포컬 난시용')
-    .replace(/오아시스\s*MAX\s*원데이\s*멀티포컬/g,'MAX 멀티포컬')
-    .replace(/오아시스\s*MAX\s*원데이\s*난시용/g,'MAX 난시용')
-    .replace(/오아시스\s*원데이\s*난시용/g,'원데이 난시용')
-    .replace(/오아시스\s*MAX\s*원데이/g,'MAX 원데이')
-    .replace(/오아시스\s*원데이/g,'원데이')
-    .replace(/원데이\s*아큐브\s*모이스트\s*멀티포컬/g,'모이스트 멀티포컬')
-    .replace(/\s+/g,' ')
-    .trim();
+  return String(name||'').replace(/<sup[^>]*>.*?<\/sup>/gi,'®').replace(/\s+/g,' ').trim();
 }
 function groupedProductOptions(){
   const opts=productOptions();
@@ -500,7 +489,7 @@ function selectHTML(value){
   let html='';
   ['multi','toric','sphere'].forEach(key=>{
     if(!groups[key].length) return;
-    html += `<optgroup label="${GROUP_LABEL[key]}">` + groups[key].map(p=>`<option value="${p.id}"> ${p.name}</option>`).join('') + '</optgroup>';
+    html += `<optgroup label="${GROUP_LABEL[key]}">` + groups[key].map(p=>`<option value="${p.id}">${p.name}</option>`).join('') + '</optgroup>';
   });
   return html;
 }
@@ -571,8 +560,6 @@ function fillProductPop(side,productId){
 function toggleProductPop(side){ if(side==='left'){fillProductPop('left',state.leftProduct); dom.leftProductPop.classList.toggle('open');} else {fillProductPop('right',state.rightProduct); dom.rightProductPop.classList.toggle('open');}}
 function closeProductPop(side){ if(side==='left') dom.leftProductPop.classList.remove('open'); if(side==='right') dom.rightProductPop.classList.remove('open'); }
 function updateInlineLabelText(){
-  const leftName = compactProductNameForOverlay((productById(state.leftProduct)||{}).name || '');
-  const rightName = compactProductNameForOverlay((productById(state.rightProduct)||{}).name || '');
   [dom.leftInline, dom.rightInline].forEach(sel=>{
     const options = [...sel.options];
     options.forEach(opt=>{
@@ -580,8 +567,6 @@ function updateInlineLabelText(){
       if(product) opt.textContent = compactProductNameForOverlay(product.name);
     });
   });
-  if(dom.leftInline.selectedIndex >= 0) dom.leftInline.options[dom.leftInline.selectedIndex].textContent = leftName;
-  if(dom.rightInline.selectedIndex >= 0) dom.rightInline.options[dom.rightInline.selectedIndex].textContent = rightName;
 }
 function updateBadges(){
   const conditionText=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');
