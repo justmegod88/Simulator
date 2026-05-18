@@ -22,7 +22,6 @@
   --r-sm:12px;
 }
 *{box-sizing:border-box}
-sup.reg{font-size:.52em;line-height:0;vertical-align:super;position:relative;top:-.18em}
 html,body{height:100%}
 body{
   margin:0;
@@ -51,6 +50,11 @@ body{
   background:linear-gradient(135deg,#005EB8 0%, #0E73D8 44%, #63B2FF 100%);
   position:relative;
   overflow:hidden;
+  display:grid;
+  grid-template-columns:1fr 90px;
+  gap:14px;
+  align-items:start;
+  min-height:120px;
 }
 .hero:before{
   content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;
@@ -60,9 +64,12 @@ body{
   content:"";position:absolute;left:-24px;bottom:-34px;width:120px;height:120px;border-radius:50%;
   background:rgba(255,255,255,.10);
 }
+.hero-copy{position:relative;z-index:1;min-width:0}
 .hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
-.hero h1{position:relative;z-index:1;margin:14px 0 6px;font-size:32px;line-height:1.1;font-weight:950}
-.hero p{position:relative;z-index:1;margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.92)}
+.hero h1{position:relative;z-index:1;margin:14px 0 0;font-size:32px;line-height:1.1;font-weight:950}
+.hero-pack{position:relative;z-index:1;align-self:start;width:90px;height:90px;border-radius:18px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);display:grid;place-items:center;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.hero-pack img{width:100%;height:100%;object-fit:contain;padding:8px}
+.hero-pack-fallback{display:none;font-size:11px;font-weight:800;color:rgba(255,255,255,.92);text-align:center;padding:8px;line-height:1.35}
 .section{
   padding:16px;
   background:linear-gradient(180deg,#FFFFFF 0%, #F8FBFF 100%);
@@ -103,10 +110,11 @@ select option, select optgroup{background:#fff;color:#0F2747}
 .group-pill{padding:10px 10px;border-radius:14px;background:#F3F8FE;border:1px solid #D7E6F8;text-align:center;font-size:12px;font-weight:800;color:#547195}
 .scene-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .scene-chip{
-  border:1px solid #C7DCF5;background:#fff;border-radius:18px;padding:14px 12px;cursor:pointer;
-  display:flex;align-items:center;justify-content:flex-start;transition:.18s ease;
+  border:1px solid #C7DCF5;background:#fff;border-radius:18px;padding:12px 10px;cursor:pointer;
+  display:flex;flex-direction:column;gap:4px;align-items:flex-start;transition:.18s ease;
 }
 .scene-chip strong{font-size:14px;color:#0F2747}
+.scene-chip span{font-size:12px;color:#6584A8}
 .scene-chip.active{background:linear-gradient(180deg,#E9F4FF,#D7EBFF);border-color:#6BAEFF;box-shadow:0 8px 20px rgba(0,94,184,.10)}
 .packshot-card{
   background:transparent;
@@ -162,13 +170,7 @@ select option, select optgroup{background:#fff;color:#0F2747}
 .info-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:17px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08)}
 .info-btn:hover{background:#F1F7FF}
 .video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
-.video-label.left{left:16px}.video-label.right{right:78px}
-.play-toggle{
-  position:absolute;right:16px;bottom:16px;z-index:7;width:52px;height:52px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.45);background:rgba(10,22,41,.58);color:#fff;font-size:22px;font-weight:900;
-  display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(8px);box-shadow:0 8px 20px rgba(0,0,0,.18)
-}
-.play-toggle:hover{background:rgba(10,22,41,.72)}
+.video-label.left{left:16px}.video-label.right{right:16px}
 .footer-note{font-size:12px;color:#5D7799;text-align:center;padding-top:6px;line-height:1.5}
 .product-pop{position:absolute;top:78px;z-index:8;width:min(340px,38%);max-height:calc(100% - 100px);overflow:auto;display:none;background:#fff;color:#12203A;border-radius:22px;box-shadow:0 20px 46px rgba(0,0,0,.24);border:1px solid #D7E6F8}
 .product-pop.open{display:block}.product-pop.left-pop{left:18px}.product-pop.right-pop{right:18px}
@@ -188,8 +190,14 @@ select option, select optgroup{background:#fff;color:#0F2747}
   <div class="shell">
     <aside class="panel sidebar">
       <div class="hero">
-        <div class="hero-kicker">ACUVUE Vision Simulator</div>
-        <h1>콘택트렌즈 시뮬레이터</h1>
+        <div class="hero-copy">
+          <div class="hero-kicker">ACUVUE Simulator</div>
+          <h1>콘택트렌즈 시뮬레이터</h1>
+        </div>
+        <div class="hero-pack">
+          <img src="./acuvue.png" alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div class="hero-pack-fallback">acuvue.png</div>
+        </div>
       </div>
 
       <div class="section">
@@ -197,7 +205,7 @@ select option, select optgroup{background:#fff;color:#0F2747}
           <div class="section-num">1</div>
           <div>
             <div class="section-title">굴절이상 선택</div>
-            <div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div>
+            <div class="section-sub">근/원시, 난시, 노안을 조합해 비교 상태를 선택하세요.</div>
           </div>
         </div>
         <div class="grid-chip" id="conditionGrid"></div>
@@ -237,15 +245,6 @@ select option, select optgroup{background:#fff;color:#0F2747}
           <div class="select-shell"><select id="sceneSelect"></select></div>
         </div>
       </div>
-
-      <div class="packshot-card">
-        <div class="packshot-slot">
-          <img src="./acuvue.png" alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="packshot-placeholder" style="display:none;">같은 위치에 acuvue.png 파일을 넣어주세요</div>
-        </div>
-      </div>
-
-
     </aside>
 
     <section class="panel viewer">
@@ -278,8 +277,6 @@ select option, select optgroup{background:#fff;color:#0F2747}
           <div class="video-label left" id="leftVideoLabel"></div>
           <div class="video-label right" id="rightVideoLabel"></div>
 
-          <button class="play-toggle" id="playToggle" type="button" aria-label="일시중지">❚❚</button>
-
           <div class="product-pop left-pop" id="leftProductPop">
             <button class="pop-close" id="leftPopClose" type="button" aria-label="닫기">×</button>
             <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="leftPopTitle"></h3></div>
@@ -305,25 +302,26 @@ select option, select optgroup{background:#fff;color:#0F2747}
       </div>
       <div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션 영상입니다. 실제 시야와 차이가 있을 수 있습니다.</div>
 
-      
-    </section>
-  </div>
-<div class="references-footer">
+      <div class="references-footer">
         <div class="references-footer-head">
-          <h3 class="references-footer-title">References</h3>
-        <div class="references-footer-text">1. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology product information. ACUVUE.
-2. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology for ASTIGMATISM product information. ACUVUE.
-3. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day product information. ACUVUE.
-4. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day for ASTIGMATISM product information. ACUVUE.
-5. ACUVUE<sup class="reg">®</sup> OASYS MULTIFOCAL product information. ACUVUE.
-6. ACUVUE<sup class="reg">®</sup> MOIST MULTIFOCAL product information. ACUVUE.
-7. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL product information. ACUVUE.
-8. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL for ASTIGMATISM product information. ACUVUE.
+          <h3 class="references-footer-title">참고문헌 영역</h3>
+          <p class="references-footer-sub">Videos for illustrative purposes only and are not intended to inform clinical decision-making. Actual results may vary.</p>
+        </div>
+        <div class="references-footer-text">1. ACUVUE® OASYS 1-Day with HydraLuxe® Technology product information. ACUVUE.
+2. ACUVUE® OASYS 1-Day with HydraLuxe® Technology for ASTIGMATISM product information. ACUVUE.
+3. ACUVUE® OASYS MAX 1-Day product information. ACUVUE.
+4. ACUVUE® OASYS MAX 1-Day for ASTIGMATISM product information. ACUVUE.
+5. ACUVUE® OASYS MULTIFOCAL product information. ACUVUE.
+6. ACUVUE® MOIST MULTIFOCAL product information. ACUVUE.
+7. ACUVUE® OASYS MAX 1-Day MULTIFOCAL product information. ACUVUE.
+8. ACUVUE® OASYS MAX 1-Day MULTIFOCAL for ASTIGMATISM product information. ACUVUE.
 9. Types of Refractive Errors. National Eye Institute, NIH.
-10. Refractive Errors Preferred Practice Pattern<sup class="reg">®</sup>. American Academy of Ophthalmology.
+10. Refractive Errors Preferred Practice Pattern®. American Academy of Ophthalmology.
 11. Data on file. Internal simulator design specification for object-based scene masking and illustrative blur rendering.
 12. Data on file. Internal product-matching criteria for spherical, toric, multifocal, and multifocal toric simulation logic.</div>
       </div>
+    </section>
+  </div>
 </div>
 
 <script>
@@ -333,32 +331,32 @@ const conditions=[
   {id:'presbyopia',label:'노안'}
 ];
 const scenes={
-  day:{label:'마트'},
-  night:{label:'야간운전'},
-  dine:{label:'레스토랑'}
+  day:{label:'마트', sub:'Day to Day'},
+  night:{label:'야간운전', sub:'Night Driving'},
+  dine:{label:'레스토랑', sub:'Restaurant'}
 };
 const sceneOrder=['day','night','dine'];
 const sceneColumn={day:0,night:1,dine:2};
 const VIDEO_ADJUST={17:{x:0,y:0,scale:1},19:{x:0,y:0,scale:0.93}};
 const products=[
-  {id:'oasys',name:'아큐브<sup class="reg">®</sup> 오아시스 원데이',group:'sphere'},
-  {id:'max1day',name:'아큐브<sup class="reg">®</sup> 오아시스 MAX 원데이',group:'sphere'},
-  {id:'oasysToric',name:'아큐브<sup class="reg">®</sup> 오아시스 원데이 난시용',group:'toric'},
-  {id:'maxToric',name:'아큐브<sup class="reg">®</sup> 오아시스 MAX 원데이 난시용',group:'toric'},
-  {id:'moistMulti',name:'원데이 아큐브<sup class="reg">®</sup> 모이스트 멀티포컬',group:'multi'},
-  {id:'maxMulti',name:'아큐브<sup class="reg">®</sup> 오아시스 MAX 원데이 멀티포컬',group:'multi'},
-  {id:'maxMultiToric',name:'아큐브<sup class="reg">®</sup> 오아시스 MAX 원데이 멀티포컬 난시용',group:'multi'}
+  {id:'oasys',name:'아큐브® 오아시스 원데이',group:'sphere'},
+  {id:'max1day',name:'아큐브® 오아시스 MAX 원데이',group:'sphere'},
+  {id:'oasysToric',name:'아큐브® 오아시스 원데이 난시용',group:'toric'},
+  {id:'maxToric',name:'아큐브® 오아시스 MAX 원데이 난시용',group:'toric'},
+  {id:'moistMulti',name:'원데이 아큐브® 모이스트 멀티포컬',group:'multi'},
+  {id:'maxMulti',name:'아큐브® 오아시스 MAX 원데이 멀티포컬',group:'multi'},
+  {id:'maxMultiToric',name:'아큐브® 오아시스 MAX 원데이 멀티포컬 난시용',group:'multi'}
 ];
 const GROUP_LABEL={multi:'멀티포컬',toric:'난시',sphere:'근/원시'};
 
 const PRODUCT_INFO={
-  oasys:{pack:1,title:'아큐브<sup class="reg">®</sup> 오아시스 원데이',overview:'HydraLuxe<sup class="reg">®</sup> 기술이 적용된 매일 착용·교체용 콘택트렌즈입니다. 일상적인 근/원시 교정 상황에서 편안한 착용감과 선명한 시야를 설명하기 위한 제품입니다.',features:['HydraLuxe<sup class="reg">®</sup> 기술 기반의 tear-inspired design','매일 새 렌즈로 교체하는 원데이 타입','UV 차단 기능 포함','30개입 / 90개입 팩 구성']},
-  max1day:{pack:2,title:'아큐브<sup class="reg">®</sup> 오아시스 MAX 원데이',overview:'TearStable™ Technology와 OptiBlue™ Light Filter가 적용된 원데이 렌즈입니다. 빛번짐·눈부심 상황에서 더 선명한 시야 비교를 보여주기 위한 제품입니다.',features:['OptiBlue™ Light Filter 적용','TearStable™ Technology 기반 착용감','UV 차단 기능 포함','일상 및 디지털 환경에서 선명한 시야 설명에 적합']},
-  oasysToric:{pack:3,title:'아큐브<sup class="reg">®</sup> 오아시스 원데이 난시용',overview:'난시 교정을 위한 원데이 렌즈입니다. 자연스러운 눈꺼풀 움직임을 활용해 렌즈가 안정적으로 위치하도록 설계된 제품입니다.',features:['난시 교정용 디자인','눈꺼풀 움직임을 활용한 안정화 설계','HydraLuxe<sup class="reg">®</sup> 기술 기반 착용감','UV 차단 기능 포함']},
-  maxToric:{pack:4,title:'아큐브<sup class="reg">®</sup> 오아시스 MAX 원데이 난시용',overview:'난시 교정에 맥스 원데이의 선명도와 빛 필터링 특성을 더한 제품입니다. 안정적인 축 위치와 빛번짐 저감 비교에 사용할 수 있습니다.',features:['OptiBlue™ Light Filter 적용','난시용 안정화 설계','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
-  moistMulti:{pack:5,title:'원데이 아큐브<sup class="reg">®</sup> 모이스트 멀티포컬',overview:'노안 교정을 위한 원데이 멀티포컬 렌즈입니다. 동공 크기 변화를 고려한 디자인으로 근거리·중간거리·원거리 시야 설명에 사용할 수 있습니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','LACREON<sup class="reg">®</sup> 기술 적용','근거리부터 원거리까지 시야 설명 가능','원데이 교체 타입']},
-  maxMulti:{pack:6,title:'아큐브<sup class="reg">®</sup> 오아시스 MAX 원데이 멀티포컬',overview:'노안 교정을 위한 맥스 원데이 멀티포컬 렌즈입니다. 다양한 거리와 조명 조건에서 선명한 시야를 설명하기 위한 제품입니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','OptiBlue™ Light Filter 적용','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
-  maxMultiToric:{pack:7,title:'아큐브<sup class="reg">®</sup> 오아시스 MAX 원데이 멀티포컬 난시용',overview:'노안과 난시를 함께 고려한 맥스 원데이 렌즈입니다. 여러 거리, 다양한 조명 조건, 안정적인 난시 교정 설명에 활용할 수 있습니다.',features:['멀티포컬 + 난시 교정 조합','모든 거리와 조명 조건에서의 선명도 설명 가능','안정적인 난시 교정 설명에 적합','TearStable™ 및 OptiBlue™ 기반 제품군']}
+  oasys:{pack:1,title:'아큐브® 오아시스 원데이',overview:'HydraLuxe® 기술이 적용된 매일 착용·교체용 콘택트렌즈입니다. 일상적인 근/원시 교정 상황에서 편안한 착용감과 선명한 시야를 설명하기 위한 제품입니다.',features:['HydraLuxe® 기술 기반의 tear-inspired design','매일 새 렌즈로 교체하는 원데이 타입','UV 차단 기능 포함','30개입 / 90개입 팩 구성']},
+  max1day:{pack:2,title:'아큐브® 오아시스 MAX 원데이',overview:'TearStable™ Technology와 OptiBlue™ Light Filter가 적용된 원데이 렌즈입니다. 빛번짐·눈부심 상황에서 더 선명한 시야 비교를 보여주기 위한 제품입니다.',features:['OptiBlue™ Light Filter 적용','TearStable™ Technology 기반 착용감','UV 차단 기능 포함','일상 및 디지털 환경에서 선명한 시야 설명에 적합']},
+  oasysToric:{pack:3,title:'아큐브® 오아시스 원데이 난시용',overview:'난시 교정을 위한 원데이 렌즈입니다. 자연스러운 눈꺼풀 움직임을 활용해 렌즈가 안정적으로 위치하도록 설계된 제품입니다.',features:['난시 교정용 디자인','눈꺼풀 움직임을 활용한 안정화 설계','HydraLuxe® 기술 기반 착용감','UV 차단 기능 포함']},
+  maxToric:{pack:4,title:'아큐브® 오아시스 MAX 원데이 난시용',overview:'난시 교정에 맥스 원데이의 선명도와 빛 필터링 특성을 더한 제품입니다. 안정적인 축 위치와 빛번짐 저감 비교에 사용할 수 있습니다.',features:['OptiBlue™ Light Filter 적용','난시용 안정화 설계','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
+  moistMulti:{pack:5,title:'원데이 아큐브® 모이스트 멀티포컬',overview:'노안 교정을 위한 원데이 멀티포컬 렌즈입니다. 동공 크기 변화를 고려한 디자인으로 근거리·중간거리·원거리 시야 설명에 사용할 수 있습니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','LACREON® 기술 적용','근거리부터 원거리까지 시야 설명 가능','원데이 교체 타입']},
+  maxMulti:{pack:6,title:'아큐브® 오아시스 MAX 원데이 멀티포컬',overview:'노안 교정을 위한 맥스 원데이 멀티포컬 렌즈입니다. 다양한 거리와 조명 조건에서 선명한 시야를 설명하기 위한 제품입니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','OptiBlue™ Light Filter 적용','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
+  maxMultiToric:{pack:7,title:'아큐브® 오아시스 MAX 원데이 멀티포컬 난시용',overview:'노안과 난시를 함께 고려한 맥스 원데이 렌즈입니다. 여러 거리, 다양한 조명 조건, 안정적인 난시 교정 설명에 활용할 수 있습니다.',features:['멀티포컬 + 난시 교정 조합','모든 거리와 조명 조건에서의 선명도 설명 가능','안정적인 난시 교정 설명에 적합','TearStable™ 및 OptiBlue™ 기반 제품군']}
 };
 const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50};
 const dom={
@@ -370,7 +368,7 @@ const dom={
   conditionBadge:document.getElementById('conditionBadge'),sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),
   leftVideo:document.getElementById('leftVideo'),rightVideo:document.getElementById('rightVideo'),
-  leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel'),playToggle:document.getElementById('playToggle'),
+  leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel'),
   leftInfoBtn:document.getElementById('leftInfoBtn'),rightInfoBtn:document.getElementById('rightInfoBtn'),
   leftProductPop:document.getElementById('leftProductPop'),rightProductPop:document.getElementById('rightProductPop'),
   leftPopClose:document.getElementById('leftPopClose'),rightPopClose:document.getElementById('rightPopClose'),
@@ -421,7 +419,7 @@ function renderSceneGrid(){
   sceneOrder.forEach(id=>{
     const chip=document.createElement('button');
     chip.type='button'; chip.className='scene-chip'+(state.scene===id?' active':'');
-    chip.innerHTML=`<strong>${scenes[id].label}</strong>`;
+    chip.innerHTML=`<strong>${scenes[id].label}</strong><span>${scenes[id].sub}</span>`;
     chip.onclick=()=>{state.scene=id;renderSceneGrid();updateVideos();updateBadges();};
     dom.sceneGrid.appendChild(chip);
     const op=document.createElement('option'); op.value=id; op.textContent=scenes[id].label; dom.sceneSelect.appendChild(op);
@@ -462,21 +460,6 @@ function renderProducts(){
 }
 function applyVideoAdjust(video,num){const adj=VIDEO_ADJUST[num] || {x:0,y:0,scale:1};video.style.setProperty('--video-x',`${adj.x||0}px`);video.style.setProperty('--video-y',`${adj.y||0}px`);video.style.setProperty('--video-scale',adj.scale||1)}
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
-function updatePlayButton(){
-  const paused = dom.leftVideo.paused || dom.rightVideo.paused;
-  dom.playToggle.textContent = paused ? '▶' : '❚❚';
-  dom.playToggle.setAttribute('aria-label', paused ? '재생' : '일시중지');
-}
-function pauseBothVideos(){
-  try{dom.leftVideo.pause();}catch(e){}
-  try{dom.rightVideo.pause();}catch(e){}
-  updatePlayButton();
-}
-function playBothVideos(){
-  safePlay(dom.leftVideo);
-  safePlay(dom.rightVideo);
-  updatePlayButton();
-}
 function prepareVideo(video,src){if(video.dataset.src===src) return; video.dataset.src=src; video.src=src; video.muted=true; video.loop=true; video.playsInline=true; video.setAttribute('muted',''); video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline',''); try{video.load();}catch(e){} safePlay(video)}
 let restartToken=0;
 function restartBothVideos(){
@@ -501,7 +484,6 @@ function updateVideos(){
   prepareVideo(dom.leftVideo,leftSrc); prepareVideo(dom.rightVideo,rightSrc);
   dom.leftVideoLabel.textContent=`좌측 ${leftNum}.mp4`; dom.rightVideoLabel.textContent=`우측 ${rightNum}.mp4`;
   restartBothVideos();
-  updatePlayButton();
 }
 function fillProductPop(side,productId){
   const info=PRODUCT_INFO[productId]; if(!info) return;
@@ -530,18 +512,16 @@ dom.handle.addEventListener('pointerup',()=>dragging=false);
 dom.stage.addEventListener('pointerdown',e=>{if(e.target===dom.stage||e.target.classList.contains('divider')) moveSplit(e.clientX)});
 dom.sceneSelect.onchange=e=>{state.scene=e.target.value; renderSceneGrid(); updateVideos(); updateBadges();};
 dom.resetBtn.onclick=()=>{state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; setSplit(50); renderAll();};
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){playBothVideos();}});
-document.addEventListener('click',()=>{playBothVideos();},{once:true});
-document.addEventListener('touchstart',()=>{playBothVideos();},{once:true,passive:true});
-dom.leftVideo.addEventListener('canplay',()=>updatePlayButton()); dom.rightVideo.addEventListener('canplay',()=>updatePlayButton());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){safePlay(dom.leftVideo); safePlay(dom.rightVideo);}});
+document.addEventListener('click',()=>{safePlay(dom.leftVideo); safePlay(dom.rightVideo);},{once:true});
+document.addEventListener('touchstart',()=>{safePlay(dom.leftVideo); safePlay(dom.rightVideo);},{once:true,passive:true});
+dom.leftVideo.addEventListener('canplay',()=>safePlay(dom.leftVideo)); dom.rightVideo.addEventListener('canplay',()=>safePlay(dom.rightVideo));
 dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4 파일 확인 필요`;});
 dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4 파일 확인 필요`;});
 setInterval(syncVideoTiming,250);
 dom.leftInfoBtn.onclick=()=>toggleProductPop('left'); dom.rightInfoBtn.onclick=()=>toggleProductPop('right'); dom.leftPopClose.onclick=()=>closeProductPop('left'); dom.rightPopClose.onclick=()=>closeProductPop('right');
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left'); closeProductPop('right');}});
-dom.playToggle.onclick=()=>{ if(dom.leftVideo.paused || dom.rightVideo.paused) playBothVideos(); else pauseBothVideos(); };
 renderAll();
-updatePlayButton();
 </script>
 </body>
 </html>
