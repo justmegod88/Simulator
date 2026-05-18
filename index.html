@@ -182,9 +182,8 @@ select option, select optgroup{background:#fff;color:#0F2747}
   <div class="shell">
     <aside class="panel sidebar">
       <div class="hero">
-        <div class="hero-kicker">ACUVUE Simulator</div>
+        <div class="hero-kicker">ACUVUE Vision Simulator</div>
         <h1>콘택트렌즈 시뮬레이터</h1>
-        <p>굴절이상 상태와 제품군, 환경별 영상 비교를 한 화면에서 확인할 수 있도록 구성한 데모입니다.</p>
       </div>
 
       <div class="section">
@@ -192,7 +191,7 @@ select option, select optgroup{background:#fff;color:#0F2747}
           <div class="section-num">1</div>
           <div>
             <div class="section-title">굴절이상 선택</div>
-            <div class="section-sub">근/원시, 난시, 노안을 조합해 비교 상태를 선택하세요.</div>
+            <div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div>
           </div>
         </div>
         <div class="grid-chip" id="conditionGrid"></div>
@@ -327,9 +326,9 @@ const conditions=[
   {id:'presbyopia',label:'노안'}
 ];
 const scenes={
-  day:{label:'마트', sub:'Day to Day'},
-  night:{label:'야간운전', sub:'Night Driving'},
-  dine:{label:'레스토랑', sub:'Restaurant'}
+  day:{label:'마트'},
+  night:{label:'야간운전'},
+  dine:{label:'레스토랑'}
 };
 const sceneOrder=['day','night','dine'];
 const sceneColumn={day:0,night:1,dine:2};
