@@ -45,7 +45,8 @@ body{
 .sidebar{padding:18px;display:flex;flex-direction:column;gap:16px;position:sticky;top:16px}
 .viewer{padding:18px;display:flex;flex-direction:column;gap:14px}
 .hero{
-  padding:18px;
+  padding:18px 126px 18px 18px;
+  min-height:124px;
   border-radius:22px;
   color:#fff;
   background:linear-gradient(135deg,#005EB8 0%, #0E73D8 44%, #63B2FF 100%);
@@ -61,8 +62,19 @@ body{
   background:rgba(255,255,255,.10);
 }
 .hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
-.hero h1{position:relative;z-index:1;margin:14px 0 6px;font-size:32px;line-height:1.1;font-weight:950}
-.hero p{position:relative;z-index:1;margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.92)}
+.hero h1{position:relative;z-index:1;margin:14px 0 0;font-size:32px;line-height:1.1;font-weight:950}
+.hero-pack{
+  position:absolute;right:16px;top:14px;bottom:14px;width:96px;
+  display:flex;align-items:center;justify-content:center;z-index:2;
+}
+.hero-pack img{
+  width:100%;height:100%;object-fit:contain;display:block;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.16));
+}
+.hero-pack-fallback{
+  width:100%;height:100%;display:none;align-items:center;justify-content:center;
+  border-radius:16px;border:1px dashed rgba(255,255,255,.5);color:rgba(255,255,255,.92);font-size:11px;font-weight:800;text-align:center;padding:8px;
+}
 .section{
   padding:16px;
   background:linear-gradient(180deg,#FFFFFF 0%, #F8FBFF 100%);
@@ -180,7 +192,8 @@ select option, select optgroup{background:#fff;color:#0F2747}
 .pop-pack{width:100%;height:132px;object-fit:contain;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:16px;padding:10px}
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
 .pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;color:#718096}
-@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static}.hero h1{font-size:28px}}
+@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static}.hero{padding-right:118px}.hero h1{font-size:28px}}
+@media (max-width:760px){.hero{padding-right:104px;min-height:110px}.hero-pack{width:84px;top:12px;bottom:12px;right:12px}}
 </style>
 </head>
 <body>
@@ -190,6 +203,10 @@ select option, select optgroup{background:#fff;color:#0F2747}
       <div class="hero">
         <div class="hero-kicker">ACUVUE Vision Simulator</div>
         <h1>콘택트렌즈 시뮬레이터</h1>
+        <div class="hero-pack">
+          <img src="./acuvue.png" alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="hero-pack-fallback">acuvue.png</div>
+        </div>
       </div>
 
       <div class="section">
@@ -237,15 +254,6 @@ select option, select optgroup{background:#fff;color:#0F2747}
           <div class="select-shell"><select id="sceneSelect"></select></div>
         </div>
       </div>
-
-      <div class="packshot-card">
-        <div class="packshot-slot">
-          <img src="./acuvue.png" alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="packshot-placeholder" style="display:none;">같은 위치에 acuvue.png 파일을 넣어주세요</div>
-        </div>
-      </div>
-
-
     </aside>
 
     <section class="panel viewer">
