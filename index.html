@@ -45,13 +45,17 @@ body{
 .sidebar{padding:18px;display:flex;flex-direction:column;gap:14px;position:sticky;top:16px}
 .viewer{padding:18px;display:flex;flex-direction:column;gap:10px}
 .hero{
-  padding:14px 150px 14px 18px;
-  min-height:96px;
+  padding:12px 16px;
+  min-height:104px;
   border-radius:22px;
   color:#fff;
   background:linear-gradient(135deg,#005EB8 0%, #0E73D8 44%, #63B2FF 100%);
   position:relative;
   overflow:hidden;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 148px;
+  align-items:center;
+  column-gap:12px;
 }
 .hero:before{
   content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;
@@ -61,18 +65,20 @@ body{
   content:"";position:absolute;left:-24px;bottom:-34px;width:120px;height:120px;border-radius:50%;
   background:rgba(255,255,255,.10);
 }
-.hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
-.hero h1{position:relative;z-index:1;margin:12px 0 0;font-size:30px;line-height:1.04;font-weight:950;letter-spacing:-.02em}
+.hero-copy{position:relative;z-index:2;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.14);font-size:11px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;justify-self:start;max-width:fit-content}
+.hero h1{position:relative;z-index:1;margin:10px 0 0;font-size:25px;line-height:1.06;font-weight:950;letter-spacing:-.03em;word-break:keep-all;max-width:100%}
 .hero-pack{
-  position:absolute;
-  right:14px;
-  top:12px;
-  width:140px;
-  height:72px;
+  position:relative;
+  right:auto;
+  top:auto;
+  width:148px;
+  height:84px;
   display:flex;
   align-items:center;
   justify-content:center;
   z-index:2;
+  justify-self:end;
 }
 .hero-pack img{
   width:100%;
@@ -81,7 +87,7 @@ body{
   object-position:center center;
   display:block;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.14));
-  transform:scale(1.16);
+  transform:scale(1.22);
 }
 .hero-pack-fallback{
   width:100%;height:100%;display:none;align-items:center;justify-content:center;
@@ -185,13 +191,14 @@ select option{
 .divider{position:absolute;top:0;bottom:0;left:var(--split);width:2px;background:rgba(255,255,255,.78);transform:translateX(-1px);z-index:5}
 .handle{position:absolute;top:50%;left:var(--split);transform:translate(-50%,-50%);z-index:6;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:#fff;color:#23456C;display:grid;place-items:center;font-size:22px;font-weight:900;cursor:ew-resize;user-select:none;box-shadow:0 8px 24px rgba(0,0,0,.18)}
 .side-label{
-  position:absolute;top:16px;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:18px;
-  background:rgba(255,255,255,.92);border:1px solid rgba(0,94,184,.16);color:#005EB8;box-shadow:0 8px 24px rgba(0,94,184,.10);z-index:4;font-weight:800
+  position:absolute;top:14px;display:grid;grid-template-columns:42px minmax(0,1fr) 34px;align-items:center;gap:6px;padding:8px 10px;border-radius:16px;
+  background:rgba(255,255,255,.94);border:1px solid rgba(0,94,184,.16);color:#005EB8;box-shadow:0 8px 24px rgba(0,94,184,.10);z-index:4;font-weight:800;
+  width:min(44%, 430px);
 }
-.side-label.left{left:16px}.side-label.right{right:16px}
-.side-name{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:34px;padding:0 10px;border-radius:12px;background:#EAF4FF;color:#005EB8;font-size:13px;font-weight:900}
-.label-select{height:38px;border-radius:12px;padding:0 12px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;min-width:220px}
-.info-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:17px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08)}
+.side-label.left{left:14px}.side-label.right{right:14px}
+.side-name{display:inline-flex;align-items:center;justify-content:center;width:42px;height:32px;padding:0 8px;border-radius:11px;background:#EAF4FF;color:#005EB8;font-size:12px;font-weight:900;line-height:1.05}
+.label-select{height:34px;border-radius:11px;padding:0 30px 0 10px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;min-width:0;width:100%;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.info-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08)}
 .info-btn:hover{background:#F1F7FF}
 .video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
 .video-label.left{left:16px}.video-label.right{right:78px}
@@ -212,8 +219,8 @@ select option{
 .pop-pack{width:100%;height:132px;object-fit:contain;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:16px;padding:10px}
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
 .pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;color:#718096}
-@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static}.hero{padding:14px 132px 14px 18px;min-height:92px}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;top:12px;right:12px}}
-@media (max-width:760px){.app{padding:12px}.hero{padding:12px 108px 12px 14px;min-height:86px}.hero-kicker{padding:7px 12px;font-size:11px}.hero h1{font-size:24px}.hero-pack{width:94px;height:50px;top:12px;right:10px}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}}
+@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static}.hero{padding:12px 14px;min-height:98px;grid-template-columns:minmax(0,1fr) 132px}.hero h1{font-size:24px}.hero-pack{width:132px;height:72px}.side-label{width:min(48%, 390px)}}
+@media (max-width:760px){.app{padding:12px}.hero{padding:10px 12px;min-height:88px;grid-template-columns:minmax(0,1fr) 92px;column-gap:8px}.hero-kicker{padding:6px 10px;font-size:10px}.hero h1{font-size:20px;margin-top:8px}.hero-pack{width:92px;height:52px}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{width:min(46%, 250px);top:10px;padding:6px 8px;grid-template-columns:34px minmax(0,1fr) 28px;gap:4px;border-radius:14px}.side-name{width:34px;height:28px;font-size:11px}.label-select{height:30px;font-size:11px;padding:0 24px 0 8px}.info-btn{width:28px;height:28px;font-size:13px}}
 </style>
 </head>
 <body>
@@ -221,8 +228,10 @@ select option{
   <div class="shell">
     <aside class="panel sidebar">
       <div class="hero">
-        <div class="hero-kicker">ACUVUE Simulator</div>
-        <h1>비전 시뮬레이터</h1>
+        <div class="hero-copy">
+          <div class="hero-kicker">ACUVUE Simulator</div>
+          <h1>비전 시뮬레이터</h1>
+        </div>
 
         <div class="hero-pack">
           <img src="./acuvue.png" alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
