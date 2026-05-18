@@ -168,11 +168,17 @@ select option{
   box-shadow:0 10px 24px rgba(0,94,184,.08);
 }
 .references-footer-head{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:0
 }
-.references-footer-title{font-size:18px;font-weight:900;margin:0;color:#0F2747}
+.references-footer-title{font-size:18px;font-weight:900;margin:0;color:#0F2747;line-height:1.1}
 .references-footer-sub{font-size:12px;line-height:1.6;opacity:1;margin:0;color:#5E789A}
-.references-footer-text{font-size:12px;line-height:1.72;white-space:pre-line;color:#3E5C80}
+.references-footer-text{font-size:12px;line-height:1.72;color:#3E5C80;margin-top:0;padding-top:0}
+
+.references-group{margin:0}
+.references-group + .references-group{margin-top:12px}
+.references-group-title{font-weight:400;color:#48678d;margin:0 0 2px 0}
+.references-group > div:not(.references-group-title){margin:0}
+
 
 .toolbar{
   display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap
@@ -253,7 +259,7 @@ select option{
 .pop-body{padding:14px 18px 18px}
 .pop-pack{width:100%;height:132px;object-fit:contain;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:16px;padding:10px}
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
-.pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{display:none}
+.pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;line-height:1.5;color:#8A97A8;border-top:1px solid #EEF3F8;padding-top:10px}
 @media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.side-label{max-width:calc(50% - 16px)}.label-select{width:190px;max-width:190px;font-size:11px}}
 @media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px;max-width:calc(50% - 12px)}.side-name{min-width:34px;height:28px;font-size:11px}.label-select{height:30px;width:150px;max-width:150px;font-size:10px;padding:0 28px 0 8px}.info-btn{width:28px;height:28px;font-size:13px}}
 </style>
@@ -400,25 +406,26 @@ select option{
           <h3 class="references-footer-title">references</h3>
          
         </div>
-        <div class="references-footer-text">Product Information
-
-1. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology product information. ACUVUE.
-2. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology for ASTIGMATISM product information. ACUVUE.
-3. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day product information. ACUVUE.
-4. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day for ASTIGMATISM product information. ACUVUE.
-5. ACUVUE<sup class="reg">®</sup> MOIST MULTIFOCAL product information. ACUVUE.
-6. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL product information. ACUVUE.
-7. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL for ASTIGMATISM product information. ACUVUE.
-
-Refractive Error and Visual Impact
-
-8. Types of Refractive Errors. National Eye Institute, NIH.
-9. Refractive Errors Preferred Practice Pattern<sup class="reg">®</sup>. American Academy of Ophthalmology.
-
-Blue Light / HEV Filtering
-
-10. Tavazzi S, et al. Does blue-violet filtering in contact lenses improve contrast sensitivity? Contact Lens and Anterior Eye. 2022.
-11. Hammond BR, Buch JR, Martin P, Shamp W, Harth JB, Wysocky C, Renzi-Hammond LM. The effects of a HEV-filtering contact lens on the brightness of natural images. Ophthalmic Physiol Opt. 2025;45(7):1801-1810. doi:10.1111/opo.70035.</div>
+        <div class="references-footer-text"><div class="references-group">
+  <div class="references-group-title">Product Information</div>
+  <div>1. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology product information. ACUVUE.</div>
+  <div>2. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology for ASTIGMATISM product information. ACUVUE.</div>
+  <div>3. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day product information. ACUVUE.</div>
+  <div>4. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day for ASTIGMATISM product information. ACUVUE.</div>
+  <div>5. ACUVUE<sup class="reg">®</sup> MOIST MULTIFOCAL product information. ACUVUE.</div>
+  <div>6. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL product information. ACUVUE.</div>
+  <div>7. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL for ASTIGMATISM product information. ACUVUE.</div>
+</div>
+<div class="references-group">
+  <div class="references-group-title">Refractive Error and Visual Impact</div>
+  <div>8. Types of Refractive Errors. National Eye Institute, NIH.</div>
+  <div>9. Refractive Errors Preferred Practice Pattern<sup class="reg">®</sup>. American Academy of Ophthalmology.</div>
+</div>
+<div class="references-group">
+  <div class="references-group-title">Blue Light / HEV Filtering</div>
+  <div>10. Tavazzi S, et al. Does blue-violet filtering in contact lenses improve contrast sensitivity? Contact Lens and Anterior Eye. 2022.</div>
+  <div>11. Hammond BR, Buch JR, Martin P, Shamp W, Harth JB, Wysocky C, Renzi-Hammond LM. The effects of a HEV-filtering contact lens on the brightness of natural images. Ophthalmic Physiol Opt. 2025;45(7):1801-1810. doi:10.1111/opo.70035.</div>
+</div></div>
       </div>
 </div>
 
@@ -460,9 +467,9 @@ const PRODUCT_INFO={
       '안구 모양에 따라 선택 가능한 2가지 렌즈 디자인',
       '평평한 안구에 적합한 9.0 베이스커브까지! 내 눈에 핏하고 선명한 시력 제공',
       '자외선 차단 1등급 - UVA 90%, UVB 99% 이상 차단#',
-      '1박스에 약 1개월(30렌즈) / 3개월 (90렌즈) 분량',
-      '의료기기심의필 42024-I10-24-2098 (유효기간: 27.06.21)'
-    ]
+      '1박스에 약 1개월(30렌즈) / 3개월 (90렌즈) 분량'
+    ],
+    approval:'의료기기심의필 42024-I10-24-2098 (유효기간: 27.06.21)'
   },
   max1day:{
     pack:2,
@@ -475,9 +482,9 @@ const PRODUCT_INFO={
       '눈물 안정화™ 기술(Tearstable™) - 하루 종일 편안하게',
       '수분 증발을 막고 눈 속 눈물층을 오랫 동안 유지',
       '자외선 차단 1등급 - UVA 90%, UVB 99% 이상 차단#',
-      '1박스에 약 1개월(30렌즈) / 3개월(90렌즈) 분량',
-      '의료기기심의필 42024-I10-23-2075 (유효기간: 27.06.21)'
-    ]
+      '1박스에 약 1개월(30렌즈) / 3개월(90렌즈) 분량'
+    ],
+    approval:'의료기기심의필 42024-I10-23-2075 (유효기간: 27.06.21)'
   },
   oasysToric:{
     pack:3,
@@ -492,9 +499,9 @@ const PRODUCT_INFO={
       '아큐브의 ASD 기술',
       '4개의 존으로 렌즈 회전을 줄여주는 아큐브의 디자인',
       '자외선 차단 1등급 - UVA 90%, UVB 99% 이상 차단#',
-      '1박스에 약 1개월(30렌즈) / 3개월 (90렌즈) 분량',
-      '의료기기심의필 42024-I10-23-2074 (유효기간: 27.06.21)'
-    ]
+      '1박스에 약 1개월(30렌즈) / 3개월 (90렌즈) 분량'
+    ],
+    approval:'의료기기심의필 42024-I10-23-2074 (유효기간: 27.06.21)'
   },
   maxToric:{
     pack:4,
@@ -506,9 +513,9 @@ const PRODUCT_INFO={
       '옵티블루™ 기술 (OptiBlue™)',
       '눈물안정화 기술 (Tearstable™)',
       'ASD 기술',
-      '디지털 환경이 일상인 현대인의 라이프스타일에서도 편안하고, 선명하며 안정적인 시야를 제공합니다.',
-      '의료기기 심의필 조합 2025-31-020 (유효기간: 28.08.25까지)'
-    ]
+      '디지털 환경이 일상인 현대인의 라이프스타일에서도 편안하고, 선명하며 안정적인 시야를 제공합니다.'
+    ],
+    approval:'의료기기 심의필 조합 2025-31-020 (유효기간: 28.08.25까지)'
   },
   moistMulti:{
     pack:5,
@@ -523,9 +530,9 @@ const PRODUCT_INFO={
       '하루종일 촉촉하고 편안한 저자극 렌즈',
       '다량의 PVP 습윤인자를 함유하여 더욱 촉촉하고 편안한 착용감 제공',
       '우수한 자외선 차단 기능 - UVA 70%, UVB 95% 이상 차단#',
-      '1박스에 약 1개월(30렌즈) 분량',
-      '의료기기심의필 42024-I10-25-2227 (유효기간: 27.06.27)'
-    ]
+      '1박스에 약 1개월(30렌즈) 분량'
+    ],
+    approval:'의료기기심의필 42024-I10-25-2227 (유효기간: 27.06.27)'
   },
   maxMulti:{
     pack:6,
@@ -538,9 +545,9 @@ const PRODUCT_INFO={
       '옵티블루™ 기술 (OptiBlue™) - 높은 레벨의 블루라이트 차단±',
       '옵티블루™ 기술 (OptiBlue™)로 블루라이트의 약 55% 차단',
       '자외선 차단 1등급 - UVA 90%, UVB 99% 이상 차단#',
-      '1박스 약 1개월 (30렌즈) / 3개월 (90렌즈) 분량',
-      '의료기기심의필 42024-I10-23-2076 (유효기간: 27.06.21)'
-    ]
+      '1박스 약 1개월 (30렌즈) / 3개월 (90렌즈) 분량'
+    ],
+    approval:'의료기기심의필 42024-I10-23-2076 (유효기간: 27.06.21)'
   },
   maxMultiToric:{
     pack:7,
@@ -553,9 +560,9 @@ const PRODUCT_INFO={
       '183개 동공 크기별 디자인 (Pupil Optimized Design)',
       '옵티블루™ 기술 (OptiBlue™)',
       '눈물안정화 기술 (Tearstable™)',
-      'ASD 기술',
-      '국내 공식 제품 페이지에서 개별 의료기기심의필 번호 미확인'
-    ]
+      'ASD 기술'
+    ],
+    approval:'국내 공식 제품 페이지에서 개별 의료기기심의필 번호 미확인'
   }
 };
 const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50};
@@ -709,7 +716,7 @@ function fillProductPop(side,productId){
   const info=PRODUCT_INFO[productId]; if(!info) return;
   const isLeft=side==='left';
   const title=isLeft?dom.leftPopTitle:dom.rightPopTitle, pack=isLeft?dom.leftPopPack:dom.rightPopPack, overview=isLeft?dom.leftPopOverview:dom.rightPopOverview, features=isLeft?dom.leftPopFeatures:dom.rightPopFeatures, note=isLeft?dom.leftPopNote:dom.rightPopNote;
-  title.textContent=info.title; overview.textContent=info.overview; features.innerHTML=info.features.map(v=>`<li>${v}</li>`).join(''); note.textContent='';
+  title.textContent=info.title; overview.textContent=info.overview; features.innerHTML=info.features.map(v=>`<li>${v}</li>`).join(''); note.textContent=info.approval || '';
   const packBase=`./${info.pack}`;
   pack.onerror=function(){ if(this.dataset.try==='png'){this.dataset.try='jpg'; this.src=packBase+'.jpg';} else if(this.dataset.try==='jpg'){this.dataset.try='jpeg'; this.src=packBase+'.jpeg';} else {this.onerror=null; this.removeAttribute('src'); this.alt='팩샷 이미지를 찾을 수 없습니다';} };
   pack.dataset.try='png'; pack.src=packBase+'.png';
