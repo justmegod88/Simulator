@@ -174,22 +174,21 @@ select option{
 .references-footer-sub{font-size:12px;line-height:1.6;opacity:1;margin:0;color:#5E789A}
 .references-footer-text{font-size:12px;line-height:1.72;white-space:pre-line;color:#3E5C80}
 
-.outcome-wrap{
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:12px 14px;border:1px solid #D7E6F8;border-radius:18px;
-  background:linear-gradient(180deg,#FFFFFF 0%, #F7FBFF 100%);
+.toolbar{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap
 }
-.outcome-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.outcome-title{font-size:14px;font-weight:900;color:#26486F}
-.outcome-options{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.outcome-option{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:#2D4F78;cursor:pointer}
-.outcome-option input{accent-color:#5B2DBD;width:18px;height:18px}
+.toolbar-left,.toolbar-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.outcome-inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:999px;background:#F4F9FF;border:1px solid #D4E4F6}
+.outcome-inline-title{font-size:14px;font-weight:900;color:#26486F}
+.outcome-options{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.outcome-option{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:800;color:#2D4F78;cursor:pointer}
+.outcome-option input{accent-color:#5B2DBD;width:16px;height:16px}
 .outcome-info-btn{
-  width:32px;height:32px;border-radius:50%;border:1px solid #C7DCF5;background:#fff;color:#5B2DBD;
-  font-weight:900;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08)
+  width:30px;height:30px;border-radius:50%;border:1px solid #C7DCF5;background:#fff;color:#5B2DBD;
+  font-weight:900;font-size:14px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08)
 }
 .outcome-pop{
-  position:fixed;display:none;max-width:420px;min-width:280px;z-index:9999;
+  position:fixed;display:none;max-width:420px;min-width:280px;z-index:99999;
   background:#111;color:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 18px 42px rgba(0,0,0,.32);
   font-size:14px;line-height:1.6
 }
@@ -201,9 +200,9 @@ select option{
 .outcome-pop p{margin:0 0 12px}
 .outcome-pop p:last-child{margin-bottom:0}
 @media (max-width:760px){
-  .outcome-wrap{padding:10px 12px;gap:10px;align-items:flex-start;flex-direction:column}
-  .outcome-options{gap:12px}
-  .outcome-title{font-size:13px}
+  .outcome-inline{padding:8px 12px;gap:8px}
+  .outcome-inline-title{font-size:13px}
+  .outcome-options{gap:10px}
   .outcome-option{font-size:13px}
 }
 
@@ -327,22 +326,19 @@ select option{
         <div class="toolbar-left">
           <span class="badge" id="conditionBadge"><span class="badge-accent"></span>상태 : 근/원시</span>
           <span class="badge" id="sceneBadge"><span class="badge-accent"></span>환경 : 마트</span>
+          <div class="outcome-inline">
+            <span class="outcome-inline-title">결과 범위</span>
+            <div class="outcome-options" id="outcomeOptions">
+              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="low">Low</label>
+              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="medium">Medium</label>
+              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="high" checked>High</label>
+            </div>
+            <button class="outcome-info-btn" id="outcomeInfoBtn" type="button" aria-label="결과 범위 안내">i</button>
+          </div>
         </div>
         <div class="toolbar-right">
           <button class="ghost-btn" id="resetBtn">초기화</button>
         </div>
-      </div>
-
-      <div class="outcome-wrap">
-        <div class="outcome-left">
-          <div class="outcome-title">시야 결과 범위</div>
-          <div class="outcome-options" id="outcomeOptions">
-            <label class="outcome-option"><input type="radio" name="outcomeLevel" value="low">Low</label>
-            <label class="outcome-option"><input type="radio" name="outcomeLevel" value="medium">Medium</label>
-            <label class="outcome-option"><input type="radio" name="outcomeLevel" value="high" checked>High</label>
-          </div>
-        </div>
-        <button class="outcome-info-btn" id="outcomeInfoBtn" type="button" aria-label="시야 결과 범위 안내">i</button>
       </div>
       <div class="outcome-pop" id="outcomePop">
         <p>콘택트렌즈 착용 시 시력은 개인의 눈 상태와 렌즈 특성에 따라 다양하게 나타나며, 항상 100% 동일한 시력 품질을 제공하는 것은 아닙니다.</p>
@@ -404,18 +400,25 @@ select option{
           <h3 class="references-footer-title">references</h3>
          
         </div>
-        <div class="references-footer-text">1. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology product information. ACUVUE.
+        <div class="references-footer-text">Product Information
+
+1. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology product information. ACUVUE.
 2. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology for ASTIGMATISM product information. ACUVUE.
 3. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day product information. ACUVUE.
 4. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day for ASTIGMATISM product information. ACUVUE.
-5. ACUVUE<sup class="reg">®</sup> OASYS MULTIFOCAL product information. ACUVUE.
-6. ACUVUE<sup class="reg">®</sup> MOIST MULTIFOCAL product information. ACUVUE.
-7. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL product information. ACUVUE.
-8. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL for ASTIGMATISM product information. ACUVUE.
-9. Types of Refractive Errors. National Eye Institute, NIH.
-10. Refractive Errors Preferred Practice Pattern<sup class="reg">®</sup>. American Academy of Ophthalmology.
-11. Data on file. Internal simulator design specification for object-based scene masking and illustrative blur rendering.
-12. Data on file. Internal product-matching criteria for spherical, toric, multifocal, and multifocal toric simulation logic.</div>
+5. ACUVUE<sup class="reg">®</sup> MOIST MULTIFOCAL product information. ACUVUE.
+6. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL product information. ACUVUE.
+7. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL for ASTIGMATISM product information. ACUVUE.
+
+Refractive Error and Visual Impact
+
+8. Types of Refractive Errors. National Eye Institute, NIH.
+9. Refractive Errors Preferred Practice Pattern<sup class="reg">®</sup>. American Academy of Ophthalmology.
+
+Blue Light / HEV Filtering
+
+10. Tavazzi S, et al. Does blue-violet filtering in contact lenses improve contrast sensitivity? Contact Lens and Anterior Eye. 2022.
+11. Hammond BR, Buch JR, Martin P, Shamp W, Harth JB, Wysocky C, Renzi-Hammond LM. The effects of a HEV-filtering contact lens on the brightness of natural images. Ophthalmic Physiol Opt. 2025;45(7):1801-1810. doi:10.1111/opo.70035.</div>
       </div>
 </div>
 
@@ -625,12 +628,20 @@ function toggleOutcomePop(){
   const pop = dom.outcomePop;
   const btn = dom.outcomeInfoBtn;
   const isOpen = pop.classList.contains('open');
-  pop.classList.toggle('open', !isOpen);
-  if(!isOpen){
-    const rect = btn.getBoundingClientRect();
-    pop.style.top = `${rect.bottom + 12}px`;
-    pop.style.left = `${Math.max(12, rect.right - 360)}px`;
+  if(isOpen){
+    pop.classList.remove('open');
+    return;
   }
+  pop.classList.add('open');
+  const rect = btn.getBoundingClientRect();
+  const popWidth = Math.min(420, window.innerWidth - 24);
+  pop.style.maxWidth = `${popWidth}px`;
+  let left = rect.right - popWidth + 18;
+  if(left < 12) left = 12;
+  let top = rect.bottom + 12;
+  if(top + 220 > window.innerHeight) top = Math.max(12, rect.top - 220 - 12);
+  pop.style.left = `${left}px`;
+  pop.style.top = `${top}px`;
 }
 
 function updateBadges(){
