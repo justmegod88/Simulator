@@ -3,374 +3,520 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>콘택트렌즈 시뮬레이터</title>
+<title>ACUVUE Simulator</title>
 <style>
-:root{--panel:#0c2345;--line:rgba(255,255,255,.14);--text:#fff;--muted:#dbe9ff;--blue:#005eb8;--blue-soft:#7cc3ff;--radius:18px;--shadow:0 18px 42px rgba(0,18,44,.30)}
+:root{
+  --acuvue:#005EB8;
+  --acuvue-2:#3C9CFF;
+  --acuvue-3:#EAF4FF;
+  --ink:#0F2747;
+  --ink-2:#284E7B;
+  --line:#D8E7F7;
+  --white:#ffffff;
+  --bg:#F4F9FF;
+  --card:#FFFFFF;
+  --shadow:0 14px 40px rgba(0,57,115,.12);
+  --r-xl:26px;
+  --r-lg:20px;
+  --r-md:16px;
+  --r-sm:12px;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 50% -10%,rgba(0,94,184,.55),rgba(0,94,184,.18) 24%,rgba(255,255,255,0) 48%),linear-gradient(180deg,#0a1b36,#0a2550 42%,#06162d)}
-.app{max-width:1520px;margin:0 auto;padding:18px}
-.shell{display:grid;grid-template-columns:350px 1fr;gap:18px;align-items:start}
-.panel{background:linear-gradient(180deg,rgba(12,35,69,.94),rgba(8,28,56,.97));border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);box-shadow:var(--shadow)}
+html,body{height:100%}
+body{
+  margin:0;
+  color:var(--ink);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(60,156,255,.16), transparent 28%),
+    radial-gradient(circle at 100% 18%, rgba(0,94,184,.12), transparent 30%),
+    linear-gradient(180deg,#F8FBFF 0%, #EEF6FF 100%);
+}
+.app{max-width:1540px;margin:0 auto;padding:22px}
+.shell{display:grid;grid-template-columns:390px 1fr;gap:20px;align-items:start}
+.panel{
+  background:rgba(255,255,255,.94);
+  border:1px solid rgba(0,94,184,.10);
+  border-radius:var(--r-xl);
+  box-shadow:var(--shadow);
+  backdrop-filter: blur(12px);
+}
 .sidebar{padding:18px;display:flex;flex-direction:column;gap:16px;position:sticky;top:16px}
-.sidebar-titlebar{padding:10px 14px;width:100%;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,rgba(19,55,107,.75),rgba(12,35,69,.62))}
-.kicker{display:block;width:100%;font-size:22px;line-height:1.15;font-weight:950;letter-spacing:.18em;text-transform:uppercase;color:var(--blue-soft);text-align:center;white-space:nowrap}
-.viewer{padding:14px;display:flex;flex-direction:column;gap:12px}
-.section{display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,rgba(19,55,107,.42),rgba(12,35,69,.22));border:1px solid var(--line);border-radius:16px;padding:14px}
-.section h3{margin:0;font-size:15px}
+.viewer{padding:18px;display:flex;flex-direction:column;gap:14px}
+.hero{
+  padding:18px;
+  border-radius:22px;
+  color:#fff;
+  background:linear-gradient(135deg,#005EB8 0%, #0E73D8 44%, #63B2FF 100%);
+  position:relative;
+  overflow:hidden;
+}
+.hero:before{
+  content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;
+  background:rgba(255,255,255,.13);
+}
+.hero:after{
+  content:"";position:absolute;left:-24px;bottom:-34px;width:120px;height:120px;border-radius:50%;
+  background:rgba(255,255,255,.10);
+}
+.hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.hero h1{position:relative;z-index:1;margin:14px 0 6px;font-size:32px;line-height:1.1;font-weight:950}
+.hero p{position:relative;z-index:1;margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.92)}
+.section{
+  padding:16px;
+  background:linear-gradient(180deg,#FFFFFF 0%, #F8FBFF 100%);
+  border:1px solid var(--line);
+  border-radius:22px;
+}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.section-num{display:grid;place-items:center;width:28px;height:28px;border-radius:999px;background:#E6F2FF;color:#005EB8;font-size:13px;font-weight:900;flex:0 0 auto}
+.section-title{font-size:18px;font-weight:900;color:var(--ink)}
+.section-sub{margin-top:4px;font-size:12px;color:#57718F;line-height:1.5}
 .grid-chip{display:flex;flex-wrap:wrap;gap:10px}
-.chip{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:var(--text);padding:10px 18px;border-radius:16px;font-size:14px;font-weight:800;cursor:pointer}
-.chip.active{border-color:rgba(124,195,255,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 0 16px rgba(0,94,184,.22);background:linear-gradient(180deg,rgba(0,94,184,.42),rgba(0,94,184,.22))}
-.select-wrap{display:flex;flex-direction:column;gap:12px}
-.field{display:flex;flex-direction:column;gap:6px}
-.field label{font-size:13px;font-weight:800}
-select{width:100%;height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,#0f3b78,#0b2d5c);color:var(--text);padding:0 14px;font-size:15px;outline:none}
-select option{background:#0c2345;color:#fff}
-.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
-.toolbar-left,.toolbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.badge{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(19,55,107,.90),rgba(12,35,69,.92));font-size:14px}
-.ghost-btn{border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(19,55,107,.90),rgba(12,35,69,.92));color:#fff;border-radius:14px;padding:10px 14px;font-weight:800;cursor:pointer}
-.stage{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);aspect-ratio:16/9;background:#091a32;--split:50%}
+.chip{
+  border:1px solid #C7DCF5;
+  background:#fff;color:var(--ink);
+  padding:11px 18px;border-radius:999px;
+  font-size:14px;font-weight:800;cursor:pointer;
+  transition:.18s ease;
+}
+.chip:hover{border-color:#7DB8F7;transform:translateY(-1px)}
+.chip.active{background:linear-gradient(180deg,#0E73D8,#005EB8);border-color:#005EB8;color:#fff;box-shadow:0 8px 22px rgba(0,94,184,.22)}
+.select-wrap,.field{display:flex;flex-direction:column;gap:8px}
+.field + .field{margin-top:14px}
+.field label{font-size:13px;font-weight:900;color:#3E5C80}
+.select-shell{position:relative}
+.select-shell:after{content:"⌄";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#5C7BA1;pointer-events:none}
+select{
+  width:100%;height:50px;padding:0 40px 0 14px;
+  border-radius:16px;border:1px solid #CDE0F5;
+  background:linear-gradient(180deg,#FFFFFF,#F5FAFF);
+  color:var(--ink);font-size:15px;font-weight:700;
+  outline:none;-webkit-appearance:none;appearance:none;
+}
+select:focus{border-color:#6AAEFE;box-shadow:0 0 0 4px rgba(0,94,184,.10)}
+select option, select optgroup{background:#fff;color:#0F2747}
+.product-groups-note{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px
+}
+.group-pill{padding:10px 10px;border-radius:14px;background:#F3F8FE;border:1px solid #D7E6F8;text-align:center;font-size:12px;font-weight:800;color:#547195}
+.scene-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.scene-chip{
+  border:1px solid #C7DCF5;background:#fff;border-radius:18px;padding:12px 10px;cursor:pointer;
+  display:flex;flex-direction:column;gap:4px;align-items:flex-start;transition:.18s ease;
+}
+.scene-chip strong{font-size:14px;color:#0F2747}
+.scene-chip span{font-size:12px;color:#6584A8}
+.scene-chip.active{background:linear-gradient(180deg,#E9F4FF,#D7EBFF);border-color:#6BAEFF;box-shadow:0 8px 20px rgba(0,94,184,.10)}
+.packshot-card{
+  background:transparent;
+  border:0;border-radius:0;padding:0;min-height:auto;
+}
+.packshot-slot{
+  height:158px;border-radius:0;background:transparent;
+  border:0;display:grid;place-items:center;overflow:hidden
+}
+.packshot-slot img{width:100%;height:100%;object-fit:contain;padding:0}
+.packshot-placeholder{font-size:12px;font-weight:700;color:#6B84A4}
+.references-footer{
+  margin-top:18px;
+  background:linear-gradient(180deg,#F8FBFF 0%, #EEF6FF 100%);
+  border:1px solid #D7E6F8;
+  border-radius:24px;
+  padding:22px 24px;
+  color:#0F2747;
+  box-shadow:0 10px 24px rgba(0,94,184,.08);
+}
+.references-footer-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px
+}
+.references-footer-title{font-size:18px;font-weight:900;margin:0;color:#0F2747}
+.references-footer-sub{font-size:12px;line-height:1.6;opacity:1;margin:0;color:#5E789A}
+.references-footer-text{font-size:12px;line-height:1.72;white-space:pre-line;color:#3E5C80}
+.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.toolbar-left,.toolbar-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:999px;
+  background:#F4F9FF;border:1px solid #D4E4F6;color:#26486F;font-size:14px;font-weight:800
+}
+.badge-accent{width:8px;height:8px;border-radius:50%;background:#0E73D8}
+.ghost-btn{
+  height:46px;padding:0 18px;border-radius:16px;border:1px solid #C7DCF5;background:#fff;color:var(--ink);font-weight:900;cursor:pointer
+}
+.ghost-btn:hover{border-color:#76B4F8;background:#F6FBFF}
+.stage-wrap{padding:12px;border-radius:24px;background:linear-gradient(180deg,#F8FBFF,#EDF5FF);border:1px solid #D7E6F8}
+.stage{position:relative;overflow:hidden;border-radius:22px;border:1px solid #DCE8F5;aspect-ratio:16/9;background:#0B1B32;--split:50%}
 .compare-pane{position:absolute;inset:0;overflow:hidden}
-.compare-pane video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center;}
+.compare-pane video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
 #leftPane{clip-path:polygon(0 0,var(--split) 0,var(--split) 100%,0 100%)}
 #rightPane{clip-path:polygon(var(--split) 0,100% 0,100% 100%,var(--split) 100%)}
 .divider{position:absolute;top:0;bottom:0;left:var(--split);width:2px;background:rgba(255,255,255,.78);transform:translateX(-1px);z-index:5}
-.handle{position:absolute;top:50%;left:var(--split);transform:translate(-50%,-50%);z-index:6;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:#fff;color:#1c2433;display:grid;place-items:center;font-size:24px;font-weight:900;cursor:ew-resize;user-select:none}
-.side-label{position:absolute;top:18px;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:13px;background:rgba(255,255,255,.88);border:1px solid rgba(0,94,184,.16);color:#005eb8;box-shadow:0 8px 24px rgba(0,94,184,.12);z-index:4;font-weight:800}
-.side-label.left{left:18px}.side-label.right{right:18px}
-.label-select{height:36px;border-radius:12px;padding:0 12px;background:linear-gradient(180deg,#0d86ff,#005eb8);border:1px solid rgba(255,255,255,.6);color:#fff;font-weight:800}
-.video-label{position:absolute;bottom:10px;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.42);font-size:12px;font-weight:800;z-index:4;color:#fff}.video-label.left{left:14px}.video-label.right{right:14px}
-.footer-note{font-size:12px;color:#d8e7ff;text-align:center;padding-top:2px}
-
-.info-btn{
-  width:34px;height:34px;border-radius:50%;
-  border:1px solid rgba(0,94,184,.22);
-  background:rgba(255,255,255,.92);
-  color:#005eb8;font-weight:950;font-size:18px;
-  display:inline-grid;place-items:center;
-  cursor:pointer;box-shadow:0 6px 18px rgba(0,94,184,.12);
+.handle{position:absolute;top:50%;left:var(--split);transform:translate(-50%,-50%);z-index:6;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:#fff;color:#23456C;display:grid;place-items:center;font-size:22px;font-weight:900;cursor:ew-resize;user-select:none;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.side-label{
+  position:absolute;top:16px;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:18px;
+  background:rgba(255,255,255,.92);border:1px solid rgba(0,94,184,.16);color:#005EB8;box-shadow:0 8px 24px rgba(0,94,184,.10);z-index:4;font-weight:800
 }
-.info-btn:hover{background:#fff;box-shadow:0 0 0 3px rgba(0,94,184,.12)}
-.info-btn{
-  width:34px;height:34px;border-radius:50%;
-  border:1px solid rgba(0,94,184,.22);
-  background:rgba(255,255,255,.92);
-  color:#005eb8;font-weight:950;font-size:18px;
-  display:inline-grid;place-items:center;
-  cursor:pointer;box-shadow:0 6px 18px rgba(0,94,184,.12);
-}
-.info-btn:hover{background:#fff;box-shadow:0 0 0 3px rgba(0,94,184,.12)}
-.product-pop{
-  position:absolute;top:78px;z-index:8;
-  width:min(330px,36%);
-  max-height:calc(100% - 104px);
-  overflow:auto;
-  display:none;
-  background:#ffffff;color:#12203a;border-radius:18px;
-  box-shadow:0 18px 44px rgba(0,0,0,.34);
-  border:1px solid rgba(0,94,184,.18);
-}
-.product-pop.open{display:block}
-.product-pop.left-pop{left:18px}
-.product-pop.right-pop{right:18px}
-.product-pop .pop-close{
-  position:absolute;right:12px;top:10px;width:34px;height:34px;
-  border-radius:50%;border:0;background:#f0f3f7;color:#203047;
-  font-size:24px;line-height:1;cursor:pointer;
-}
-.product-pop .pop-head{padding:18px 18px 8px;border-bottom:1px solid #e3e8ef}
-.product-pop .pop-title{
-  margin:0 40px 0 0;font-size:17px;line-height:1.25;font-weight:900;color:#15294d;
-}
-.product-pop .pop-body{padding:12px 18px 16px}
-.product-pop .pop-pack{
-  width:100%;height:120px;object-fit:cover;
-  border-radius:12px;background:#ffffff;border:1px solid #dce6f5;
-  margin-bottom:16px;padding:0;background:#fff;
-}
-.product-pop .pop-section{border-top:1px solid #e3e8ef;padding-top:10px;margin-top:10px}
-.product-pop .pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
-.product-pop .pop-section h4{margin:0 0 6px;font-size:15px;color:#15294d}
-.product-pop .pop-overview{margin:0;color:#34445f;font-size:13px;line-height:1.48}
-.product-pop .pop-features{margin:0;padding-left:18px;color:#34445f;font-size:13px;line-height:1.5}
-.product-pop .pop-note{margin:10px 0 0;font-size:11px;color:#718096}
-
-@media(max-width:1180px){.app{padding:12px}.shell{grid-template-columns:1fr}.sidebar{position:static}}
+.side-label.left{left:16px}.side-label.right{right:16px}
+.side-name{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:34px;padding:0 10px;border-radius:12px;background:#EAF4FF;color:#005EB8;font-size:13px;font-weight:900}
+.label-select{height:38px;border-radius:12px;padding:0 12px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;min-width:220px}
+.info-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:17px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08)}
+.info-btn:hover{background:#F1F7FF}
+.video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
+.video-label.left{left:16px}.video-label.right{right:16px}
+.footer-note{font-size:12px;color:#5D7799;text-align:center;padding-top:6px;line-height:1.5}
+.product-pop{position:absolute;top:78px;z-index:8;width:min(340px,38%);max-height:calc(100% - 100px);overflow:auto;display:none;background:#fff;color:#12203A;border-radius:22px;box-shadow:0 20px 46px rgba(0,0,0,.24);border:1px solid #D7E6F8}
+.product-pop.open{display:block}.product-pop.left-pop{left:18px}.product-pop.right-pop{right:18px}
+.pop-close{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;border:0;background:#F2F6FB;color:#203047;font-size:24px;cursor:pointer}
+.pop-head{padding:20px 18px 12px;border-bottom:1px solid #E6EEF7;background:linear-gradient(180deg,#F9FBFF,#F1F7FF)}
+.pop-kicker{display:inline-block;margin-bottom:8px;padding:6px 10px;border-radius:999px;background:#EAF4FF;color:#005EB8;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.pop-title{margin:0 40px 0 0;font-size:18px;line-height:1.3;font-weight:900;color:#15294D}
+.pop-body{padding:14px 18px 18px}
+.pop-pack{width:100%;height:132px;object-fit:contain;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:16px;padding:10px}
+.pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;color:#718096}
+@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static}.hero h1{font-size:28px}}
 </style>
 </head>
 <body>
-<div class="app"><div class="shell">
-<aside class="panel sidebar">
-<div class="sidebar-titlebar"><div class="kicker">Vision Simulator</div></div>
-<div class="section"><h3>1단계 | 굴절이상 선택</h3><div class="grid-chip" id="conditionGrid"></div></div>
-<div class="section"><h3>2단계 | 렌즈 선택 (좌/우 비교)</h3><div class="select-wrap">
-<div class="field"><label for="leftProduct">좌측 화면 제품</label><select id="leftProduct"></select></div>
-<div class="field"><label for="rightProduct">우측 화면 제품</label><select id="rightProduct"></select></div>
-</div></div>
-<div class="section"><h3>3단계 | Scene 선택</h3><select id="sceneSelect"><option value="day">Day to Day</option><option value="night">Night Driving</option><option value="dine">Dine Out</option></select></div>
-</aside>
-<section class="panel viewer">
-<div class="toolbar"><div class="toolbar-left"><span class="badge" id="conditionBadge">상태 : 근/원시</span><span class="badge" id="sceneBadge">Scene : Day to Day</span></div><div class="toolbar-right"><button class="ghost-btn" id="resetBtn">초기화</button></div></div>
-<div class="stage" id="stage">
-<div class="compare-pane" id="leftPane"><video id="leftVideo" autoplay muted loop playsinline preload="auto"></video></div>
-<div class="compare-pane" id="rightPane"><video id="rightVideo" autoplay muted loop playsinline preload="auto"></video></div>
-<div class="side-label left">좌측 <select class="label-select" id="leftInline"></select><button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button></div>
-<div class="side-label right">우측 <select class="label-select" id="rightInline"></select><button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button></div>
-<div class="video-label left" id="leftVideoLabel"></div><div class="video-label right" id="rightVideoLabel"></div>
+<div class="app">
+  <div class="shell">
+    <aside class="panel sidebar">
+      <div class="hero">
+        <div class="hero-kicker">ACUVUE Simulator</div>
+        <h1>콘택트렌즈 시뮬레이터</h1>
+        <p>굴절이상 상태와 제품군, 환경별 영상 비교를 한 화면에서 확인할 수 있도록 구성한 데모입니다.</p>
+      </div>
 
-<div class="product-pop left-pop" id="leftProductPop">
-  <button class="pop-close" id="leftPopClose" type="button" aria-label="닫기">×</button>
-  <div class="pop-head"><h3 class="pop-title" id="leftPopTitle"></h3></div>
-  <div class="pop-body">
-    <img class="pop-pack" id="leftPopPack" alt="좌측 제품 팩샷" />
-    <div class="pop-section"><h4>Overview</h4><p class="pop-overview" id="leftPopOverview"></p></div>
-    <div class="pop-section"><h4>Features</h4><ul class="pop-features" id="leftPopFeatures"></ul><p class="pop-note" id="leftPopNote"></p></div>
+      <div class="section">
+        <div class="section-head">
+          <div class="section-num">1</div>
+          <div>
+            <div class="section-title">굴절이상 선택</div>
+            <div class="section-sub">근/원시, 난시, 노안을 조합해 비교 상태를 선택하세요.</div>
+          </div>
+        </div>
+        <div class="grid-chip" id="conditionGrid"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="section-num">2</div>
+          <div>
+            <div class="section-title">제품 비교</div>
+            <div class="section-sub">좌/우 화면에 적용할 제품을 선택해 시야 차이를 비교하세요.</div>
+          </div>
+        </div>
+        <div class="select-wrap">
+          <div class="field">
+            <label for="leftProduct">좌측 화면 제품</label>
+            <div class="select-shell"><select id="leftProduct"></select></div>
+          </div>
+          <div class="field">
+            <label for="rightProduct">우측 화면 제품</label>
+            <div class="select-shell"><select id="rightProduct"></select></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="section-num">3</div>
+          <div>
+            <div class="section-title">환경 선택</div>
+            <div class="section-sub">시야 비교에 사용할 장면을 선택하세요.</div>
+          </div>
+        </div>
+        <div class="scene-grid" id="sceneGrid"></div>
+        <div class="field" style="margin-top:12px;display:none">
+          <label for="sceneSelect">환경 선택</label>
+          <div class="select-shell"><select id="sceneSelect"></select></div>
+        </div>
+      </div>
+
+      <div class="packshot-card">
+        <div class="packshot-slot">
+          <img src="./acuvue.png" alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div class="packshot-placeholder" style="display:none;">같은 위치에 acuvue.png 파일을 넣어주세요</div>
+        </div>
+      </div>
+
+
+    </aside>
+
+    <section class="panel viewer">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <span class="badge" id="conditionBadge"><span class="badge-accent"></span>상태 : 근/원시</span>
+          <span class="badge" id="sceneBadge"><span class="badge-accent"></span>환경 : 마트</span>
+        </div>
+        <div class="toolbar-right">
+          <button class="ghost-btn" id="resetBtn">초기화</button>
+        </div>
+      </div>
+
+      <div class="stage-wrap">
+        <div class="stage" id="stage">
+          <div class="compare-pane" id="leftPane"><video id="leftVideo" autoplay muted loop playsinline preload="auto"></video></div>
+          <div class="compare-pane" id="rightPane"><video id="rightVideo" autoplay muted loop playsinline preload="auto"></video></div>
+
+          <div class="side-label left">
+            <span class="side-name">좌측</span>
+            <select class="label-select" id="leftInline"></select>
+            <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
+          </div>
+          <div class="side-label right">
+            <span class="side-name">우측</span>
+            <select class="label-select" id="rightInline"></select>
+            <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
+          </div>
+
+          <div class="video-label left" id="leftVideoLabel"></div>
+          <div class="video-label right" id="rightVideoLabel"></div>
+
+          <div class="product-pop left-pop" id="leftProductPop">
+            <button class="pop-close" id="leftPopClose" type="button" aria-label="닫기">×</button>
+            <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="leftPopTitle"></h3></div>
+            <div class="pop-body">
+              <img class="pop-pack" id="leftPopPack" alt="좌측 제품 팩샷" />
+              <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="leftPopOverview"></p></div>
+              <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="leftPopFeatures"></ul><p class="pop-note" id="leftPopNote"></p></div>
+            </div>
+          </div>
+          <div class="product-pop right-pop" id="rightProductPop">
+            <button class="pop-close" id="rightPopClose" type="button" aria-label="닫기">×</button>
+            <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="rightPopTitle"></h3></div>
+            <div class="pop-body">
+              <img class="pop-pack" id="rightPopPack" alt="우측 제품 팩샷" />
+              <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="rightPopOverview"></p></div>
+              <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="rightPopFeatures"></ul><p class="pop-note" id="rightPopNote"></p></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="handle" id="handle">‹›</div>
+        </div>
+      </div>
+      <div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션 영상입니다. 실제 시야와 차이가 있을 수 있습니다.</div>
+
+      <div class="references-footer">
+        <div class="references-footer-head">
+          <h3 class="references-footer-title">참고문헌 영역</h3>
+          <p class="references-footer-sub">Videos for illustrative purposes only and are not intended to inform clinical decision-making. Actual results may vary.</p>
+        </div>
+        <div class="references-footer-text">1. ACUVUE® OASYS 1-Day with HydraLuxe® Technology product information. ACUVUE.
+2. ACUVUE® OASYS 1-Day with HydraLuxe® Technology for ASTIGMATISM product information. ACUVUE.
+3. ACUVUE® OASYS MAX 1-Day product information. ACUVUE.
+4. ACUVUE® OASYS MAX 1-Day for ASTIGMATISM product information. ACUVUE.
+5. ACUVUE® OASYS MULTIFOCAL product information. ACUVUE.
+6. ACUVUE® MOIST MULTIFOCAL product information. ACUVUE.
+7. ACUVUE® OASYS MAX 1-Day MULTIFOCAL product information. ACUVUE.
+8. ACUVUE® OASYS MAX 1-Day MULTIFOCAL for ASTIGMATISM product information. ACUVUE.
+9. Types of Refractive Errors. National Eye Institute, NIH.
+10. Refractive Errors Preferred Practice Pattern®. American Academy of Ophthalmology.
+11. Data on file. Internal simulator design specification for object-based scene masking and illustrative blur rendering.
+12. Data on file. Internal product-matching criteria for spherical, toric, multifocal, and multifocal toric simulation logic.</div>
+      </div>
+    </section>
   </div>
-</div>
-<div class="product-pop right-pop" id="rightProductPop">
-  <button class="pop-close" id="rightPopClose" type="button" aria-label="닫기">×</button>
-  <div class="pop-head"><h3 class="pop-title" id="rightPopTitle"></h3></div>
-  <div class="pop-body">
-    <img class="pop-pack" id="rightPopPack" alt="우측 제품 팩샷" />
-    <div class="pop-section"><h4>Overview</h4><p class="pop-overview" id="rightPopOverview"></p></div>
-    <div class="pop-section"><h4>Features</h4><ul class="pop-features" id="rightPopFeatures"></ul><p class="pop-note" id="rightPopNote"></p></div>
-  </div>
-</div>
-
-<div class="divider"></div><div class="handle" id="handle">‹›</div>
-</div>
-<div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션 영상입니다. 실제 시야와 차이가 있을 수 있습니다.</div>
-</section>
-</div></div>
-
 </div>
 
 <script>
-const conditions=[{id:'myohyperopia',label:'근/원시'},{id:'astigmatism',label:'난시'},{id:'presbyopia',label:'노안'}];
-const scenes={day:{label:'Day to Day'},night:{label:'Night Driving'},dine:{label:'Dine Out'}};
-const sceneColumn={day:0,night:1,dine:2};
-
-// 영상 번호별 위치/확대 보정값
-// 다이닝에서 17.mp4 / 19.mp4 프레이밍이 서로 달라 보여서 우선 보정값을 넣었습니다.
-// 필요 시 숫자만 조정하면 됩니다. x/y는 px, scale은 확대/축소입니다.
-const VIDEO_ADJUST={
-  // 예: 19번이 상대적으로 확대되어 보이면 scale을 0.98~0.96으로 낮추고,
-  // 위치가 위/아래로 틀어지면 y 값을 조정합니다.
-  17:{x:0,y:0,scale:1},
-  19:{x:0,y:0,scale:0.93}
-};
-const products=[
-{id:'oasys',name:'아큐브 오아시스 원데이'},
-{id:'max1day',name:'아큐브 오아시스 맥스 원데이'},
-{id:'oasysToric',name:'아큐브 오아시스 원데이 난시용'},
-{id:'maxToric',name:'아큐브 오아시스 맥스 원데이 난시용'},
-{id:'moistMulti',name:'원데이 아큐브 모이스트 멀티포컬'},
-{id:'maxMulti',name:'아큐브 오아시스 맥스 원데이 멀티포컬'},
-{id:'maxMultiToric',name:'아큐브 오아시스 맥스 원데이 멀티포컬 난시용'}
+const conditions=[
+  {id:'myohyperopia',label:'근/원시'},
+  {id:'astigmatism',label:'난시'},
+  {id:'presbyopia',label:'노안'}
 ];
+const scenes={
+  day:{label:'마트', sub:'Day to Day'},
+  night:{label:'야간운전', sub:'Night Driving'},
+  dine:{label:'레스토랑', sub:'Restaurant'}
+};
+const sceneOrder=['day','night','dine'];
+const sceneColumn={day:0,night:1,dine:2};
+const VIDEO_ADJUST={17:{x:0,y:0,scale:1},19:{x:0,y:0,scale:0.93}};
+const products=[
+  {id:'oasys',name:'아큐브® 오아시스 원데이',group:'sphere'},
+  {id:'max1day',name:'아큐브® 오아시스 MAX 원데이',group:'sphere'},
+  {id:'oasysToric',name:'아큐브® 오아시스 원데이 난시용',group:'toric'},
+  {id:'maxToric',name:'아큐브® 오아시스 MAX 원데이 난시용',group:'toric'},
+  {id:'moistMulti',name:'원데이 아큐브® 모이스트 멀티포컬',group:'multi'},
+  {id:'maxMulti',name:'아큐브® 오아시스 MAX 원데이 멀티포컬',group:'multi'},
+  {id:'maxMultiToric',name:'아큐브® 오아시스 MAX 원데이 멀티포컬 난시용',group:'multi'}
+];
+const GROUP_LABEL={multi:'멀티포컬',toric:'난시',sphere:'근/원시'};
 
 const PRODUCT_INFO={
-  oasys:{pack:1,title:'아큐브 오아시스 원데이',overview:'HydraLuxe® 기술이 적용된 매일 착용·교체용 콘택트렌즈입니다. 일상적인 근/원시 교정 상황에서 편안한 착용감과 선명한 시야를 설명하기 위한 제품입니다.',features:['HydraLuxe® 기술 기반의 tear-inspired design','매일 새 렌즈로 교체하는 원데이 타입','UV 차단 기능 포함','30개입 / 90개입 팩 구성']},
-  max1day:{pack:2,title:'아큐브 오아시스 맥스 원데이',overview:'TearStable™ Technology와 OptiBlue™ Light Filter가 적용된 원데이 렌즈입니다. 빛번짐·눈부심 상황에서 더 선명한 시야 비교를 보여주기 위한 제품입니다.',features:['OptiBlue™ Light Filter로 청자색광 약 60% 필터링','TearStable™ Technology로 눈물막 안정성 지원','UV 차단 기능 포함','일상 및 디지털 환경에서 선명한 시야 설명에 적합']},
-  oasysToric:{pack:3,title:'아큐브 오아시스 원데이 난시용',overview:'난시 교정을 위한 원데이 렌즈입니다. 자연스러운 눈꺼풀 움직임을 활용해 렌즈가 안정적으로 위치하도록 설계된 제품입니다.',features:['난시 교정용 디자인','눈꺼풀 움직임을 활용한 안정화 설계','HydraLuxe® 기술 기반 착용감','UV 차단 기능 포함']},
-  maxToric:{pack:4,title:'아큐브 오아시스 맥스 원데이 난시용',overview:'난시 교정에 맥스 원데이의 선명도와 빛 필터링 특성을 더한 제품입니다. 안정적인 축 위치와 빛번짐 저감 비교에 사용할 수 있습니다.',features:['OptiBlue™ Light Filter로 청자색광 약 60% 필터링','난시용 안정화 설계','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
-  moistMulti:{pack:5,title:'원데이 아큐브 모이스트 멀티포컬',overview:'노안 교정을 위한 원데이 멀티포컬 렌즈입니다. 동공 크기 변화를 고려한 디자인으로 근거리·중간거리·원거리 시야 설명에 사용할 수 있습니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','LACREON® 기술로 촉촉함 유지 지원','근거리부터 원거리까지 시야 설명 가능','원데이 교체 타입']},
-  maxMulti:{pack:6,title:'아큐브 오아시스 맥스 원데이 멀티포컬',overview:'노안 교정을 위한 맥스 원데이 멀티포컬 렌즈입니다. 다양한 거리와 조명 조건에서 선명한 시야를 설명하기 위한 제품입니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','OptiBlue™ Light Filter로 청자색광 약 60% 필터링','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
-  maxMultiToric:{pack:7,title:'아큐브 오아시스 맥스 원데이 멀티포컬 난시용',overview:'노안과 난시를 함께 고려한 맥스 원데이 렌즈입니다. 여러 거리, 다양한 조명 조건, 안정적인 난시 교정 설명에 활용할 수 있습니다.',features:['멀티포컬 + 난시 교정 조합','모든 거리와 조명 조건에서의 선명도 설명 가능','안정적인 난시 교정 설명에 적합','TearStable™ 및 OptiBlue™ 기반 제품군']}
+  oasys:{pack:1,title:'아큐브® 오아시스 원데이',overview:'HydraLuxe® 기술이 적용된 매일 착용·교체용 콘택트렌즈입니다. 일상적인 근/원시 교정 상황에서 편안한 착용감과 선명한 시야를 설명하기 위한 제품입니다.',features:['HydraLuxe® 기술 기반의 tear-inspired design','매일 새 렌즈로 교체하는 원데이 타입','UV 차단 기능 포함','30개입 / 90개입 팩 구성']},
+  max1day:{pack:2,title:'아큐브® 오아시스 MAX 원데이',overview:'TearStable™ Technology와 OptiBlue™ Light Filter가 적용된 원데이 렌즈입니다. 빛번짐·눈부심 상황에서 더 선명한 시야 비교를 보여주기 위한 제품입니다.',features:['OptiBlue™ Light Filter 적용','TearStable™ Technology 기반 착용감','UV 차단 기능 포함','일상 및 디지털 환경에서 선명한 시야 설명에 적합']},
+  oasysToric:{pack:3,title:'아큐브® 오아시스 원데이 난시용',overview:'난시 교정을 위한 원데이 렌즈입니다. 자연스러운 눈꺼풀 움직임을 활용해 렌즈가 안정적으로 위치하도록 설계된 제품입니다.',features:['난시 교정용 디자인','눈꺼풀 움직임을 활용한 안정화 설계','HydraLuxe® 기술 기반 착용감','UV 차단 기능 포함']},
+  maxToric:{pack:4,title:'아큐브® 오아시스 MAX 원데이 난시용',overview:'난시 교정에 맥스 원데이의 선명도와 빛 필터링 특성을 더한 제품입니다. 안정적인 축 위치와 빛번짐 저감 비교에 사용할 수 있습니다.',features:['OptiBlue™ Light Filter 적용','난시용 안정화 설계','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
+  moistMulti:{pack:5,title:'원데이 아큐브® 모이스트 멀티포컬',overview:'노안 교정을 위한 원데이 멀티포컬 렌즈입니다. 동공 크기 변화를 고려한 디자인으로 근거리·중간거리·원거리 시야 설명에 사용할 수 있습니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','LACREON® 기술 적용','근거리부터 원거리까지 시야 설명 가능','원데이 교체 타입']},
+  maxMulti:{pack:6,title:'아큐브® 오아시스 MAX 원데이 멀티포컬',overview:'노안 교정을 위한 맥스 원데이 멀티포컬 렌즈입니다. 다양한 거리와 조명 조건에서 선명한 시야를 설명하기 위한 제품입니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','OptiBlue™ Light Filter 적용','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
+  maxMultiToric:{pack:7,title:'아큐브® 오아시스 MAX 원데이 멀티포컬 난시용',overview:'노안과 난시를 함께 고려한 맥스 원데이 렌즈입니다. 여러 거리, 다양한 조명 조건, 안정적인 난시 교정 설명에 활용할 수 있습니다.',features:['멀티포컬 + 난시 교정 조합','모든 거리와 조명 조건에서의 선명도 설명 가능','안정적인 난시 교정 설명에 적합','TearStable™ 및 OptiBlue™ 기반 제품군']}
 };
 const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50};
-const dom={conditionGrid:document.getElementById('conditionGrid'),leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),leftInline:document.getElementById('leftInline'),rightInline:document.getElementById('rightInline'),sceneSelect:document.getElementById('sceneSelect'),conditionBadge:document.getElementById('conditionBadge'),sceneBadge:document.getElementById('sceneBadge'),resetBtn:document.getElementById('resetBtn'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),leftVideo:document.getElementById('leftVideo'),rightVideo:document.getElementById('rightVideo'),leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel'),
-leftInfoBtn:document.getElementById('leftInfoBtn'),
-rightInfoBtn:document.getElementById('rightInfoBtn'),
-leftProductPop:document.getElementById('leftProductPop'),
-rightProductPop:document.getElementById('rightProductPop'),
-leftPopClose:document.getElementById('leftPopClose'),
-rightPopClose:document.getElementById('rightPopClose'),
-leftPopTitle:document.getElementById('leftPopTitle'),
-rightPopTitle:document.getElementById('rightPopTitle'),
-leftPopPack:document.getElementById('leftPopPack'),
-rightPopPack:document.getElementById('rightPopPack'),
-leftPopOverview:document.getElementById('leftPopOverview'),
-rightPopOverview:document.getElementById('rightPopOverview'),
-leftPopFeatures:document.getElementById('leftPopFeatures'),
-rightPopFeatures:document.getElementById('rightPopFeatures'),
-leftPopNote:document.getElementById('leftPopNote'),
-rightPopNote:document.getElementById('rightPopNote')};
-function flags(){return{myohyperopia:state.selected.includes('myohyperopia'),astigmatism:state.selected.includes('astigmatism'),presbyopia:state.selected.includes('presbyopia')};}
-function productById(id){return products.find(p=>p.id===id);}
-function productOptions(){const f=flags();let ids;if(f.presbyopia&&f.astigmatism)ids=['maxMultiToric','maxMulti','moistMulti','maxToric','oasysToric','max1day','oasys'];else if(f.presbyopia&&f.myohyperopia)ids=['maxMulti','moistMulti','max1day','oasys'];else if(f.presbyopia)ids=['maxMulti','moistMulti'];else if(f.astigmatism)ids=['oasys','oasysToric','max1day','maxToric'];else ids=['oasys','max1day'];return ids.map(productById).filter(Boolean);}
-function videoNumber(productId){const f=flags();const c=sceneColumn[state.scene];let table;if(f.presbyopia&&f.astigmatism){table={maxMultiToric:[2,9,17],maxMulti:[5,13,21],moistMulti:[6,12,20],maxToric:[7,10,17],oasysToric:[3,14,18],max1day:[5,11,19],oasys:[4,15,19]};}else if(f.presbyopia&&f.myohyperopia){table={maxMulti:[2,9,17],moistMulti:[1,8,16],max1day:[2,10,18],oasys:[3,14,18]};}else if(f.presbyopia){table={maxMulti:[2,9,17],moistMulti:[1,8,16]};}else if(f.astigmatism){table={oasys:[6,12,20],oasysToric:[1,8,16],max1day:[5,13,21],maxToric:[2,9,17]};}else{table={oasys:[1,8,16],max1day:[2,9,17]};}return table[productId]?.[c]||1;}
-function videoSrc(productId){return `./${videoNumber(productId)}.mp4`;}
-function renderConditions(){dom.conditionGrid.innerHTML='';conditions.forEach(c=>{const b=document.createElement('button');b.type='button';b.className='chip'+(state.selected.includes(c.id)?' active':'');b.textContent=c.label;b.onclick=()=>toggleCondition(c.id);dom.conditionGrid.appendChild(b);});}
-function toggleCondition(id){if(state.selected.includes(id))state.selected=state.selected.filter(v=>v!==id);else state.selected.push(id);if(!state.selected.length)state.selected=['myohyperopia'];keepProductsValid();renderAll();}
-function keepProductsValid(){const ids=productOptions().map(p=>p.id);if(!ids.includes(state.leftProduct))state.leftProduct=ids.includes('max1day')?'max1day':ids[0];if(!ids.includes(state.rightProduct))state.rightProduct=ids.includes('oasys')?'oasys':ids[1]||ids[0];}
-function fillSelect(sel,value){const opts=productOptions();sel.innerHTML=opts.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');sel.value=value;}
-function renderProducts(){keepProductsValid();fillSelect(dom.leftProduct,state.leftProduct);fillSelect(dom.rightProduct,state.rightProduct);fillSelect(dom.leftInline,state.leftProduct);fillSelect(dom.rightInline,state.rightProduct);const bind=(a,b,key)=>{const fn=e=>{state[key]=e.target.value;a.value=state[key];b.value=state[key];updateVideos();updateBadges();if(key==='leftProduct'&&dom.leftProductPop.classList.contains('open'))fillProductPop('left',state.leftProduct);if(key==='rightProduct'&&dom.rightProductPop.classList.contains('open'))fillProductPop('right',state.rightProduct);};a.onchange=fn;b.onchange=fn;};bind(dom.leftProduct,dom.leftInline,'leftProduct');bind(dom.rightProduct,dom.rightInline,'rightProduct');}
-function applyVideoAdjust(video,num){
-  const adj=VIDEO_ADJUST[num] || {x:0,y:0,scale:1};
-  video.style.setProperty('--video-x',`${adj.x||0}px`);
-  video.style.setProperty('--video-y',`${adj.y||0}px`);
-  video.style.setProperty('--video-scale',adj.scale||1);
+const dom={
+  conditionGrid:document.getElementById('conditionGrid'),
+  sceneGrid:document.getElementById('sceneGrid'),
+  leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),
+  leftInline:document.getElementById('leftInline'),rightInline:document.getElementById('rightInline'),
+  sceneSelect:document.getElementById('sceneSelect'),
+  conditionBadge:document.getElementById('conditionBadge'),sceneBadge:document.getElementById('sceneBadge'),
+  resetBtn:document.getElementById('resetBtn'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),
+  leftVideo:document.getElementById('leftVideo'),rightVideo:document.getElementById('rightVideo'),
+  leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel'),
+  leftInfoBtn:document.getElementById('leftInfoBtn'),rightInfoBtn:document.getElementById('rightInfoBtn'),
+  leftProductPop:document.getElementById('leftProductPop'),rightProductPop:document.getElementById('rightProductPop'),
+  leftPopClose:document.getElementById('leftPopClose'),rightPopClose:document.getElementById('rightPopClose'),
+  leftPopTitle:document.getElementById('leftPopTitle'),rightPopTitle:document.getElementById('rightPopTitle'),
+  leftPopPack:document.getElementById('leftPopPack'),rightPopPack:document.getElementById('rightPopPack'),
+  leftPopOverview:document.getElementById('leftPopOverview'),rightPopOverview:document.getElementById('rightPopOverview'),
+  leftPopFeatures:document.getElementById('leftPopFeatures'),rightPopFeatures:document.getElementById('rightPopFeatures'),
+  leftPopNote:document.getElementById('leftPopNote'),rightPopNote:document.getElementById('rightPopNote')
+};
+function flags(){return{myohyperopia:state.selected.includes('myohyperopia'),astigmatism:state.selected.includes('astigmatism'),presbyopia:state.selected.includes('presbyopia')}}
+function productById(id){return products.find(p=>p.id===id)}
+function productOptions(){
+  const f=flags();let ids;
+  if(f.presbyopia&&f.astigmatism) ids=['maxMultiToric','maxMulti','moistMulti','maxToric','oasysToric','max1day','oasys'];
+  else if(f.presbyopia&&f.myohyperopia) ids=['maxMulti','moistMulti','max1day','oasys'];
+  else if(f.presbyopia) ids=['maxMulti','moistMulti'];
+  else if(f.astigmatism) ids=['oasys','oasysToric','max1day','maxToric'];
+  else ids=['oasys','max1day'];
+  return ids.map(productById).filter(Boolean);
 }
-
-function prepareVideo(video,src){
-  if(video.dataset.src===src)return;
-  video.dataset.src=src;
-  video.src=src;
-  video.muted=true;
-  video.loop=true;
-  video.playsInline=true;
-  video.setAttribute('muted','');
-  video.setAttribute('playsinline','');
-  video.setAttribute('webkit-playsinline','');
-  try{video.load();}catch(e){}
-  safePlay(video);
+function groupedProductOptions(){
+  const opts=productOptions();
+  const groups={multi:[],toric:[],sphere:[]};
+  opts.forEach(p=>{groups[p.group].push(p)});
+  return groups;
 }
-function safePlay(video){try{const p=video.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch(e){}}
+function videoNumber(productId){
+  const f=flags();const c=sceneColumn[state.scene];let table;
+  if(f.presbyopia&&f.astigmatism) table={maxMultiToric:[2,9,17],maxMulti:[5,13,21],moistMulti:[6,12,20],maxToric:[7,10,17],oasysToric:[3,14,18],max1day:[5,11,19],oasys:[4,15,19]};
+  else if(f.presbyopia&&f.myohyperopia) table={maxMulti:[2,9,17],moistMulti:[1,8,16],max1day:[2,10,18],oasys:[3,14,18]};
+  else if(f.presbyopia) table={maxMulti:[2,9,17],moistMulti:[1,8,16]};
+  else if(f.astigmatism) table={oasys:[6,12,20],oasysToric:[1,8,16],max1day:[5,13,21],maxToric:[2,9,17]};
+  else table={oasys:[1,8,16],max1day:[2,9,17]};
+  return table[productId]?.[c]||1;
+}
+function videoSrc(productId){return `./${videoNumber(productId)}.mp4`}
+function renderConditions(){
+  dom.conditionGrid.innerHTML='';
+  conditions.forEach(c=>{
+    const b=document.createElement('button');
+    b.type='button';b.className='chip'+(state.selected.includes(c.id)?' active':'');b.textContent=c.label;
+    b.onclick=()=>toggleCondition(c.id);dom.conditionGrid.appendChild(b);
+  });
+}
+function renderSceneGrid(){
+  dom.sceneGrid.innerHTML='';
+  dom.sceneSelect.innerHTML='';
+  sceneOrder.forEach(id=>{
+    const chip=document.createElement('button');
+    chip.type='button'; chip.className='scene-chip'+(state.scene===id?' active':'');
+    chip.innerHTML=`<strong>${scenes[id].label}</strong><span>${scenes[id].sub}</span>`;
+    chip.onclick=()=>{state.scene=id;renderSceneGrid();updateVideos();updateBadges();};
+    dom.sceneGrid.appendChild(chip);
+    const op=document.createElement('option'); op.value=id; op.textContent=scenes[id].label; dom.sceneSelect.appendChild(op);
+  });
+  dom.sceneSelect.value=state.scene;
+}
+function toggleCondition(id){
+  if(state.selected.includes(id)) state.selected=state.selected.filter(v=>v!==id);
+  else state.selected.push(id);
+  if(!state.selected.length) state.selected=['myohyperopia'];
+  keepProductsValid(); renderAll();
+}
+function keepProductsValid(){
+  const ids=productOptions().map(p=>p.id);
+  if(!ids.includes(state.leftProduct)) state.leftProduct=ids.includes('max1day')?'max1day':ids[0];
+  if(!ids.includes(state.rightProduct)) state.rightProduct=ids.includes('oasys')?'oasys':ids[1]||ids[0];
+}
+function selectHTML(value){
+  const groups=groupedProductOptions();
+  let html='';
+  ['multi','toric','sphere'].forEach(key=>{
+    if(!groups[key].length) return;
+    html += `<optgroup label="${GROUP_LABEL[key]}">` + groups[key].map(p=>`<option value="${p.id}">${p.name}</option>`).join('') + '</optgroup>';
+  });
+  return html;
+}
+function fillSelect(sel,value){ sel.innerHTML=selectHTML(value); sel.value=value; }
+function renderProducts(){
+  keepProductsValid();
+  fillSelect(dom.leftProduct,state.leftProduct); fillSelect(dom.rightProduct,state.rightProduct);
+  fillSelect(dom.leftInline,state.leftProduct); fillSelect(dom.rightInline,state.rightProduct);
+  const bind=(a,b,key)=>{
+    const fn=e=>{state[key]=e.target.value; a.value=state[key]; b.value=state[key]; updateVideos(); updateBadges(); if(key==='leftProduct'&&dom.leftProductPop.classList.contains('open'))fillProductPop('left',state.leftProduct); if(key==='rightProduct'&&dom.rightProductPop.classList.contains('open'))fillProductPop('right',state.rightProduct);};
+    a.onchange=fn; b.onchange=fn;
+  };
+  bind(dom.leftProduct,dom.leftInline,'leftProduct');
+  bind(dom.rightProduct,dom.rightInline,'rightProduct');
+}
+function applyVideoAdjust(video,num){const adj=VIDEO_ADJUST[num] || {x:0,y:0,scale:1};video.style.setProperty('--video-x',`${adj.x||0}px`);video.style.setProperty('--video-y',`${adj.y||0}px`);video.style.setProperty('--video-scale',adj.scale||1)}
+function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
+function prepareVideo(video,src){if(video.dataset.src===src) return; video.dataset.src=src; video.src=src; video.muted=true; video.loop=true; video.playsInline=true; video.setAttribute('muted',''); video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline',''); try{video.load();}catch(e){} safePlay(video)}
 let restartToken=0;
-
 function restartBothVideos(){
-  const token=++restartToken;
-  const left=dom.leftVideo;
-  const right=dom.rightVideo;
-
-  const forceZero=()=>{
-    try{left.pause();}catch(e){}
-    try{right.pause();}catch(e){}
-    try{left.currentTime=0;}catch(e){}
-    try{right.currentTime=0;}catch(e){}
+  const token=++restartToken; const left=dom.leftVideo, right=dom.rightVideo;
+  const forceZero=()=>{try{left.pause()}catch(e){} try{right.pause()}catch(e){} try{left.currentTime=0}catch(e){} try{right.currentTime=0}catch(e){}};
+  const playBoth=()=>{if(token!==restartToken) return; forceZero(); requestAnimationFrame(()=>{if(token!==restartToken) return; try{left.currentTime=0; right.currentTime=0}catch(e){} safePlay(left); safePlay(right); setTimeout(()=>{if(token!==restartToken) return; try{left.currentTime=0; right.currentTime=0}catch(e){} safePlay(left); safePlay(right)},120)});
   };
-
-  const playBoth=()=>{
-    if(token!==restartToken) return;
-    forceZero();
-    requestAnimationFrame(()=>{
-      if(token!==restartToken) return;
-      try{left.currentTime=0;right.currentTime=0;}catch(e){}
-      safePlay(left);
-      safePlay(right);
-
-      // 일부 브라우저에서 Night/Dine 전환 시 한쪽만 먼저 진행되는 경우가 있어 한 번 더 0초 고정
-      setTimeout(()=>{
-        if(token!==restartToken) return;
-        try{left.currentTime=0;right.currentTime=0;}catch(e){}
-        safePlay(left);
-        safePlay(right);
-      },120);
-    });
-  };
-
   forceZero();
-
-  // loadedmetadata가 이미 지나간 경우도 있어서 readyState와 timeout 둘 다 사용
-  if(left.readyState>=1 && right.readyState>=1){
-    playBoth();
-  }else{
-    const tryPlay=()=>{ if(left.readyState>=1 && right.readyState>=1) playBoth(); };
-    left.addEventListener('loadedmetadata',tryPlay,{once:true});
-    right.addEventListener('loadedmetadata',tryPlay,{once:true});
-    left.addEventListener('canplay',tryPlay,{once:true});
-    right.addEventListener('canplay',tryPlay,{once:true});
+  if(left.readyState>=1 && right.readyState>=1) playBoth();
+  else {
+    const tryPlay=()=>{if(left.readyState>=1 && right.readyState>=1) playBoth()};
+    left.addEventListener('loadedmetadata',tryPlay,{once:true}); right.addEventListener('loadedmetadata',tryPlay,{once:true});
+    left.addEventListener('canplay',tryPlay,{once:true}); right.addEventListener('canplay',tryPlay,{once:true});
     setTimeout(playBoth,400);
   }
 }
-
-function syncVideoTiming(){
-  try{
-    if(dom.leftVideo.readyState>=2 && dom.rightVideo.readyState>=2){
-      const diff=Math.abs(dom.leftVideo.currentTime-dom.rightVideo.currentTime);
-      if(diff>0.06){
-        const t=Math.min(dom.leftVideo.currentTime,dom.rightVideo.currentTime);
-        dom.leftVideo.currentTime=t;
-        dom.rightVideo.currentTime=t;
-      }
-    }
-  }catch(e){}
-}
-
+function syncVideoTiming(){try{if(dom.leftVideo.readyState>=2 && dom.rightVideo.readyState>=2){const diff=Math.abs(dom.leftVideo.currentTime-dom.rightVideo.currentTime); if(diff>0.06){const t=Math.min(dom.leftVideo.currentTime,dom.rightVideo.currentTime); dom.leftVideo.currentTime=t; dom.rightVideo.currentTime=t;}}}catch(e){}}
 function updateVideos(){
-  const leftNum=videoNumber(state.leftProduct);
-  const rightNum=videoNumber(state.rightProduct);
-  const leftSrc=videoSrc(state.leftProduct);
-  const rightSrc=videoSrc(state.rightProduct);
-
-  applyVideoAdjust(dom.leftVideo,leftNum);
-  applyVideoAdjust(dom.rightVideo,rightNum);
-
-  prepareVideo(dom.leftVideo,leftSrc);
-  prepareVideo(dom.rightVideo,rightSrc);
-
-  dom.leftVideoLabel.textContent=`좌측 ${leftNum}.mp4`;
-  dom.rightVideoLabel.textContent=`우측 ${rightNum}.mp4`;
-
-  // 좌측/우측 중 어느 하나만 변경되어도 양쪽 모두 0초부터 다시 시작
+  const leftNum=videoNumber(state.leftProduct), rightNum=videoNumber(state.rightProduct);
+  const leftSrc=videoSrc(state.leftProduct), rightSrc=videoSrc(state.rightProduct);
+  applyVideoAdjust(dom.leftVideo,leftNum); applyVideoAdjust(dom.rightVideo,rightNum);
+  prepareVideo(dom.leftVideo,leftSrc); prepareVideo(dom.rightVideo,rightSrc);
+  dom.leftVideoLabel.textContent=`좌측 ${leftNum}.mp4`; dom.rightVideoLabel.textContent=`우측 ${rightNum}.mp4`;
   restartBothVideos();
 }
-
-
 function fillProductPop(side,productId){
-  const info=PRODUCT_INFO[productId];
-  if(!info)return;
+  const info=PRODUCT_INFO[productId]; if(!info) return;
   const isLeft=side==='left';
-  const title=isLeft?dom.leftPopTitle:dom.rightPopTitle;
-  const pack=isLeft?dom.leftPopPack:dom.rightPopPack;
-  const overview=isLeft?dom.leftPopOverview:dom.rightPopOverview;
-  const features=isLeft?dom.leftPopFeatures:dom.rightPopFeatures;
-  const note=isLeft?dom.leftPopNote:dom.rightPopNote;
-
-  title.textContent=info.title;
-  overview.textContent=info.overview;
-  features.innerHTML=info.features.map(v=>`<li>${v}</li>`).join('');
-  note.textContent=`팩샷 파일: ${info.pack}.png / 제품 매칭: ${info.title}`;
-
+  const title=isLeft?dom.leftPopTitle:dom.rightPopTitle, pack=isLeft?dom.leftPopPack:dom.rightPopPack, overview=isLeft?dom.leftPopOverview:dom.rightPopOverview, features=isLeft?dom.leftPopFeatures:dom.rightPopFeatures, note=isLeft?dom.leftPopNote:dom.rightPopNote;
+  title.textContent=info.title; overview.textContent=info.overview; features.innerHTML=info.features.map(v=>`<li>${v}</li>`).join(''); note.textContent=`팩샷 파일: ${info.pack}.png / 제품 매칭: ${info.title}`;
   const packBase=`./${info.pack}`;
-  pack.onerror=function(){
-    if(this.dataset.try==='png'){this.dataset.try='jpg';this.src=packBase+'.jpg';}
-    else if(this.dataset.try==='jpg'){this.dataset.try='jpeg';this.src=packBase+'.jpeg';}
-    else{this.onerror=null;this.removeAttribute('src');this.alt='팩샷 이미지를 찾을 수 없습니다';}
-  };
-  pack.dataset.try='png';
-  pack.src=packBase+'.png';
+  pack.onerror=function(){ if(this.dataset.try==='png'){this.dataset.try='jpg'; this.src=packBase+'.jpg';} else if(this.dataset.try==='jpg'){this.dataset.try='jpeg'; this.src=packBase+'.jpeg';} else {this.onerror=null; this.removeAttribute('src'); this.alt='팩샷 이미지를 찾을 수 없습니다';} };
+  pack.dataset.try='png'; pack.src=packBase+'.png';
 }
-
-function toggleProductPop(side){
-  if(side==='left'){
-    fillProductPop('left',state.leftProduct);
-    dom.leftProductPop.classList.toggle('open');
-  }else{
-    fillProductPop('right',state.rightProduct);
-    dom.rightProductPop.classList.toggle('open');
-  }
+function toggleProductPop(side){ if(side==='left'){fillProductPop('left',state.leftProduct); dom.leftProductPop.classList.toggle('open');} else {fillProductPop('right',state.rightProduct); dom.rightProductPop.classList.toggle('open');}}
+function closeProductPop(side){ if(side==='left') dom.leftProductPop.classList.remove('open'); if(side==='right') dom.rightProductPop.classList.remove('open'); }
+function updateBadges(){
+  const conditionText=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');
+  dom.conditionBadge.innerHTML=`<span class="badge-accent"></span>상태 : ${conditionText}`;
+  dom.sceneBadge.innerHTML=`<span class="badge-accent"></span>환경 : ${scenes[state.scene].label}`;
 }
-
-function closeProductPop(side){
-  if(side==='left') dom.leftProductPop.classList.remove('open');
-  if(side==='right') dom.rightProductPop.classList.remove('open');
-}
-
-
-function updateBadges(){const conditionText=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');dom.conditionBadge.textContent=`상태 : ${conditionText}`;dom.sceneBadge.textContent=`Scene : ${scenes[state.scene].label}`;}
-function renderAll(){renderConditions();renderProducts();updateVideos();updateBadges();}
-function setSplit(percent){state.split=Math.max(15,Math.min(85,percent));dom.stage.style.setProperty('--split',state.split+'%');}
-setSplit(50);let dragging=false;function moveSplit(clientX){const rect=dom.stage.getBoundingClientRect();setSplit(((clientX-rect.left)/rect.width)*100);}
-dom.handle.addEventListener('pointerdown',e=>{dragging=true;dom.handle.setPointerCapture(e.pointerId);});dom.handle.addEventListener('pointermove',e=>{if(dragging)moveSplit(e.clientX);});dom.handle.addEventListener('pointerup',()=>dragging=false);dom.stage.addEventListener('pointerdown',e=>{if(e.target===dom.stage||e.target.classList.contains('divider'))moveSplit(e.clientX);});
-dom.sceneSelect.onchange=e=>{
-  state.scene=e.target.value;
-  updateVideos();
-  updateBadges();
-};
-dom.resetBtn.onclick=()=>{state.selected=['myohyperopia'];state.scene='day';state.leftProduct='max1day';state.rightProduct='oasys';dom.sceneSelect.value='day';setSplit(50);renderAll();};
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){safePlay(dom.leftVideo);safePlay(dom.rightVideo);}});document.addEventListener('click',()=>{safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true});document.addEventListener('touchstart',()=>{safePlay(dom.leftVideo);safePlay(dom.rightVideo);},{once:true,passive:true});
-dom.leftVideo.addEventListener('canplay',()=>safePlay(dom.leftVideo));
-dom.rightVideo.addEventListener('canplay',()=>safePlay(dom.rightVideo));
+function renderAll(){ renderConditions(); renderSceneGrid(); renderProducts(); updateVideos(); updateBadges(); }
+function setSplit(percent){state.split=Math.max(15,Math.min(85,percent)); dom.stage.style.setProperty('--split',state.split+'%')}
+setSplit(50);
+let dragging=false;
+function moveSplit(clientX){const rect=dom.stage.getBoundingClientRect(); setSplit(((clientX-rect.left)/rect.width)*100)}
+dom.handle.addEventListener('pointerdown',e=>{dragging=true; dom.handle.setPointerCapture(e.pointerId)});
+dom.handle.addEventListener('pointermove',e=>{if(dragging) moveSplit(e.clientX)});
+dom.handle.addEventListener('pointerup',()=>dragging=false);
+dom.stage.addEventListener('pointerdown',e=>{if(e.target===dom.stage||e.target.classList.contains('divider')) moveSplit(e.clientX)});
+dom.sceneSelect.onchange=e=>{state.scene=e.target.value; renderSceneGrid(); updateVideos(); updateBadges();};
+dom.resetBtn.onclick=()=>{state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; setSplit(50); renderAll();};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){safePlay(dom.leftVideo); safePlay(dom.rightVideo);}});
+document.addEventListener('click',()=>{safePlay(dom.leftVideo); safePlay(dom.rightVideo);},{once:true});
+document.addEventListener('touchstart',()=>{safePlay(dom.leftVideo); safePlay(dom.rightVideo);},{once:true,passive:true});
+dom.leftVideo.addEventListener('canplay',()=>safePlay(dom.leftVideo)); dom.rightVideo.addEventListener('canplay',()=>safePlay(dom.rightVideo));
 dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4 파일 확인 필요`;});
 dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4 파일 확인 필요`;});
 setInterval(syncVideoTiming,250);
-dom.leftInfoBtn.onclick=()=>toggleProductPop('left');
-dom.rightInfoBtn.onclick=()=>toggleProductPop('right');
-dom.leftPopClose.onclick=()=>closeProductPop('left');
-dom.rightPopClose.onclick=()=>closeProductPop('right');
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left');closeProductPop('right');}});
+dom.leftInfoBtn.onclick=()=>toggleProductPop('left'); dom.rightInfoBtn.onclick=()=>toggleProductPop('right'); dom.leftPopClose.onclick=()=>closeProductPop('left'); dom.rightPopClose.onclick=()=>closeProductPop('right');
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left'); closeProductPop('right');}});
 renderAll();
 </script>
 </body>
