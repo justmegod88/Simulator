@@ -34,7 +34,7 @@ body{
     linear-gradient(180deg,#F8FBFF 0%, #EEF6FF 100%);
 }
 .app{max-width:1540px;margin:0 auto;padding:22px}
-.shell{display:grid;grid-template-columns:390px 1fr;gap:20px;align-items:stretch}
+.shell{display:grid;grid-template-columns:390px 1fr;gap:20px;align-items:start}
 .panel{
   background:rgba(255,255,255,.94);
   border:1px solid rgba(0,94,184,.10);
@@ -42,11 +42,11 @@ body{
   box-shadow:var(--shadow);
   backdrop-filter: blur(12px);
 }
-.sidebar{padding:18px;display:flex;flex-direction:column;gap:16px;position:sticky;top:16px;height:100%}
-.viewer{padding:18px;display:flex;flex-direction:column;gap:14px;height:100%}
+.sidebar{padding:18px;display:flex;flex-direction:column;gap:14px;position:sticky;top:16px}
+.viewer{padding:18px;display:flex;flex-direction:column;gap:10px}
 .hero{
-  padding:18px 132px 18px 18px;
-  min-height:124px;
+  padding:14px 150px 14px 18px;
+  min-height:96px;
   border-radius:22px;
   color:#fff;
   background:linear-gradient(135deg,#005EB8 0%, #0E73D8 44%, #63B2FF 100%);
@@ -61,14 +61,14 @@ body{
   content:"";position:absolute;left:-24px;bottom:-34px;width:120px;height:120px;border-radius:50%;
   background:rgba(255,255,255,.10);
 }
-.hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
-.hero h1{position:relative;z-index:1;margin:14px 0 0;font-size:32px;line-height:1.1;font-weight:950}
+.hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.hero h1{position:relative;z-index:1;margin:12px 0 0;font-size:30px;line-height:1.04;font-weight:950;letter-spacing:-.02em}
 .hero-pack{
   position:absolute;
-  right:18px;
-  top:22px;
-  width:120px;
-  height:52px;
+  right:14px;
+  top:12px;
+  width:140px;
+  height:72px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -78,9 +78,10 @@ body{
   width:100%;
   height:100%;
   object-fit:contain;
-  object-position:right center;
+  object-position:center center;
   display:block;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.14));
+  transform:scale(1.16);
 }
 .hero-pack-fallback{
   width:100%;height:100%;display:none;align-items:center;justify-content:center;
@@ -132,12 +133,12 @@ select option{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px
 }
 .group-pill{padding:10px 10px;border-radius:14px;background:#F3F8FE;border:1px solid #D7E6F8;text-align:center;font-size:12px;font-weight:800;color:#547195}
-.scene-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.scene-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .scene-chip{
-  border:1px solid #C7DCF5;background:#fff;border-radius:18px;padding:14px 12px;cursor:pointer;
-  display:flex;align-items:center;justify-content:flex-start;transition:.18s ease;
+  border:1px solid #C7DCF5;background:#fff;border-radius:16px;padding:10px 10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.18s ease;min-height:40px;
 }
-.scene-chip strong{font-size:14px;color:#0F2747}
+.scene-chip strong{font-size:13px;color:#0F2747;line-height:1.1}
 .scene-chip.active{background:linear-gradient(180deg,#E9F4FF,#D7EBFF);border-color:#6BAEFF;box-shadow:0 8px 20px rgba(0,94,184,.10)}
 .packshot-card{
   background:transparent;
@@ -175,7 +176,7 @@ select option{
   height:46px;padding:0 18px;border-radius:16px;border:1px solid #C7DCF5;background:#fff;color:var(--ink);font-weight:900;cursor:pointer
 }
 .ghost-btn:hover{border-color:#76B4F8;background:#F6FBFF}
-.stage-wrap{padding:12px;border-radius:24px;background:linear-gradient(180deg,#F8FBFF,#EDF5FF);border:1px solid #D7E6F8}
+.stage-wrap{padding:10px;border-radius:24px;background:linear-gradient(180deg,#F8FBFF,#EDF5FF);border:1px solid #D7E6F8}
 .stage{position:relative;overflow:hidden;border-radius:22px;border:1px solid #DCE8F5;aspect-ratio:16/9;background:#0B1B32;--split:50%}
 .compare-pane{position:absolute;inset:0;overflow:hidden}
 .compare-pane video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
@@ -200,7 +201,7 @@ select option{
   display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(8px);box-shadow:0 8px 20px rgba(0,0,0,.18)
 }
 .play-toggle:hover{background:rgba(10,22,41,.72)}
-.footer-note{font-size:12px;color:#5D7799;text-align:center;padding-top:6px;line-height:1.5}
+.footer-note{font-size:12px;color:#5D7799;text-align:center;padding-top:2px;line-height:1.45}
 .product-pop{position:absolute;top:78px;z-index:8;width:min(340px,38%);max-height:calc(100% - 100px);overflow:auto;display:none;background:#fff;color:#12203A;border-radius:22px;box-shadow:0 20px 46px rgba(0,0,0,.24);border:1px solid #D7E6F8}
 .product-pop.open{display:block}.product-pop.left-pop{left:18px}.product-pop.right-pop{right:18px}
 .pop-close{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;border:0;background:#F2F6FB;color:#203047;font-size:24px;cursor:pointer}
@@ -211,8 +212,8 @@ select option{
 .pop-pack{width:100%;height:132px;object-fit:contain;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:16px;padding:10px}
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
 .pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;color:#718096}
-@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static}.hero{padding-right:132px}.hero h1{font-size:28px}.hero-pack{width:110px;height:48px;top:22px;right:16px}}
-@media (max-width:760px){.hero{padding-right:112px;min-height:110px}.hero-pack{width:88px;height:40px;top:18px;right:12px}}
+@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static}.hero{padding:14px 132px 14px 18px;min-height:92px}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;top:12px;right:12px}}
+@media (max-width:760px){.app{padding:12px}.hero{padding:12px 108px 12px 14px;min-height:86px}.hero-kicker{padding:7px 12px;font-size:11px}.hero h1{font-size:24px}.hero-pack{width:94px;height:50px;top:12px;right:10px}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}}
 </style>
 </head>
 <body>
@@ -221,6 +222,7 @@ select option{
     <aside class="panel sidebar">
       <div class="hero">
         <div class="hero-kicker">ACUVUE Simulator</div>
+        <h1>비전 시뮬레이터</h1>
 
         <div class="hero-pack">
           <img src="./acuvue.png" alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
