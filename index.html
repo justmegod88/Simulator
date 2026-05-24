@@ -447,7 +447,61 @@ const scenes={
 };
 const sceneOrder=['day','night','dine'];
 const sceneColumn={day:0,night:1,dine:2};
-const VIDEO_ADJUST={17:{x:0,y:0,scale:1},19:{x:0,y:0,scale:0.93}};
+
+const CONDITION_KEY = {
+  'myohyperopia': 'M',
+  'astigmatism': 'A',
+  'presbyopia': 'P'
+};
+
+const VIDEO_MATRIX = {
+  'M': {
+    oasys: { day:'1-1', night:'2-1', dine:'3-1' },
+    max1day: { day:'1-2', night:'2-2', dine:'3-2' }
+  },
+  'A': {
+    oasys: { day:'1-6', night:'2-6', dine:'3-6' },
+    oasysToric: { day:'1-1', night:'2-1', dine:'3-1' },
+    max1day: { day:'1-5', night:'2-5', dine:'3-5' },
+    maxToric: { day:'1-2', night:'2-2', dine:'3-2' }
+  },
+  'A+M': {
+    oasys: { day:'1-6', night:'2-6', dine:'3-6' },
+    oasysToric: { day:'1-1', night:'2-1', dine:'3-1' },
+    max1day: { day:'1-5', night:'2-5', dine:'3-5' },
+    maxToric: { day:'1-2', night:'2-2', dine:'3-2' }
+  },
+  'A+P': {
+    maxMultiToric: { day:'1-2', night:'2-2', dine:'3-2' },
+    maxMulti: { day:'1-5', night:'2-5', dine:'3-5' },
+    moistMulti: { day:'1-6', night:'2-6', dine:'3-6' },
+    maxToric: { day:'1-7', night:'2-7', dine:'3-7' },
+    oasysToric: { day:'1-3', night:'2-3', dine:'3-3' },
+    max1day: { day:'1-8', night:'2-8', dine:'3-8' },
+    oasys: { day:'1-4', night:'2-4', dine:'3-4' }
+  },
+  'A+M+P': {
+    maxMultiToric: { day:'1-2', night:'2-2', dine:'3-2' },
+    maxMulti: { day:'1-5', night:'2-5', dine:'3-5' },
+    moistMulti: { day:'1-6', night:'2-6', dine:'3-6' },
+    maxToric: { day:'1-7', night:'2-7', dine:'3-7' },
+    oasysToric: { day:'1-3', night:'2-3', dine:'3-3' },
+    max1day: { day:'1-8', night:'2-8', dine:'3-8' },
+    oasys: { day:'1-4', night:'2-4', dine:'3-4' }
+  },
+  'M+P': {
+    maxMulti: { day:'1-2', night:'2-2', dine:'3-2' },
+    moistMulti: { day:'1-1', night:'2-1', dine:'3-1' },
+    max1day: { day:'1-7', night:'2-7', dine:'3-7' },
+    oasys: { day:'1-3', night:'2-3', dine:'3-3' }
+  },
+  'P': {
+    maxMulti: { day:'1-2', night:'2-2', dine:'3-2' },
+    moistMulti: { day:'1-1', night:'2-1', dine:'3-1' }
+  }
+};
+
+const VIDEO_ADJUST = {};
 const products=[
   {id:'oasys',name:'아큐브 오아시스 원데이®',group:'sphere'},
   {id:'max1day',name:'아큐브® 오아시스 MAX 원데이',group:'sphere'},
@@ -611,16 +665,35 @@ function groupedProductOptions(){
   opts.forEach(p=>{groups[p.group].push(p)});
   return groups;
 }
-function videoNumber(productId){
-  const f=flags();const c=sceneColumn[state.scene];let table;
-  if(f.presbyopia&&f.astigmatism) table={maxMultiToric:[2,9,17],maxMulti:[5,13,21],moistMulti:[6,12,20],maxToric:[7,10,17],oasysToric:[3,14,18],max1day:[5,11,19],oasys:[4,15,19]};
-  else if(f.presbyopia&&f.myohyperopia) table={maxMulti:[2,9,17],moistMulti:[1,8,16],max1day:[2,10,18],oasys:[3,14,18]};
-  else if(f.presbyopia) table={maxMulti:[2,9,17],moistMulti:[1,8,16]};
-  else if(f.astigmatism) table={oasys:[6,12,20],oasysToric:[1,8,16],max1day:[5,13,21],maxToric:[2,9,17]};
-  else table={oasys:[1,8,16],max1day:[2,9,17]};
-  return table[productId]?.[c]||1;
+function selectedConditionKey(){
+  return [...state.selected]
+    .map(id => CONDITION_KEY[id])
+    .filter(Boolean)
+    .sort()
+    .join('+');
 }
-function videoSrc(productId){return `./${videoNumber(productId)}.mp4`}
+function videoCode(productId){
+  const key = selectedConditionKey();
+  const sceneMap = VIDEO_MATRIX[key] || {};
+  const productMap = sceneMap[productId];
+  if(productMap && productMap[state.scene]) return productMap[state.scene];
+
+  // Fallbacks to keep demo stable even if an unexpected combination is chosen.
+  const fallbacks = {
+    oasysToric: 'oasys',
+    maxToric: 'max1day',
+    maxMultiToric: 'maxMulti',
+    moistMulti: 'maxMulti'
+  };
+  const fallbackId = fallbacks[productId];
+  if(fallbackId && sceneMap[fallbackId] && sceneMap[fallbackId][state.scene]) {
+    return sceneMap[fallbackId][state.scene];
+  }
+
+  // Final default
+  return ({day:'1-1', night:'2-1', dine:'3-1'})[state.scene] || '1-1';
+}
+function videoSrc(productId){return `./${videoCode(productId)}.mp4`}
 function renderConditions(){
   dom.conditionGrid.innerHTML='';
   conditions.forEach(c=>{
@@ -674,7 +747,7 @@ function renderProducts(){
   bind(dom.leftProduct,dom.leftInline,'leftProduct');
   bind(dom.rightProduct,dom.rightInline,'rightProduct');
 }
-function applyVideoAdjust(video,num){const adj=VIDEO_ADJUST[num] || {x:0,y:0,scale:1};video.style.setProperty('--video-x',`${adj.x||0}px`);video.style.setProperty('--video-y',`${adj.y||0}px`);video.style.setProperty('--video-scale',adj.scale||1)}
+function applyVideoAdjust(video,code){video.style.setProperty('--video-x','0px');video.style.setProperty('--video-y','0px');video.style.setProperty('--video-scale','1')}
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
 function updatePlayButton(){
   const paused = dom.leftVideo.paused || dom.rightVideo.paused;
@@ -709,11 +782,14 @@ function restartBothVideos(){
 }
 function syncVideoTiming(){try{if(dom.leftVideo.readyState>=2 && dom.rightVideo.readyState>=2){const diff=Math.abs(dom.leftVideo.currentTime-dom.rightVideo.currentTime); if(diff>0.06){const t=Math.min(dom.leftVideo.currentTime,dom.rightVideo.currentTime); dom.leftVideo.currentTime=t; dom.rightVideo.currentTime=t;}}}catch(e){}}
 function updateVideos(){
-  const leftNum=videoNumber(state.leftProduct), rightNum=videoNumber(state.rightProduct);
+  const leftCode=videoCode(state.leftProduct), rightCode=videoCode(state.rightProduct);
   const leftSrc=videoSrc(state.leftProduct), rightSrc=videoSrc(state.rightProduct);
-  applyVideoAdjust(dom.leftVideo,leftNum); applyVideoAdjust(dom.rightVideo,rightNum);
-  prepareVideo(dom.leftVideo,leftSrc); prepareVideo(dom.rightVideo,rightSrc);
-  dom.leftVideoLabel.textContent=`좌측 ${leftNum}.mp4`; dom.rightVideoLabel.textContent=`우측 ${rightNum}.mp4`;
+  applyVideoAdjust(dom.leftVideo,leftCode); 
+  applyVideoAdjust(dom.rightVideo,rightCode);
+  prepareVideo(dom.leftVideo,leftSrc); 
+  prepareVideo(dom.rightVideo,rightSrc);
+  dom.leftVideoLabel.textContent=`좌측 ${leftCode}.mp4`; 
+  dom.rightVideoLabel.textContent=`우측 ${rightCode}.mp4`;
   restartBothVideos();
   updatePlayButton();
 }
@@ -873,8 +949,8 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){playBothV
 document.addEventListener('click',()=>{playBothVideos();},{once:true});
 document.addEventListener('touchstart',()=>{playBothVideos();},{once:true,passive:true});
 dom.leftVideo.addEventListener('canplay',()=>updatePlayButton()); dom.rightVideo.addEventListener('canplay',()=>updatePlayButton());
-dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4 파일 확인 필요`;});
-dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4 파일 확인 필요`;});
+dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoCode(state.leftProduct)}.mp4 파일 확인 필요`;});
+dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoCode(state.rightProduct)}.mp4 파일 확인 필요`;});
 setInterval(syncVideoTiming,250);
 dom.leftInfoBtn.onclick=()=>toggleProductPop('left'); dom.rightInfoBtn.onclick=()=>toggleProductPop('right'); dom.leftPopClose.onclick=()=>closeProductPop('left'); dom.rightPopClose.onclick=()=>closeProductPop('right');
 dom.outcomeInfoBtn.onclick=(e)=>{e.stopPropagation(); toggleOutcomePop();};
