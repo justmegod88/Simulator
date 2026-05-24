@@ -624,7 +624,8 @@ const PRODUCT_INFO={
     approval:'국내 공식 제품 페이지에서 개별 의료기기심의필 번호 미확인'
   }
 };
-const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50};
+const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50,outcome:'high'};
+const OUTCOME_SHARPNESS={high:1.0, medium:0.85, low:0.70};
 const dom={
   conditionGrid:document.getElementById('conditionGrid'),
   sceneGrid:document.getElementById('sceneGrid'),
@@ -694,6 +695,26 @@ function videoCode(productId){
   return ({day:'1-1', night:'2-1', dine:'3-1'})[state.scene] || '1-1';
 }
 function videoSrc(productId){return `./${videoCode(productId)}.mp4`}
+
+function applyOutcomeSharpness(video){
+  const factor = OUTCOME_SHARPNESS[state.outcome] || 1;
+  const blurPx = Math.max(0, (1 - factor) * 10);
+  const contrast = 0.9 + factor * 0.1;
+  const saturate = 0.96 + factor * 0.04;
+  video.style.filter = `blur(${blurPx.toFixed(2)}px) contrast(${contrast.toFixed(3)}) saturate(${saturate.toFixed(3)})`;
+}
+function bindOutcomeControls(){
+  document.querySelectorAll('input[name="outcomeLevel"]').forEach(radio=>{
+    radio.checked = radio.value === state.outcome;
+    radio.onchange = (e)=>{
+      if(e.target.checked){
+        state.outcome = e.target.value;
+        updateVideos();
+      }
+    };
+  });
+}
+
 function renderConditions(){
   dom.conditionGrid.innerHTML='';
   conditions.forEach(c=>{
@@ -786,6 +807,8 @@ function updateVideos(){
   const leftSrc=videoSrc(state.leftProduct), rightSrc=videoSrc(state.rightProduct);
   applyVideoAdjust(dom.leftVideo,leftCode); 
   applyVideoAdjust(dom.rightVideo,rightCode);
+  applyOutcomeSharpness(dom.leftVideo);
+  applyOutcomeSharpness(dom.rightVideo);
   prepareVideo(dom.leftVideo,leftSrc); 
   prepareVideo(dom.rightVideo,rightSrc);
   dom.leftVideoLabel.textContent=`좌측 ${leftCode}.mp4`; 
@@ -934,7 +957,7 @@ function updateBadges(){
   dom.conditionBadge.innerHTML=`<span class="badge-accent"></span>상태 : ${conditionText}`;
   dom.sceneBadge.innerHTML=`<span class="badge-accent"></span>환경 : ${scenes[state.scene].label}`;
 }
-function renderAll(){ renderConditions(); renderSceneGrid(); renderProducts(); updateInlineLabelText(); updateVideos(); updateBadges(); }
+function renderAll(){ renderConditions(); renderSceneGrid(); renderProducts(); bindOutcomeControls(); updateInlineLabelText(); updateVideos(); updateBadges(); }
 function setSplit(percent){state.split=Math.max(15,Math.min(85,percent)); dom.stage.style.setProperty('--split',state.split+'%')}
 setSplit(50);
 let dragging=false;
@@ -944,7 +967,7 @@ dom.handle.addEventListener('pointermove',e=>{if(dragging) moveSplit(e.clientX)}
 dom.handle.addEventListener('pointerup',()=>dragging=false);
 dom.stage.addEventListener('pointerdown',e=>{if(e.target===dom.stage||e.target.classList.contains('divider')) moveSplit(e.clientX)});
 dom.sceneSelect.onchange=e=>{state.scene=e.target.value; renderSceneGrid(); updateVideos(); updateBadges();};
-dom.resetBtn.onclick=()=>{state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; setSplit(50); renderAll();};
+dom.resetBtn.onclick=()=>{state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; setSplit(50); renderAll();};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){playBothVideos();}});
 document.addEventListener('click',()=>{playBothVideos();},{once:true});
 document.addEventListener('touchstart',()=>{playBothVideos();},{once:true,passive:true});
