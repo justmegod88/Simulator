@@ -118,7 +118,7 @@ body{
 .field + .field{margin-top:14px}
 .field label{font-size:13px;font-weight:900;color:#3E5C80}
 .select-shell{position:relative}
-.select-shell:after{content:"⌄";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#5C7BA1;pointer-events:none}
+.select-shell:after{content:"â";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#5C7BA1;pointer-events:none}
 select{
   width:100%;height:50px;padding:0 44px 0 16px;
   border-radius:16px;border:1px solid #CDE0F5;
@@ -168,11 +168,50 @@ select option{
   box-shadow:0 10px 24px rgba(0,94,184,.08);
 }
 .references-footer-head{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:0
 }
-.references-footer-title{font-size:18px;font-weight:900;margin:0;color:#0F2747}
+.references-footer-title{font-size:18px;font-weight:900;margin:0;color:#0F2747;line-height:1.1}
 .references-footer-sub{font-size:12px;line-height:1.6;opacity:1;margin:0;color:#5E789A}
-.references-footer-text{font-size:12px;line-height:1.72;white-space:pre-line;color:#3E5C80}
+.references-footer-text{font-size:12px;line-height:1.72;color:#3E5C80;margin-top:0;padding-top:0}
+
+.references-group{margin:0}
+.references-group + .references-group{margin-top:12px}
+.references-group-title{font-weight:400;color:#48678d;margin:0 0 2px 0}
+.references-group > div:not(.references-group-title){margin:0}
+
+
+.toolbar{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap
+}
+.toolbar-left,.toolbar-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.outcome-inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:999px;background:#F4F9FF;border:1px solid #D4E4F6}
+.outcome-inline-title{font-size:14px;font-weight:900;color:#26486F}
+.outcome-options{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.outcome-option{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:800;color:#2D4F78;cursor:pointer}
+.outcome-option input{accent-color:#5B2DBD;width:16px;height:16px}
+.outcome-info-btn{
+  width:30px;height:30px;border-radius:50%;border:1px solid #C7DCF5;background:#fff;color:#5B2DBD;
+  font-weight:900;font-size:14px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08)
+}
+.outcome-pop{
+  position:fixed;display:none;max-width:420px;min-width:280px;z-index:99999;
+  background:#111;color:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 18px 42px rgba(0,0,0,.32);
+  font-size:14px;line-height:1.6
+}
+.outcome-pop.open{display:block}
+.outcome-pop:after{
+  content:"";position:absolute;right:26px;top:-10px;border-width:0 10px 10px 10px;border-style:solid;
+  border-color:transparent transparent #111 transparent;
+}
+.outcome-pop p{margin:0 0 12px}
+.outcome-pop p:last-child{margin-bottom:0}
+@media (max-width:760px){
+  .outcome-inline{padding:8px 12px;gap:8px}
+  .outcome-inline-title{font-size:13px}
+  .outcome-options{gap:10px}
+  .outcome-option{font-size:13px}
+}
+
 .toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
 .toolbar-left,.toolbar-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .badge{
@@ -211,16 +250,16 @@ select option{
 }
 .play-toggle:hover{background:rgba(10,22,41,.72)}
 .footer-note{font-size:12px;color:#5D7799;text-align:center;padding-top:2px;line-height:1.45}
-.product-pop{position:absolute;top:78px;z-index:8;width:min(340px,38%);max-height:calc(100% - 100px);overflow:auto;display:none;background:#fff;color:#12203A;border-radius:22px;box-shadow:0 20px 46px rgba(0,0,0,.24);border:1px solid #D7E6F8}
+.product-pop{position:absolute;top:76px;z-index:8;width:min(360px,39%);max-height:calc(100% - 96px);overflow:auto;display:none;background:#fff;color:#12203A;border-radius:22px;box-shadow:0 20px 46px rgba(0,0,0,.24);border:1px solid #D7E6F8}
 .product-pop.open{display:block}.product-pop.left-pop{left:18px}.product-pop.right-pop{right:18px}
 .pop-close{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;border:0;background:#F2F6FB;color:#203047;font-size:24px;cursor:pointer}
 .pop-head{padding:20px 18px 12px;border-bottom:1px solid #E6EEF7;background:linear-gradient(180deg,#F9FBFF,#F1F7FF)}
 .pop-kicker{display:inline-block;margin-bottom:8px;padding:6px 10px;border-radius:999px;background:#EAF4FF;color:#005EB8;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .pop-title{margin:0 40px 0 0;font-size:18px;line-height:1.3;font-weight:900;color:#15294D}
-.pop-body{padding:14px 18px 18px}
-.pop-pack{width:100%;height:132px;object-fit:contain;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:16px;padding:10px}
+.pop-body{padding:12px 16px 16px}
+.pop-pack{width:100%;height:168px;object-fit:contain;object-position:center center;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:14px;padding:4px;display:block}
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
-.pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;color:#718096}
+.pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;line-height:1.5;color:#8A97A8;border-top:1px solid #EEF3F8;padding-top:10px}
 @media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.side-label{max-width:calc(50% - 16px)}.label-select{width:190px;max-width:190px;font-size:11px}}
 @media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px;max-width:calc(50% - 12px)}.side-name{min-width:34px;height:28px;font-size:11px}.label-select{height:30px;width:150px;max-width:150px;font-size:10px;padding:0 28px 0 8px}.info-btn{width:28px;height:28px;font-size:13px}}
 </style>
@@ -231,12 +270,12 @@ select option{
     <aside class="panel sidebar">
       <div class="hero">
         <div class="hero-text">
-          <div class="hero-kicker">ACUVUE®</div>
+          <div class="hero-kicker">ACUVUEÂ®</div>
           <h1>Simulator</h1>
         </div>
 
         <div class="hero-pack">
-          <img src="./acuvue.png" alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <img src="./acuvue.png" alt="ACUVUE í©ì·" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="hero-pack-fallback">acuvue.png</div>
         </div>
       </div>
@@ -245,8 +284,8 @@ select option{
         <div class="section-head">
           <div class="section-num">1</div>
           <div>
-            <div class="section-title">굴절이상 선택</div>
-            <div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div>
+            <div class="section-title">êµ´ì ì´ì ì í</div>
+            <div class="section-sub">ê·¼/ìì, ëì, ë¸ì ì¤ë³µ ì í ê°ë¥í©ëë¤.</div>
           </div>
         </div>
         <div class="grid-chip" id="conditionGrid"></div>
@@ -256,17 +295,17 @@ select option{
         <div class="section-head">
           <div class="section-num">2</div>
           <div>
-            <div class="section-title">제품 비교</div>
-            <div class="section-sub">좌/우 화면에 적용할 제품을 선택해 비교하세요.</div>
+            <div class="section-title">ì í ë¹êµ</div>
+            <div class="section-sub">ì¢/ì° íë©´ì ì ì©í  ì íì ì íí´ ë¹êµíì¸ì.</div>
           </div>
         </div>
         <div class="select-wrap">
           <div class="field">
-            <label for="leftProduct">좌측 화면 제품</label>
+            <label for="leftProduct">ì¢ì¸¡ íë©´ ì í</label>
             <div class="select-shell"><select id="leftProduct"></select></div>
           </div>
           <div class="field">
-            <label for="rightProduct">우측 화면 제품</label>
+            <label for="rightProduct">ì°ì¸¡ íë©´ ì í</label>
             <div class="select-shell"><select id="rightProduct"></select></div>
           </div>
         </div>
@@ -276,13 +315,13 @@ select option{
         <div class="section-head">
           <div class="section-num">3</div>
           <div>
-            <div class="section-title">환경 선택</div>
-            <div class="section-sub">시야 비교에 사용할 장면을 선택하세요.</div>
+            <div class="section-title">íê²½ ì í</div>
+            <div class="section-sub">ìì¼ ë¹êµì ì¬ì©í  ì¥ë©´ì ì ííì¸ì.</div>
           </div>
         </div>
         <div class="scene-grid" id="sceneGrid"></div>
         <div class="field" style="margin-top:12px;display:none">
-          <label for="sceneSelect">환경 선택</label>
+          <label for="sceneSelect">íê²½ ì í</label>
           <div class="select-shell"><select id="sceneSelect"></select></div>
         </div>
       </div>
@@ -291,12 +330,26 @@ select option{
     <section class="panel viewer">
       <div class="toolbar">
         <div class="toolbar-left">
-          <span class="badge" id="conditionBadge"><span class="badge-accent"></span>상태 : 근/원시</span>
-          <span class="badge" id="sceneBadge"><span class="badge-accent"></span>환경 : 마트</span>
+          <span class="badge" id="conditionBadge"><span class="badge-accent"></span>ìí : ê·¼/ìì</span>
+          <span class="badge" id="sceneBadge"><span class="badge-accent"></span>íê²½ : ë§í¸</span>
+          <div class="outcome-inline">
+            <span class="outcome-inline-title">ê²°ê³¼ ë²ì</span>
+            <div class="outcome-options" id="outcomeOptions">
+              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="low">Low</label>
+              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="medium">Medium</label>
+              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="high" checked>High</label>
+            </div>
+            <button class="outcome-info-btn" id="outcomeInfoBtn" type="button" aria-label="ê²°ê³¼ ë²ì ìë´">i</button>
+          </div>
         </div>
         <div class="toolbar-right">
-          <button class="ghost-btn" id="resetBtn">초기화</button>
+          <button class="ghost-btn" id="resetBtn">ì´ê¸°í</button>
         </div>
+      </div>
+      <div class="outcome-pop" id="outcomePop">
+        <p>ì½íí¸ë ì¦ ì°©ì© ì ìë ¥ì ê°ì¸ì ë ìíì ë ì¦ í¹ì±ì ë°ë¼ ë¤ìíê² ëíëë©°, í­ì 100% ëì¼í ìë ¥ íì§ì ì ê³µíë ê²ì ìëëë¤.</p>
+        <p>í¹í ëìë ë©í°í¬ì»¬ ë ì¦ë¥¼ ì¬ì©íë ê²½ì° ë¹ ë²ì§ì´ë ì½ê°ì íë¦¼ì´ ëê»´ì§ ì ììµëë¤. ì´ê±´ ë¬¸ì ê° ìë ê²ì´ ìëë¼ ë ì¦ êµ¬ì¡°ì ë ìíì ë°ë¼ ëíëë ìì°ì¤ë¬ì´ ì°¨ì´ìëë¤.</p>
+        <p>ëë¶ë¶ ì¼ììíìë ì¶©ë¶í í¸íì§ë§ ìí©ì ë°ë¼ ì½ê°ì ì°¨ì´ë¥¼ ëë¼ì¤ ì ììµëë¤.</p>
       </div>
 
       <div class="stage-wrap">
@@ -305,45 +358,45 @@ select option{
           <div class="compare-pane" id="rightPane"><video id="rightVideo" autoplay muted loop playsinline preload="auto"></video></div>
 
           <div class="side-label left">
-            <span class="side-name">좌측</span>
+            <span class="side-name">ì¢ì¸¡</span>
             <select class="label-select" id="leftInline"></select>
-            <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
+            <button class="info-btn" id="leftInfoBtn" type="button" aria-label="ì¢ì¸¡ ì í ì ë³´">i</button>
           </div>
           <div class="side-label right">
-            <span class="side-name">우측</span>
+            <span class="side-name">ì°ì¸¡</span>
             <select class="label-select" id="rightInline"></select>
-            <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
+            <button class="info-btn" id="rightInfoBtn" type="button" aria-label="ì°ì¸¡ ì í ì ë³´">i</button>
           </div>
 
           <div class="video-label left" id="leftVideoLabel"></div>
           <div class="video-label right" id="rightVideoLabel"></div>
 
-          <button class="play-toggle" id="playToggle" type="button" aria-label="일시중지">❚❚</button>
+          <button class="play-toggle" id="playToggle" type="button" aria-label="ì¼ìì¤ì§">ââ</button>
 
           <div class="product-pop left-pop" id="leftProductPop">
-            <button class="pop-close" id="leftPopClose" type="button" aria-label="닫기">×</button>
+            <button class="pop-close" id="leftPopClose" type="button" aria-label="ë«ê¸°">Ã</button>
             <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="leftPopTitle"></h3></div>
             <div class="pop-body">
-              <img class="pop-pack" id="leftPopPack" alt="좌측 제품 팩샷" />
-              <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="leftPopOverview"></p></div>
-              <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="leftPopFeatures"></ul><p class="pop-note" id="leftPopNote"></p></div>
+              <img class="pop-pack" id="leftPopPack" alt="ì¢ì¸¡ ì í í©ì·" />
+              <div class="pop-section"><h4>ê°ì</h4><p class="pop-overview" id="leftPopOverview"></p></div>
+              <div class="pop-section"><h4>ì£¼ì í¹ì§</h4><ul class="pop-features" id="leftPopFeatures"></ul><p class="pop-note" id="leftPopNote"></p></div>
             </div>
           </div>
           <div class="product-pop right-pop" id="rightProductPop">
-            <button class="pop-close" id="rightPopClose" type="button" aria-label="닫기">×</button>
+            <button class="pop-close" id="rightPopClose" type="button" aria-label="ë«ê¸°">Ã</button>
             <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="rightPopTitle"></h3></div>
             <div class="pop-body">
-              <img class="pop-pack" id="rightPopPack" alt="우측 제품 팩샷" />
-              <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="rightPopOverview"></p></div>
-              <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="rightPopFeatures"></ul><p class="pop-note" id="rightPopNote"></p></div>
+              <img class="pop-pack" id="rightPopPack" alt="ì°ì¸¡ ì í í©ì·" />
+              <div class="pop-section"><h4>ê°ì</h4><p class="pop-overview" id="rightPopOverview"></p></div>
+              <div class="pop-section"><h4>ì£¼ì í¹ì§</h4><ul class="pop-features" id="rightPopFeatures"></ul><p class="pop-note" id="rightPopNote"></p></div>
             </div>
           </div>
 
           <div class="divider"></div>
-          <div class="handle" id="handle">‹›</div>
+          <div class="handle" id="handle">â¹âº</div>
         </div>
       </div>
-      <div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션 영상입니다. 실제 시야와 차이가 있을 수 있습니다.</div>
+      <div class="footer-note">í´ë¹ ììì ì´í´ë¥¼ ëê¸° ìí ìë®¬ë ì´ì ìììëë¤. ì¤ì  ìì¼ì ì°¨ì´ê° ìì ì ììµëë¤.</div>
 
       
     </section>
@@ -353,54 +406,169 @@ select option{
           <h3 class="references-footer-title">references</h3>
          
         </div>
-        <div class="references-footer-text">1. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology product information. ACUVUE.
-2. ACUVUE<sup class="reg">®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">®</sup> Technology for ASTIGMATISM product information. ACUVUE.
-3. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day product information. ACUVUE.
-4. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day for ASTIGMATISM product information. ACUVUE.
-5. ACUVUE<sup class="reg">®</sup> OASYS MULTIFOCAL product information. ACUVUE.
-6. ACUVUE<sup class="reg">®</sup> MOIST MULTIFOCAL product information. ACUVUE.
-7. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL product information. ACUVUE.
-8. ACUVUE<sup class="reg">®</sup> OASYS MAX 1-Day MULTIFOCAL for ASTIGMATISM product information. ACUVUE.
-9. Types of Refractive Errors. National Eye Institute, NIH.
-10. Refractive Errors Preferred Practice Pattern<sup class="reg">®</sup>. American Academy of Ophthalmology.
-11. Data on file. Internal simulator design specification for object-based scene masking and illustrative blur rendering.
-12. Data on file. Internal product-matching criteria for spherical, toric, multifocal, and multifocal toric simulation logic.</div>
+        <div class="references-footer-text"><div class="references-group">
+  <div class="references-group-title">Product Information</div>
+  <div>1. ACUVUE<sup class="reg">Â®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">Â®</sup> Technology product information. ACUVUE.</div>
+  <div>2. ACUVUE<sup class="reg">Â®</sup> OASYS 1-Day with HydraLuxe<sup class="reg">Â®</sup> Technology for ASTIGMATISM product information. ACUVUE.</div>
+  <div>3. ACUVUE<sup class="reg">Â®</sup> OASYS MAX 1-Day product information. ACUVUE.</div>
+  <div>4. ACUVUE<sup class="reg">Â®</sup> OASYS MAX 1-Day for ASTIGMATISM product information. ACUVUE.</div>
+  <div>5. ACUVUE<sup class="reg">Â®</sup> MOIST MULTIFOCAL product information. ACUVUE.</div>
+  <div>6. ACUVUE<sup class="reg">Â®</sup> OASYS MAX 1-Day MULTIFOCAL product information. ACUVUE.</div>
+  <div>7. ACUVUE<sup class="reg">Â®</sup> OASYS MAX 1-Day MULTIFOCAL for ASTIGMATISM product information. ACUVUE.</div>
+</div>
+<div class="references-group">
+  <div class="references-group-title">Refractive Error and Visual Impact</div>
+  <div>8. Types of Refractive Errors. National Eye Institute, NIH.</div>
+  <div>9. Refractive Errors Preferred Practice Pattern<sup class="reg">Â®</sup>. American Academy of Ophthalmology.</div>
+</div>
+<div class="references-group">
+  <div class="references-group-title">Blue Light / HEV Filtering</div>
+  <div>10. Tavazzi S, et al. Does blue-violet filtering in contact lenses improve contrast sensitivity? Contact Lens and Anterior Eye. 2022.</div>
+  <div>11. Hammond BR, Buch JR, Martin P, Shamp W, Harth JB, Wysocky C, Renzi-Hammond LM. The effects of a HEV-filtering contact lens on the brightness of natural images. Ophthalmic Physiol Opt. 2025;45(7):1801-1810. doi:10.1111/opo.70035.</div>
+<div class="references-group">
+  <div class="references-group-title">Â±ì½íí¸ë ì¦ë¥¼ íµí´ HEV ê´ì ì ì°¨ë¨íë ê²ì ë§ë§ ë³´í¸, ë°±ë´ì¥ ì§í ë°©ì§, ëì í¼ë¡ ê°ì, ëë¹ ëë ìë ¥ ê°ì , ëë¶ì¬ ê°ì, ì ì¡°ë ìí©ììì ìë ¥ ê°ì , ì¼ì£¼ê¸° ë¦¬ë¬/ìë©´ ì£¼ê¸° ê°ì  ë± ì°©ì©ììê² ìêµ¬ ê±´ê°ì ì´ë í ì´ì ë ì ê³µíì§ ìë ê²ì¼ë¡ ëíë¬ìµëë¤. </div>  
+<div class="references-group">
+  <div class="references-group-title"># UVA 316~380nm, UVB 280~315nm ë²ììì ì¸¡ì 
+ìì¸ì ì ëì ë¸íì ê°ì¢ ìì§íì ìì¸ì´ ë  ì ììµëë¤. (ì¶ì²: WHO)</div>
+</div></div>
       </div>
 </div>
 
 <script>
 const conditions=[
-  {id:'myohyperopia',label:'근/원시'},
-  {id:'astigmatism',label:'난시'},
-  {id:'presbyopia',label:'노안'}
+  {id:'myohyperopia',label:'ê·¼/ìì'},
+  {id:'astigmatism',label:'ëì'},
+  {id:'presbyopia',label:'ë¸ì'}
 ];
 const scenes={
-  day:{label:'마트'},
-  night:{label:'야간운전'},
-  dine:{label:'레스토랑'}
+  day:{label:'ë§í¸'},
+  night:{label:'ì¼ê°ì´ì '},
+  dine:{label:'ë ì¤í ë'}
 };
 const sceneOrder=['day','night','dine'];
 const sceneColumn={day:0,night:1,dine:2};
 const VIDEO_ADJUST={17:{x:0,y:0,scale:1},19:{x:0,y:0,scale:0.93}};
 const products=[
-  {id:'oasys',name:'아큐브 오아시스 원데이®',group:'sphere'},
-  {id:'max1day',name:'아큐브® 오아시스 MAX 원데이',group:'sphere'},
-  {id:'oasysToric',name:'아큐브 오아시스 원데이® 난시용',group:'toric'},
-  {id:'maxToric',name:'아큐브® 오아시스 MAX 원데이 난시용',group:'toric'},
-  {id:'moistMulti',name:'원데이 아큐브 모이스트® 멀티포컬',group:'multi'},
-  {id:'maxMulti',name:'아큐브® 오아시스 MAX 원데이 멀티포컬',group:'multi'},
-  {id:'maxMultiToric',name:'아큐브® 오아시스 MAX 원데이 멀티포컬 난시용',group:'multi'}
+  {id:'oasys',name:'ìíë¸ ì¤ììì¤ ìë°ì´Â®',group:'sphere'},
+  {id:'max1day',name:'ìíë¸Â® ì¤ììì¤ MAX ìë°ì´',group:'sphere'},
+  {id:'oasysToric',name:'ìíë¸ ì¤ììì¤ ìë°ì´Â® ëìì©',group:'toric'},
+  {id:'maxToric',name:'ìíë¸Â® ì¤ììì¤ MAX ìë°ì´ ëìì©',group:'toric'},
+  {id:'moistMulti',name:'ìë°ì´ ìíë¸ ëª¨ì´ì¤í¸Â® ë©í°í¬ì»¬',group:'multi'},
+  {id:'maxMulti',name:'ìíë¸Â® ì¤ììì¤ MAX ìë°ì´ ë©í°í¬ì»¬',group:'multi'},
+  {id:'maxMultiToric',name:'ìíë¸Â® ì¤ììì¤ MAX ìë°ì´ ë©í°í¬ì»¬ ëìì©',group:'multi'}
 ];
-const GROUP_LABEL={multi:'멀티포컬',toric:'난시',sphere:'근/원시'};
+const GROUP_LABEL={multi:'ë©í°í¬ì»¬',toric:'ëì',sphere:'ê·¼/ìì'};
 
 const PRODUCT_INFO={
-  oasys:{pack:1,title:'아큐브 오아시스 원데이®',overview:'HydraLuxe<sup class="reg">®</sup> 기술이 적용된 매일 착용·교체용 콘택트렌즈입니다. 일상적인 근/원시 교정 상황에서 편안한 착용감과 선명한 시야를 설명하기 위한 제품입니다.',features:['HydraLuxe<sup class="reg">®</sup> 기술 기반의 tear-inspired design','매일 새 렌즈로 교체하는 원데이 타입','UV 차단 기능 포함','30개입 / 90개입 팩 구성']},
-  max1day:{pack:2,title:'아큐브® 오아시스 MAX 원데이',overview:'TearStable™ Technology와 OptiBlue™ Light Filter가 적용된 원데이 렌즈입니다. 빛번짐·눈부심 상황에서 더 선명한 시야 비교를 보여주기 위한 제품입니다.',features:['OptiBlue™ Light Filter 적용','TearStable™ Technology 기반 착용감','UV 차단 기능 포함','일상 및 디지털 환경에서 선명한 시야 설명에 적합']},
-  oasysToric:{pack:3,title:'아큐브 오아시스 원데이® 난시용',overview:'난시 교정을 위한 원데이 렌즈입니다. 자연스러운 눈꺼풀 움직임을 활용해 렌즈가 안정적으로 위치하도록 설계된 제품입니다.',features:['난시 교정용 디자인','눈꺼풀 움직임을 활용한 안정화 설계','HydraLuxe<sup class="reg">®</sup> 기술 기반 착용감','UV 차단 기능 포함']},
-  maxToric:{pack:4,title:'아큐브® 오아시스 MAX 원데이 난시용',overview:'난시 교정에 맥스 원데이의 선명도와 빛 필터링 특성을 더한 제품입니다. 안정적인 축 위치와 빛번짐 저감 비교에 사용할 수 있습니다.',features:['OptiBlue™ Light Filter 적용','난시용 안정화 설계','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
-  moistMulti:{pack:5,title:'원데이 아큐브 모이스트® 멀티포컬',overview:'노안 교정을 위한 원데이 멀티포컬 렌즈입니다. 동공 크기 변화를 고려한 디자인으로 근거리·중간거리·원거리 시야 설명에 사용할 수 있습니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','LACREON<sup class="reg">®</sup> 기술 적용','근거리부터 원거리까지 시야 설명 가능','원데이 교체 타입']},
-  maxMulti:{pack:6,title:'아큐브® 오아시스 MAX 원데이 멀티포컬',overview:'노안 교정을 위한 맥스 원데이 멀티포컬 렌즈입니다. 다양한 거리와 조명 조건에서 선명한 시야를 설명하기 위한 제품입니다.',features:['Pupil Optimized Design 기반 멀티포컬 설계','OptiBlue™ Light Filter 적용','TearStable™ Technology 기반 착용감','UV 차단 기능 포함']},
-  maxMultiToric:{pack:7,title:'아큐브® 오아시스 MAX 원데이 멀티포컬 난시용',overview:'노안과 난시를 함께 고려한 맥스 원데이 렌즈입니다. 여러 거리, 다양한 조명 조건, 안정적인 난시 교정 설명에 활용할 수 있습니다.',features:['멀티포컬 + 난시 교정 조합','모든 거리와 조명 조건에서의 선명도 설명 가능','안정적인 난시 교정 설명에 적합','TearStable™ 및 OptiBlue™ 기반 제품군']}
+  oasys:{
+    pack:1,
+    title:'ìíë¸ ì¤ììì¤ ìë°ì´Â®',
+    overview:'ëì§í¸ íê²½ ì ëì´ ì½ê² ê±´ì¡°í´ì§ ì ìë íëì¸ì ë¼ì´í ì¤íì¼. ëë¬¼ì ëí ì°êµ¬ë¥¼ íµí´ íìí ìíë¸ ì¤ììì¤ ìë°ì´Â®ë ëë¬¼ì ì§í¤ë ê¸°ì ë¡ íë£¨ ì¢ì¼ ì§ìëë ì´ì´í¨ê³¼ ì ëªí¨ì ì ê³µí©ëë¤.',
+    features:[
+      'ëë¬¼ì ì§í¤ë íì´ëë¼ë­ì¤â¢ ê¸°ì ',
+      'ëë¬¼ì ë®ì PVP ìµì¤ì¸ìê° ëë¬¼ì ì ì§íê³  ëë¬¼ ì¦ë°ì ê°ììì¼ íë£¨ ì¢ì¼ ì´ì´íê³  ì¥ìê° ëì§í¸ íê²½ììë í¸ìí ì°©ì©ê° ì ê³µ',
+      'íë£¨ ì¢ì¼ ì´ì´í ëì§í¸ ë¼ì´í',
+      '8ìê° ì´ìì ëì§í¸ íê²½ììë ì ëªíê³  í¸ìí ì°©ì©ê° ì ê³µ',
+      'ìêµ¬ ëª¨ìì ë°ë¼ ì í ê°ë¥í 2ê°ì§ ë ì¦ ëìì¸',
+      'ííí ìêµ¬ì ì í©í 9.0 ë² ì´ì¤ì»¤ë¸ê¹ì§! ë´ ëì ííê³  ì ëªí ìë ¥ ì ê³µ',
+      'ìì¸ì  ì°¨ë¨ 1ë±ê¸ - UVA 90%, UVB 99% ì´ì ì°¨ë¨#',
+      '1ë°ì¤ì ì½ 1ê°ì(30ë ì¦) / 3ê°ì (90ë ì¦) ë¶ë'
+    ],
+    approval:'ìë£ê¸°ê¸°ì¬ìí 42024-I10-24-2098 (ì í¨ê¸°ê°: 27.06.21)'
+  },
+  max1day:{
+    pack:2,
+    title:'ìíë¸Â® ì¤ììì¤ MAX ìë°ì´',
+    overview:'ëì§í¸ ë¼ì´íì íëì¸ì ë ê±´ê°. ê·¸ ì´ë ëë³´ë¤ ëì§í¸ ê¸°ê¸°ë¥¼ ì¬ì©íë ìê°ì´ ê¸¸ì´ì§ë©´ì ë ê¹ë¹¡ìì´ ì¤ì´ ëì´ ë¶í¸íê³  ìì¼ê° íë¦¿í´ì§ ì ììµëë¤. ë¸ë£¨ë¼ì´í¸ë ëì§í¸ íë©´, LED ì¡°ëª, í¹í íì ë± ì´ëìë ì¡´ì¬íë©° ëì ë ë§ì´ ë¹ë²ì§ì´ ì¼ì´ë ìê°ì  ì ëªëì ìí¥ì ì¤ ì ììµëë¤. ì¤ììì¤ MAX ìë°ì´ë ì¤ëë ì ëì§í¸ ì¤ì¬ íê²½ì ë§ëë¡ íì ì ì¸ ê¸°ì ì ì¬ì©íì¬ ì¤ê³ë ì íìëë¤.',
+    features:[
+      'MAXì í¸ìí¨, MAXì ì ëªí¨*, MAXì í¼í¬ë¨¼ì¤',
+      'ìµí°ë¸ë£¨â¢ ê¸°ì  (OptiBlueâ¢) - ëì ë ë²¨ì ë¸ë£¨ë¼ì´í¸ ì°¨ë¨Â±',
+      'ìµí°ë¸ë£¨â¢ ê¸°ì  (OptiBlueâ¢)ë¡ ë¸ë£¨ë¼ì´í¸ì ì½ 55% ì°¨ë¨',
+      'ëë¬¼ ìì íâ¢ ê¸°ì (Tearstableâ¢) - íë£¨ ì¢ì¼ í¸ìíê²',
+      'ìë¶ ì¦ë°ì ë§ê³  ë ì ëë¬¼ì¸µì ì¤ë« ëì ì ì§',
+      'ìì¸ì  ì°¨ë¨ 1ë±ê¸ - UVA 90%, UVB 99% ì´ì ì°¨ë¨#',
+      '1ë°ì¤ì ì½ 1ê°ì(30ë ì¦) / 3ê°ì(90ë ì¦) ë¶ë'
+    ],
+    approval:'ìë£ê¸°ê¸°ì¬ìí 42024-I10-23-2075 (ì í¨ê¸°ê°: 27.06.21)'
+  },
+  oasysToric:{
+    pack:3,
+    title:'ìíë¸ ì¤ììì¤ ìë°ì´Â® ëìì©',
+    overview:'ì§ìì í´ìì ì·¨í  ë, ì¡°ê¹ì íë¬ ëê° ë ë± íë£¨ ì¢ì¼ ìì ì ì¸ ìì¼ë¥¼ ì ê³µíëë¡ ìíë¸ì ASD ê¸°ì ì´ ì ì©ëììµëë¤. 1ì¼ ì°©ì© ë ì¦ì í¸ë¦¬í¨ê³¼ ë°ì´ë í¸ìí¨ì´ ê²°í©ëì´ ìíì ì¼ë¶ê° ë  ì ìëë¡ ë§ë¤ì´ì¡ìµëë¤.',
+    features:[
+      'ëìì ìíë¸ êµì ë ¥! íë£¨ì¢ì¼ ì´ì´íê³  ëë ·íê²',
+      'ëë¬¼ì ì§í¤ë íì´ëë¼ë­ì¤â¢ ê¸°ì ',
+      'ëë¬¼ì ë®ì PVP ìµì¤ì¸ìê° ëë¬¼ì ì ì§íê³  ëë¬¼ ì¦ë°ì ê°ììì¼ íë£¨ ì¢ì¼ ì´ì´íê³  ì¥ìê° ëì§í¸ íê²½ììë í¸ìí ì°©ì©ê° ì ê³µ',
+      'ì°ìí ì°ì í¬ê³¼ì¨',
+      'ì¹ìì± ì¤ë¦¬ì½ íì´ëë¡ì ¤ ì¬ì§ì ëì ì°ìí¬ê³¼ì¨',
+      'ìíë¸ì ASD ê¸°ì ',
+      '4ê°ì ì¡´ì¼ë¡ ë ì¦ íì ì ì¤ì¬ì£¼ë ìíë¸ì ëìì¸',
+      'ìì¸ì  ì°¨ë¨ 1ë±ê¸ - UVA 90%, UVB 99% ì´ì ì°¨ë¨#',
+      '1ë°ì¤ì ì½ 1ê°ì(30ë ì¦) / 3ê°ì (90ë ì¦) ë¶ë'
+    ],
+    approval:'ìë£ê¸°ê¸°ì¬ìí 42024-I10-23-2074 (ì í¨ê¸°ê°: 27.06.21)'
+  },
+  maxToric:{
+    pack:4,
+    title:'ìíë¸Â® ì¤ììì¤ MAX ìë°ì´ ëìì©',
+    overview:'íë ì¬íì ì±ì¸ì ë§¤ì¼ ì¤ë ìê° ëì§í¸ ê¸°ê¸°ë¥¼ ì¬ì©íë©°, ì´ë¡ ì¸í´ ì°ë¦¬ ë ì­ì ì¤ë ìê° ë¸ë£¨ë¼ì´í¸ì ë¸ì¶ë©ëë¤. ìíë¸Â® ì¤ììì¤ MAX ìë°ì´ ëìì©ì 3ê°ì§ ê¸°ì ë ¥ì ì¡°íë¡ ëì§í¸ íê²½ì´ ì¼ìì¸ íëì¸ì ë¼ì´íì¤íì¼ììë í¸ìíê³ , ì ëªíë©° ìì ì ì¸ ìì¼ë¥¼ ì ê³µí©ëë¤.',
+    features:[
+      'MAX*ì í¸ìí¨, MAX*ì ì ëªí¨, MAX*ì ë³´í¸ë ¥',
+      '3ê°ì§ ê¸°ì ë ¥ì ì¡°í',
+      'ìµí°ë¸ë£¨â¢ ê¸°ì  (OptiBlueâ¢)',
+      'ëë¬¼ìì í ê¸°ì  (Tearstableâ¢)',
+      'ASD ê¸°ì ',
+      'ëì§í¸ íê²½ì´ ì¼ìì¸ íëì¸ì ë¼ì´íì¤íì¼ììë í¸ìíê³ , ì ëªíë©° ìì ì ì¸ ìì¼ë¥¼ ì ê³µí©ëë¤.'
+    ],
+    approval:'ìë£ê¸°ê¸° ì¬ìí ì¡°í© 2025-31-020 (ì í¨ê¸°ê°: 28.08.25ê¹ì§)'
+  },
+  moistMulti:{
+    pack:5,
+    title:'ìë°ì´ ìíë¸ ëª¨ì´ì¤í¸Â® ë©í°í¬ì»¬',
+    overview:'ìë°ì´ ìíë¸ ëª¨ì´ì¤í¸Â® ë©í°í¬ì»¬ì ì¬ì©íë©´ ê·¼ê±°ë¦¬, ìê±°ë¦¬, ì¤ê° ê±°ë¦¬ë¥¼ ì ëªíê² ë³¼ ì ììµëë¤. 1ì¼ ì°©ì©ì´ê¸° ëë¬¸ì ì¸ì²ì´ë ì ì§ ê´ë¦¬ê° í¸ë¦¬í©ëë¤.',
+    features:[
+      'ê°ê¹ì´ ê±°ë¦¬ë¶í° ë¨¼ ê±°ë¦¬ê¹ì§ ì ëªíê²',
+      '183ê° ëê³µ í¬ê¸°ë³ ëìì¸ (Pupil Optimized Design)',
+      'ëì´ì ëìì ë°ë¼ ë¬ë¼ì§ë ëê³µ í¬ê¸°ë¥¼ ë°ìí ëíì¼í ì¤ê³! 183ê°ì§ ëê³µí¬ê¸°ë³ ëìì¸ì¼ë¡ ëì± ì ëªí ìë ¥ ì ê³µ',
+      'í¸ìí ìë ¥ ì í',
+      'ìíë¸ ëª¨ì´ì¤í¸ ë©í°í¬ì»¬ íëë¡ ìê±°ë¦¬ë¶í° ì¤ê°ê±°ë¦¬, ê·¼ê±°ë¦¬ê¹ì§ í¸ìíê² ë³´ì´ë ìì¼',
+      'íë£¨ì¢ì¼ ì´ì´íê³  í¸ìí ì ìê·¹ ë ì¦',
+      'ë¤ëì PVP ìµì¤ì¸ìë¥¼ í¨ì íì¬ ëì± ì´ì´íê³  í¸ìí ì°©ì©ê° ì ê³µ',
+      'ì°ìí ìì¸ì  ì°¨ë¨ ê¸°ë¥ - UVA 70%, UVB 95% ì´ì ì°¨ë¨#',
+      '1ë°ì¤ì ì½ 1ê°ì(30ë ì¦) ë¶ë'
+    ],
+    approval:'ìë£ê¸°ê¸°ì¬ìí 42024-I10-25-2227 (ì í¨ê¸°ê°: 27.06.27)'
+  },
+  maxMulti:{
+    pack:6,
+    title:'ìíë¸Â® ì¤ììì¤ MAX ìë°ì´ ë©í°í¬ì»¬',
+    overview:'ë¸íê° ì§íëë©´ ëë¬¼ë§ì ìì ì±ì´ ë¨ì´ì§ë©° ë¸ìê³¼ ê°ì ìë ¥ ë³íê° ìê¸¸ ì ììµëë¤. ìíë¸Â® ì¤ììì¤ MAX ìë°ì´ ë©í°í¬ì»¬ì ì´ë¬í ë¬¸ì ë¥¼ í´ê²°íì¬ ë¤ìí ê±°ë¦¬ìì ëë ·í ìì¼ë ë¬¼ë¡ , ë®ìë ë°¤ìë ì ëªí ìì¼ì íë£¨ ë§ë¯¸ê¹ì§ ì´ì´í í¸ìí¨ì ì ê³µí©ëë¤.',
+    features:[
+      'ë¤ìí ê±°ë¦¬, ë®ìë ë°¤ìë / íë£¨ ë§ë¯¸ê¹ì§ ì´ì´í í¸ìí¨',
+      '183ê° ëê³µ í¬ê¸°ë³ ëìì¸ (Pupil Optimized Design)',
+      'ëì´ì ë°ë¼ ë¬ë¼ì§ë ëê³µ ì¬ì´ì¦. 183ê°ì§ ëê³µí¬ê¸°ë³ ëìì¸ì¼ë¡ ëì± ì ëªí ìë ¥ ì ê³µ',
+      'ìµí°ë¸ë£¨â¢ ê¸°ì  (OptiBlueâ¢) - ëì ë ë²¨ì ë¸ë£¨ë¼ì´í¸ ì°¨ë¨Â±',
+      'ìµí°ë¸ë£¨â¢ ê¸°ì  (OptiBlueâ¢)ë¡ ë¸ë£¨ë¼ì´í¸ì ì½ 55% ì°¨ë¨',
+      'ìì¸ì  ì°¨ë¨ 1ë±ê¸ - UVA 90%, UVB 99% ì´ì ì°¨ë¨#',
+      '1ë°ì¤ ì½ 1ê°ì (30ë ì¦) / 3ê°ì (90ë ì¦) ë¶ë'
+    ],
+    approval:'ìë£ê¸°ê¸°ì¬ìí 42024-I10-23-2076 (ì í¨ê¸°ê°: 27.06.21)'
+  },
+  maxMultiToric:{
+    pack:7,
+    title:'ìíë¸Â® ì¤ììì¤ MAX ìë°ì´ ë©í°í¬ì»¬ ëìì©',
+    overview:'ìíë¸Â® íêµ­ ì í íì´ì§ìì ê°ë³ ìì¸ íì´ì§ì ì¬ì ë²í¸ë¥¼ íì¸íì§ ëª»í´, ê³µì íì¸ ê°ë¥í ë²ì ë´ ííë§ ë°ìíìµëë¤.',
+    features:[
+      'ë¤ìí ê±°ë¦¬ìì ëë ·í ìì¼',
+      'ë®ìë ë°¤ìë ì ëªí ìì¼ì íë£¨ ë§ë¯¸ê¹ì§ ì´ì´í í¸ìí¨',
+      'í¸ìíê³ , ì ëªíë©° ìì ì ì¸ ìì¼',
+      '183ê° ëê³µ í¬ê¸°ë³ ëìì¸ (Pupil Optimized Design)',
+      'ìµí°ë¸ë£¨â¢ ê¸°ì  (OptiBlueâ¢)',
+      'ëë¬¼ìì í ê¸°ì  (Tearstableâ¢)',
+      'ASD ê¸°ì '
+    ],
+    approval:'êµ­ë´ ê³µì ì í íì´ì§ìì ê°ë³ ìë£ê¸°ê¸°ì¬ìí ë²í¸ ë¯¸íì¸'
+  }
 };
 const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50};
 const dom={
@@ -420,7 +588,8 @@ const dom={
   leftPopPack:document.getElementById('leftPopPack'),rightPopPack:document.getElementById('rightPopPack'),
   leftPopOverview:document.getElementById('leftPopOverview'),rightPopOverview:document.getElementById('rightPopOverview'),
   leftPopFeatures:document.getElementById('leftPopFeatures'),rightPopFeatures:document.getElementById('rightPopFeatures'),
-  leftPopNote:document.getElementById('leftPopNote'),rightPopNote:document.getElementById('rightPopNote')
+  leftPopNote:document.getElementById('leftPopNote'),rightPopNote:document.getElementById('rightPopNote'),
+  outcomeInfoBtn:document.getElementById('outcomeInfoBtn'),outcomePop:document.getElementById('outcomePop')
 };
 function flags(){return{myohyperopia:state.selected.includes('myohyperopia'),astigmatism:state.selected.includes('astigmatism'),presbyopia:state.selected.includes('presbyopia')}}
 function productById(id){return products.find(p=>p.id===id)}
@@ -434,7 +603,7 @@ function productOptions(){
   return ids.map(productById).filter(Boolean);
 }
 function compactProductNameForOverlay(name){
-  return String(name||'').replace(/<sup[^>]*>.*?<\/sup>/gi,'®').replace(/\s+/g,' ').trim();
+  return String(name||'').replace(/<sup[^>]*>.*?<\/sup>/gi,'Â®').replace(/\s+/g,' ').trim();
 }
 function groupedProductOptions(){
   const opts=productOptions();
@@ -509,8 +678,8 @@ function applyVideoAdjust(video,num){const adj=VIDEO_ADJUST[num] || {x:0,y:0,sca
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
 function updatePlayButton(){
   const paused = dom.leftVideo.paused || dom.rightVideo.paused;
-  dom.playToggle.textContent = paused ? '▶' : '❚❚';
-  dom.playToggle.setAttribute('aria-label', paused ? '재생' : '일시중지');
+  dom.playToggle.textContent = paused ? 'â¶' : 'ââ';
+  dom.playToggle.setAttribute('aria-label', paused ? 'ì¬ì' : 'ì¼ìì¤ì§');
 }
 function pauseBothVideos(){
   try{dom.leftVideo.pause();}catch(e){}
@@ -544,17 +713,112 @@ function updateVideos(){
   const leftSrc=videoSrc(state.leftProduct), rightSrc=videoSrc(state.rightProduct);
   applyVideoAdjust(dom.leftVideo,leftNum); applyVideoAdjust(dom.rightVideo,rightNum);
   prepareVideo(dom.leftVideo,leftSrc); prepareVideo(dom.rightVideo,rightSrc);
-  dom.leftVideoLabel.textContent=`좌측 ${leftNum}.mp4`; dom.rightVideoLabel.textContent=`우측 ${rightNum}.mp4`;
+  dom.leftVideoLabel.textContent=`ì¢ì¸¡ ${leftNum}.mp4`; dom.rightVideoLabel.textContent=`ì°ì¸¡ ${rightNum}.mp4`;
   restartBothVideos();
   updatePlayButton();
 }
+
+function getVisibleBoundsFromImage(imgEl){
+  try{
+    const source = imgEl.currentSrc || imgEl.src;
+    if(!source || source.startsWith('data:')) return null;
+
+    const work = new Image();
+    work.decoding = 'async';
+    work.onload = function(){
+      try{
+        const w = work.naturalWidth || work.width;
+        const h = work.naturalHeight || work.height;
+        if(!w || !h) return;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(work, 0, 0, w, h);
+        const imageData = ctx.getImageData(0, 0, w, h).data;
+
+        let top = h, left = w, right = -1, bottom = -1;
+
+        const checkPixel = (idx) => {
+          const r = imageData[idx], g = imageData[idx+1], b = imageData[idx+2], a = imageData[idx+3];
+          if(a < 18) return false;
+          // ignore almost-white background / margin
+          if(r > 246 && g > 246 && b > 246) return false;
+          return true;
+        };
+
+        for(let y=0; y<h; y++){
+          for(let x=0; x<w; x++){
+            const idx = (y*w + x) * 4;
+            if(checkPixel(idx)){
+              if(x < left) left = x;
+              if(x > right) right = x;
+              if(y < top) top = y;
+              if(y > bottom) bottom = y;
+            }
+          }
+        }
+
+        // Fallback: if nothing found because image is very pale, use alpha only
+        if(right < left || bottom < top){
+          top = h; left = w; right = -1; bottom = -1;
+          for(let y=0; y<h; y++){
+            for(let x=0; x<w; x++){
+              const idx = (y*w + x) * 4;
+              const a = imageData[idx+3];
+              if(a > 18){
+                if(x < left) left = x;
+                if(x > right) right = x;
+                if(y < top) top = y;
+                if(y > bottom) bottom = y;
+              }
+            }
+          }
+        }
+
+        if(right < left || bottom < top) return;
+
+        const pad = Math.max(6, Math.round(Math.min(w, h) * 0.03));
+        left = Math.max(0, left - pad);
+        top = Math.max(0, top - pad);
+        right = Math.min(w - 1, right + pad);
+        bottom = Math.min(h - 1, bottom + pad);
+
+        const cropW = right - left + 1;
+        const cropH = bottom - top + 1;
+        const out = document.createElement('canvas');
+        out.width = cropW;
+        out.height = cropH;
+        const outCtx = out.getContext('2d');
+        outCtx.drawImage(work, left, top, cropW, cropH, 0, 0, cropW, cropH);
+
+        imgEl.dataset.trimmed = '1';
+        imgEl.src = out.toDataURL('image/png');
+      }catch(e){}
+    };
+    work.onerror = function(){};
+    work.src = source;
+  }catch(e){}
+}
+
+function preparePackshotDisplay(imgEl){
+  if(!imgEl) return;
+  imgEl.dataset.trimmed = '0';
+  imgEl.onload = function(){
+    if(this.dataset.trimmed === '1') return;
+    getVisibleBoundsFromImage(this);
+  };
+}
+
 function fillProductPop(side,productId){
   const info=PRODUCT_INFO[productId]; if(!info) return;
   const isLeft=side==='left';
   const title=isLeft?dom.leftPopTitle:dom.rightPopTitle, pack=isLeft?dom.leftPopPack:dom.rightPopPack, overview=isLeft?dom.leftPopOverview:dom.rightPopOverview, features=isLeft?dom.leftPopFeatures:dom.rightPopFeatures, note=isLeft?dom.leftPopNote:dom.rightPopNote;
-  title.textContent=info.title; overview.textContent=info.overview; features.innerHTML=info.features.map(v=>`<li>${v}</li>`).join(''); note.textContent=`팩샷 파일: ${info.pack}.png / 제품 매칭: ${info.title}`;
+  title.textContent=info.title; overview.textContent=info.overview; features.innerHTML=info.features.map(v=>`<li>${v}</li>`).join(''); note.textContent=info.approval || '';
   const packBase=`./${info.pack}`;
-  pack.onerror=function(){ if(this.dataset.try==='png'){this.dataset.try='jpg'; this.src=packBase+'.jpg';} else if(this.dataset.try==='jpg'){this.dataset.try='jpeg'; this.src=packBase+'.jpeg';} else {this.onerror=null; this.removeAttribute('src'); this.alt='팩샷 이미지를 찾을 수 없습니다';} };
+  preparePackshotDisplay(pack);
+  pack.onerror=function(){ if(this.dataset.try==='png'){this.dataset.try='jpg'; this.src=packBase+'.jpg';} else if(this.dataset.try==='jpg'){this.dataset.try='jpeg'; this.src=packBase+'.jpeg';} else {this.onerror=null; this.removeAttribute('src'); this.alt='í©ì· ì´ë¯¸ì§ë¥¼ ì°¾ì ì ììµëë¤';} };
   pack.dataset.try='png'; pack.src=packBase+'.png';
 }
 function toggleProductPop(side){ if(side==='left'){fillProductPop('left',state.leftProduct); dom.leftProductPop.classList.toggle('open');} else {fillProductPop('right',state.rightProduct); dom.rightProductPop.classList.toggle('open');}}
@@ -568,10 +832,31 @@ function updateInlineLabelText(){
     });
   });
 }
+
+function toggleOutcomePop(){
+  const pop = dom.outcomePop;
+  const btn = dom.outcomeInfoBtn;
+  const isOpen = pop.classList.contains('open');
+  if(isOpen){
+    pop.classList.remove('open');
+    return;
+  }
+  pop.classList.add('open');
+  const rect = btn.getBoundingClientRect();
+  const popWidth = Math.min(420, window.innerWidth - 24);
+  pop.style.maxWidth = `${popWidth}px`;
+  let left = rect.right - popWidth + 18;
+  if(left < 12) left = 12;
+  let top = rect.bottom + 12;
+  if(top + 220 > window.innerHeight) top = Math.max(12, rect.top - 220 - 12);
+  pop.style.left = `${left}px`;
+  pop.style.top = `${top}px`;
+}
+
 function updateBadges(){
   const conditionText=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');
-  dom.conditionBadge.innerHTML=`<span class="badge-accent"></span>상태 : ${conditionText}`;
-  dom.sceneBadge.innerHTML=`<span class="badge-accent"></span>환경 : ${scenes[state.scene].label}`;
+  dom.conditionBadge.innerHTML=`<span class="badge-accent"></span>ìí : ${conditionText}`;
+  dom.sceneBadge.innerHTML=`<span class="badge-accent"></span>íê²½ : ${scenes[state.scene].label}`;
 }
 function renderAll(){ renderConditions(); renderSceneGrid(); renderProducts(); updateInlineLabelText(); updateVideos(); updateBadges(); }
 function setSplit(percent){state.split=Math.max(15,Math.min(85,percent)); dom.stage.style.setProperty('--split',state.split+'%')}
@@ -588,11 +873,13 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){playBothV
 document.addEventListener('click',()=>{playBothVideos();},{once:true});
 document.addEventListener('touchstart',()=>{playBothVideos();},{once:true,passive:true});
 dom.leftVideo.addEventListener('canplay',()=>updatePlayButton()); dom.rightVideo.addEventListener('canplay',()=>updatePlayButton());
-dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoNumber(state.leftProduct)}.mp4 파일 확인 필요`;});
-dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoNumber(state.rightProduct)}.mp4 파일 확인 필요`;});
+dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`ì¢ì¸¡ ${videoNumber(state.leftProduct)}.mp4 íì¼ íì¸ íì`;});
+dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`ì°ì¸¡ ${videoNumber(state.rightProduct)}.mp4 íì¼ íì¸ íì`;});
 setInterval(syncVideoTiming,250);
 dom.leftInfoBtn.onclick=()=>toggleProductPop('left'); dom.rightInfoBtn.onclick=()=>toggleProductPop('right'); dom.leftPopClose.onclick=()=>closeProductPop('left'); dom.rightPopClose.onclick=()=>closeProductPop('right');
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left'); closeProductPop('right');}});
+dom.outcomeInfoBtn.onclick=(e)=>{e.stopPropagation(); toggleOutcomePop();};
+document.addEventListener('click',e=>{ if(dom.outcomePop.classList.contains('open') && !dom.outcomePop.contains(e.target) && e.target !== dom.outcomeInfoBtn){ dom.outcomePop.classList.remove('open'); }});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left'); closeProductPop('right'); dom.outcomePop.classList.remove('open');}});
 dom.playToggle.onclick=()=>{ if(dom.leftVideo.paused || dom.rightVideo.paused) playBothVideos(); else pauseBothVideos(); };
 renderAll();
 updatePlayButton();
