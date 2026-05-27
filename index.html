@@ -302,7 +302,7 @@ select option{
 .video-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
 .side-label{
   position:absolute;top:14px;left:12px;right:12px;display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:18px;
-  background:rgba(255,255,255,.98);border:1px solid rgba(186,204,226,.95);color:#26456A;box-shadow:0 10px 24px rgba(13,43,92,.10);z-index:4;font-weight:800;
+  background:rgba(255,255,255,.99);border:2px solid rgba(108,151,241,.78);color:#26456A;box-shadow:0 10px 24px rgba(13,43,92,.10), inset 0 1px 0 rgba(255,255,255,.95);z-index:4;font-weight:800;
   max-width:none;
 }
 .dual-label{justify-content:flex-start}
@@ -315,7 +315,7 @@ select option{
 .overlay-select-shell .label-select{padding-right:38px}
 .overlay-select-shell .select-inline-tag{right:34px;top:50%;transform:translateY(-50%);height:24px;padding:0 10px;border-radius:999px;background:#EEF3FF;border:1px solid #D8E4FF;color:#7993E8;font-size:10px;font-weight:900}
 .overlay-select-shell.has-tag .label-select{padding-right:148px}
-.info-btn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(185,202,224,.95);background:#fff;color:#6F85A7;font-weight:950;font-size:18px;display:grid;place-items:center;cursor:pointer;box-shadow:none;flex:0 0 34px}
+.info-btn{width:34px;height:34px;border-radius:50%;border:2px solid rgba(108,151,241,.42);background:#fff;color:#5E79C8;font-weight:900;font-size:17px;display:grid;place-items:center;cursor:pointer;box-shadow:none;flex:0 0 34px}
 .info-btn:hover{background:#F6FAFF}
 .video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
 .video-label.left{left:16px}.video-label.right{right:78px}
@@ -475,7 +475,7 @@ select option{
             <video id="leftVideo" autoplay muted loop playsinline preload="auto"></video>
             <div class="side-label dual-label">
               <div class="select-shell overlay-select-shell is-product" id="leftInlineShell"><select class="label-select" id="leftInline"></select><span class="select-inline-tag" id="leftInlineTag">블루라이트 차단</span></div>
-              <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">!</button>
+              <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
             </div>
             <div class="video-label left" id="leftVideoLabel"></div>
             <div class="product-pop left-pop" id="leftProductPop">
@@ -493,7 +493,7 @@ select option{
             <video id="rightVideo" autoplay muted loop playsinline preload="auto"></video>
             <div class="side-label dual-label">
               <div class="select-shell overlay-select-shell is-product" id="rightInlineShell"><select class="label-select" id="rightInline"></select><span class="select-inline-tag" id="rightInlineTag">블루라이트 차단</span></div>
-              <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">!</button>
+              <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
             </div>
             <div class="video-label right" id="rightVideoLabel"></div>
             <button class="play-toggle" id="playToggle" type="button" aria-label="일시중지">❚❚</button>
@@ -514,11 +514,11 @@ select option{
 
             <div class="side-label left">
               <div class="select-shell overlay-select-shell is-product" id="splitLeftInlineShell"><select class="label-select" id="splitLeftInline"></select><span class="select-inline-tag" id="splitLeftInlineTag">블루라이트 차단</span></div>
-              <button class="info-btn" id="splitLeftInfoBtn" type="button" aria-label="좌측 제품 정보">!</button>
+              <button class="info-btn" id="splitLeftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
             </div>
             <div class="side-label right">
               <div class="select-shell overlay-select-shell is-product" id="splitRightInlineShell"><select class="label-select" id="splitRightInline"></select><span class="select-inline-tag" id="splitRightInlineTag">블루라이트 차단</span></div>
-              <button class="info-btn" id="splitRightInfoBtn" type="button" aria-label="우측 제품 정보">!</button>
+              <button class="info-btn" id="splitRightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
             </div>
 
             <div class="video-label left" id="splitLeftVideoLabel"></div>
