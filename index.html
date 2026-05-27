@@ -435,6 +435,19 @@ select.product-enhanced-native{display:none!important}
 }
 
 </style>
+
+<style id="bottom-curve-clean-fix">
+/* 하단 흰색 돌출 제거: 좌측 옵션 패널은 자체 높이만 유지하고, 가짜 연장선 제거 */
+@media (min-width:1281px){
+  .shell:not(.sidebar-collapsed) .sidebar{
+    overflow:visible !important;
+  }
+  .shell:not(.sidebar-collapsed) .sidebar::after{
+    content:none !important;
+    display:none !important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -1416,31 +1429,7 @@ updateViewMode();
 updatePlayButton();
 </script>
 
-<style id="left-slight-extend-patch">
-/* 요청 반영: 이전 영상 비율은 유지하고, 옵션 펼침 상태에서 좌측 패널만 시각적으로 살짝 연장 */
-@media (min-width:1281px){
-  .shell:not(.sidebar-collapsed) .sidebar{
-    position:sticky !important;
-    overflow:visible !important;
-  }
-  .shell:not(.sidebar-collapsed) .sidebar::after{
-    content:"";
-    position:absolute;
-    left:-1px;
-    right:-1px;
-    bottom:-10px;
-    height:10px;
-    background:#FFFFFF;
-    border-left:1px solid rgba(220,227,238,.95);
-    border-right:1px solid rgba(220,227,238,.95);
-    border-bottom:1px solid rgba(220,227,238,.95);
-    border-radius:0 0 26px 26px;
-    box-shadow:0 12px 18px rgba(8,24,68,.06);
-    pointer-events:none;
-  }
-  .shell.sidebar-collapsed .sidebar::after{display:none !important;}
-}
-</style>
+
 
 </body>
 </html>
