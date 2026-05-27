@@ -295,7 +295,7 @@ select option{
   height:46px;padding:0 20px;border-radius:16px;border:1px solid #AEB8C8;background:#A8B4C4;color:#FFFFFF;font-weight:900;cursor:pointer
 }
 .ghost-btn:hover{border-color:#76B4F8;background:#F6FBFF}
-.stage-wrap{padding:6px;border-radius:24px;background:#FFFFFF;border:1px solid rgba(220,227,238,.95);box-shadow:0 10px 26px rgba(8,24,68,.10)}
+.stage-wrap{padding:4px;border-radius:24px;background:#FFFFFF;border:1px solid rgba(220,227,238,.95);box-shadow:0 10px 26px rgba(8,24,68,.10)}
 .stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px;align-items:stretch}
 .video-card{position:relative;overflow:hidden;border-radius:20px;border:1px solid #DCE8F5;background:#0B1B32;aspect-ratio:16/9;min-height:clamp(360px, 25vw, 480px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
 .video-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
@@ -305,12 +305,14 @@ select option{
   max-width:none;
 }
 .dual-label{justify-content:flex-start}
-.dual-label .label-select{flex:1 1 auto;min-width:0}
-.dual-label .info-btn{margin-left:auto;flex:0 0 auto}
+.dual-label .select-shell,.split-stage .side-label .select-shell{flex:1 1 auto;min-width:0}
+.dual-label .info-btn,.split-stage .side-label .info-btn{margin-left:auto;flex:0 0 auto}
 .side-name{display:none}
-.label-select{height:34px;border-radius:12px;padding:0 14px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;font-size:12px;min-width:0;flex:1 1 auto;width:auto;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.blue-tag{display:none;align-items:center;justify-content:center;height:22px;padding:0 10px;border-radius:10px;background:#EAF1FF;border:1px solid #D6E4FF;color:#6A85E8;font-size:10px;font-weight:900;line-height:1;white-space:nowrap;flex:0 0 auto;letter-spacing:-0.01em}
-.blue-tag.show{display:inline-flex}
+.label-select{height:34px;border-radius:12px;padding:0 14px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;font-size:12px;min-width:0;flex:1 1 auto;width:100%;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.overlay-select-shell:after{right:12px;color:rgba(255,255,255,.92);font-size:15px}
+.overlay-select-shell .label-select{padding-right:34px}
+.overlay-select-shell .select-inline-tag{right:34px;top:50%;transform:translateY(-50%);height:20px;padding:0 8px;border-radius:8px;background:#EAF1FF;border:1px solid #DDE8FF;color:#6E8FEF;font-size:9px;font-weight:800}
+.overlay-select-shell.has-tag .label-select{padding-right:116px}
 .info-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08);flex:0 0 32px}
 .info-btn:hover{background:#F1F7FF}
 .video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
@@ -355,8 +357,8 @@ select option{
 .shell.dual-layout .toolbar{gap:10px}
 .shell.dual-layout .stage-wrap{padding:5px}
 .shell.dual-layout .stage{gap:4px}
-.shell.dual-layout .video-card{min-height:clamp(280px,22vw,360px);max-height:420px}
-.shell.dual-layout .split-stage{min-height:clamp(300px,24vw,390px);max-height:430px}
+.shell.dual-layout .video-card{min-height:clamp(220px,18vw,300px);max-height:320px}
+.shell.dual-layout .split-stage{min-height:clamp(240px,19vw,320px);max-height:340px}
 
 @media (max-width:1180px){
   .shell.dual-layout .sidebar{grid-template-columns:1fr 1fr;gap:12px}.shell.dual-layout .select-wrap{grid-template-columns:1fr}.shell.dual-layout .field + .field{margin-top:8px}
@@ -369,7 +371,7 @@ select option{
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
 .pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;line-height:1.5;color:#8A97A8;border-top:1px solid #EEF3F8;padding-top:10px}
 @media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.label-select{font-size:11px}.blue-tag{font-size:9px;padding:0 8px}.video-card{min-height:360px}.shell.dual-layout .sidebar{grid-template-columns:1fr 1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:320px;max-height:none}}
-@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px}.label-select{height:30px;font-size:10px;padding:0 10px}.blue-tag{height:18px;padding:0 6px;font-size:8px}.select-inline-tag{right:34px;height:18px;padding:0 6px;font-size:8px}.select-shell.has-tag select{padding-right:112px}.info-btn{width:28px;height:28px;font-size:13px}.stage{grid-template-columns:1fr;gap:8px}.video-card{min-height:240px}.shell.dual-layout .sidebar{grid-template-columns:1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:240px}}
+@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px}.label-select{height:30px;font-size:10px;padding:0 10px}.overlay-select-shell .select-inline-tag{right:30px;height:17px;padding:0 6px;font-size:8px}.overlay-select-shell.has-tag .label-select{padding-right:96px}.select-inline-tag{right:34px;height:18px;padding:0 6px;font-size:8px}.select-shell.has-tag select{padding-right:112px}.info-btn{width:28px;height:28px;font-size:13px}.stage{grid-template-columns:1fr;gap:8px}.video-card{min-height:240px}.shell.dual-layout .sidebar{grid-template-columns:1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:240px}}
 </style>
 </head>
 <body>
@@ -470,8 +472,7 @@ select option{
           <div class="video-card left-card">
             <video id="leftVideo" autoplay muted loop playsinline preload="auto"></video>
             <div class="side-label dual-label">
-              <select class="label-select" id="leftInline"></select>
-              <span class="blue-tag" id="leftBlueTag">블루라이트 차단</span>
+              <div class="select-shell overlay-select-shell" id="leftInlineShell"><select class="label-select" id="leftInline"></select><span class="select-inline-tag" id="leftInlineTag">블루라이트 차단</span></div>
               <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
             </div>
             <div class="video-label left" id="leftVideoLabel"></div>
@@ -489,8 +490,7 @@ select option{
           <div class="video-card right-card">
             <video id="rightVideo" autoplay muted loop playsinline preload="auto"></video>
             <div class="side-label dual-label">
-              <select class="label-select" id="rightInline"></select>
-              <span class="blue-tag" id="rightBlueTag">블루라이트 차단</span>
+              <div class="select-shell overlay-select-shell" id="rightInlineShell"><select class="label-select" id="rightInline"></select><span class="select-inline-tag" id="rightInlineTag">블루라이트 차단</span></div>
               <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
             </div>
             <div class="video-label right" id="rightVideoLabel"></div>
@@ -511,13 +511,11 @@ select option{
             <div class="compare-pane" id="splitRightPane"><video id="splitRightVideo" autoplay muted loop playsinline preload="auto"></video></div>
 
             <div class="side-label left">
-              <select class="label-select" id="splitLeftInline"></select>
-              <span class="blue-tag" id="splitLeftBlueTag">블루라이트 차단</span>
+              <div class="select-shell overlay-select-shell" id="splitLeftInlineShell"><select class="label-select" id="splitLeftInline"></select><span class="select-inline-tag" id="splitLeftInlineTag">블루라이트 차단</span></div>
               <button class="info-btn" id="splitLeftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
             </div>
             <div class="side-label right">
-              <select class="label-select" id="splitRightInline"></select>
-              <span class="blue-tag" id="splitRightBlueTag">블루라이트 차단</span>
+              <div class="select-shell overlay-select-shell" id="splitRightInlineShell"><select class="label-select" id="splitRightInline"></select><span class="select-inline-tag" id="splitRightInlineTag">블루라이트 차단</span></div>
               <button class="info-btn" id="splitRightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
             </div>
 
@@ -764,7 +762,8 @@ const dom={
   sceneGrid:document.getElementById('sceneGrid'),
   leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),
   leftInline:document.getElementById('leftInline'),rightInline:document.getElementById('rightInline'),
-  leftBlueTag:document.getElementById('leftBlueTag'),rightBlueTag:document.getElementById('rightBlueTag'),
+  leftInlineShell:document.getElementById('leftInlineShell'),rightInlineShell:document.getElementById('rightInlineShell'),
+  leftInlineTag:document.getElementById('leftInlineTag'),rightInlineTag:document.getElementById('rightInlineTag'),
   sceneSelect:document.getElementById('sceneSelect'),
   conditionBadge:document.getElementById('conditionBadge'),sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),
@@ -775,7 +774,8 @@ const dom={
   playToggle:document.getElementById('playToggle'),splitPlayToggle:document.getElementById('splitPlayToggle'),
   dualViewBtn:document.getElementById('dualViewBtn'),splitViewBtn:document.getElementById('splitViewBtn'),
   splitLeftInline:document.getElementById('splitLeftInline'),splitRightInline:document.getElementById('splitRightInline'),
-  splitLeftBlueTag:document.getElementById('splitLeftBlueTag'),splitRightBlueTag:document.getElementById('splitRightBlueTag'),
+  splitLeftInlineShell:document.getElementById('splitLeftInlineShell'),splitRightInlineShell:document.getElementById('splitRightInlineShell'),
+  splitLeftInlineTag:document.getElementById('splitLeftInlineTag'),splitRightInlineTag:document.getElementById('splitRightInlineTag'),
   leftInfoBtn:document.getElementById('leftInfoBtn'),rightInfoBtn:document.getElementById('rightInfoBtn'),splitLeftInfoBtn:document.getElementById('splitLeftInfoBtn'),splitRightInfoBtn:document.getElementById('splitRightInfoBtn'),
   leftProductPop:document.getElementById('leftProductPop'),rightProductPop:document.getElementById('rightProductPop'),
   leftPopClose:document.getElementById('leftPopClose'),rightPopClose:document.getElementById('rightPopClose'),
@@ -806,20 +806,13 @@ function isMaxProduct(productId){
   return String(productId||'').toLowerCase().startsWith('max');
 }
 function updateBlueLightTags(){
-  const mapping = [
-    [dom.leftBlueTag, state.leftProduct],
-    [dom.rightBlueTag, state.rightProduct],
-    [dom.splitLeftBlueTag, state.leftProduct],
-    [dom.splitRightBlueTag, state.rightProduct]
-  ];
-  mapping.forEach(([el, productId])=>{
-    if(!el) return;
-    el.classList.toggle('show', isMaxProduct(productId));
-  });
-
   const selectTags = [
     [dom.leftProductShell, dom.leftProductTag, state.leftProduct],
-    [dom.rightProductShell, dom.rightProductTag, state.rightProduct]
+    [dom.rightProductShell, dom.rightProductTag, state.rightProduct],
+    [dom.leftInlineShell, dom.leftInlineTag, state.leftProduct],
+    [dom.rightInlineShell, dom.rightInlineTag, state.rightProduct],
+    [dom.splitLeftInlineShell, dom.splitLeftInlineTag, state.leftProduct],
+    [dom.splitRightInlineShell, dom.splitRightInlineTag, state.rightProduct]
   ];
   selectTags.forEach(([shell, tag, productId])=>{
     const show = isMaxProduct(productId);
