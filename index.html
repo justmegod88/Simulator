@@ -339,7 +339,7 @@ select option{
 .blue-tag.show{display:none!important}
 .info-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08);flex:0 0 32px}
 .info-btn:hover{background:#F1F7FF}
-.video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
+.video-label{position:absolute;bottom:14px;padding:6px 10px;border-radius:999px;background:rgba(10,22,41,.52);backdrop-filter:blur(8px);font-size:10.5px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12);line-height:1.25;max-width:46%;white-space:normal;word-break:keep-all;box-shadow:0 6px 16px rgba(0,0,0,.12)}
 .video-label.left{left:16px}.video-label.right{right:78px}
 .play-toggle{
   position:absolute;right:16px;bottom:16px;z-index:7;width:52px;height:52px;border-radius:50%;
@@ -415,7 +415,7 @@ select.product-enhanced-native{display:none!important}
 }
 /* 펼친 옵션 영역은 영상+상단 툴바 높이에 맞춰 늘림 */
 .shell:not(.sidebar-collapsed) .sidebar{
-  min-height:calc(var(--stage-video-height) + 112px);
+  min-height:calc(var(--stage-video-height) + 128px);
 }
 /* 접힌 옵션 막대는 접은 상태의 영상 세로 길이에 맞춤 */
 .shell.sidebar-collapsed .sidebar{
@@ -713,6 +713,32 @@ const VIDEO_MATRIX = {
 };
 
 const VIDEO_ADJUST = {};
+const VIDEO_GUIDE_TEXT = {
+  '1-1':'핸드폰 화면을 확인해 보세요',
+  '1-2':'블루라이트 빛번짐 감소',
+  '1-3':'핸드폰 화면을 확인해 보세요',
+  '1-4':'전체적인 시야 및 근거리를 확인해 보세요',
+  '1-5':'전체적인 시야를 비교해 보세요',
+  '1-6':'전체적인 시야를 비교해 보세요',
+  '1-7':'전체적인 시야 및 근거리를 확인해 보세요',
+  '1-8':'전체적인 시야 및 근거리를 확인해 보세요',
+  '2-1':'자동차 라이트를 확인해 보세요',
+  '2-2':'블루라이트 빛번짐 감소',
+  '2-3':'자동차 라이트를 확인해 보세요',
+  '2-4':'전체적인 시야 및 네비게이션을 확인해 보세요',
+  '2-5':'전체적인 시야를 비교해 보세요',
+  '2-6':'전체적인 시야를 비교해 보세요',
+  '2-7':'전체적인 시야 및 네비게이션을 확인해 보세요',
+  '2-8':'전체적인 시야 및 네비게이션을 확인해 보세요',
+  '3-1':'촛불을 확인해 보세요',
+  '3-2':'블루라이트 빛번짐 감소',
+  '3-3':'촛불을 확인해 보세요',
+  '3-4':'전체적인 시야 및 메뉴판을 확인해 보세요',
+  '3-5':'전체적인 시야를 비교해 보세요',
+  '3-6':'전체적인 시야를 비교해 보세요',
+  '3-7':'전체적인 시야 및 메뉴판을 확인해 보세요',
+  '3-8':'전체적인 시야 및 메뉴판을 확인해 보세요'
+};
 const products=[
   {id:'oasys',name:'아큐브 오아시스 원데이®',group:'sphere'},
   {id:'max1day',name:'아큐브® 오아시스 MAX 원데이',group:'sphere'},
@@ -959,6 +985,7 @@ function videoCode(productId){
   return ({day:'1-1', night:'2-1', dine:'3-1'})[state.scene] || '1-1';
 }
 function videoSrc(productId){return `./${videoCode(productId)}.mp4`}
+function guideText(code){return VIDEO_GUIDE_TEXT[code] || `${code}`;}
 
 function applyOutcomeSharpness(video){
   const factor = OUTCOME_SHARPNESS[state.outcome] || 1;
@@ -1150,10 +1177,10 @@ function updateVideos(){
   const leftSrc=videoSrc(state.leftProduct), rightSrc=videoSrc(state.rightProduct);
   [dom.leftVideo,dom.splitLeftVideo].forEach(v=>{applyVideoAdjust(v,leftCode); applyOutcomeSharpness(v); prepareVideo(v,leftSrc);});
   [dom.rightVideo,dom.splitRightVideo].forEach(v=>{applyVideoAdjust(v,rightCode); applyOutcomeSharpness(v); prepareVideo(v,rightSrc);});
-  dom.leftVideoLabel.textContent=`좌측 ${leftCode}.mp4`;
-  dom.rightVideoLabel.textContent=`우측 ${rightCode}.mp4`;
-  dom.splitLeftVideoLabel.textContent=`좌측 ${leftCode}.mp4`;
-  dom.splitRightVideoLabel.textContent=`우측 ${rightCode}.mp4`;
+  dom.leftVideoLabel.textContent=guideText(leftCode);
+  dom.rightVideoLabel.textContent=guideText(rightCode);
+  dom.splitLeftVideoLabel.textContent=guideText(leftCode);
+  dom.splitRightVideoLabel.textContent=guideText(rightCode);
   restartBothVideos();
   updateViewMode();
   updatePlayButton();
