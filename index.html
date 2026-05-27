@@ -39,8 +39,39 @@ body{
 .panel{
   border-radius:var(--r-xl);
 }
+
+/* 이중 보기: 좌측 제품 선택 영역 접기/펼치기 */
+.shell{transition:grid-template-columns .28s ease}
+.sidebar{transition:width .28s ease, padding .28s ease, transform .28s ease;overflow:visible}
+.sidebar-fold-btn{
+  position:absolute;right:-18px;top:50%;transform:translateY(-50%);z-index:30;
+  width:42px;height:68px;border-radius:0 999px 999px 0;border:1px solid rgba(220,227,238,.95);border-left:0;
+  background:#fff;color:#2359D8;font-size:28px;font-weight:950;cursor:pointer;
+  box-shadow:0 12px 26px rgba(8,24,68,.16);display:none;align-items:center;justify-content:center;
+}
+.shell .sidebar-fold-btn{display:flex}
+.shell.sidebar-collapsed{grid-template-columns:54px minmax(0,1fr)}
+.shell.sidebar-collapsed .sidebar{padding:0;min-height:0;height:auto;align-self:stretch;background:rgba(255,255,255,.96)}
+.shell.sidebar-collapsed .sidebar > :not(.sidebar-fold-btn){opacity:0;pointer-events:none;visibility:hidden}
+.shell.sidebar-collapsed .sidebar-fold-btn{right:-18px;left:auto;border-radius:0 999px 999px 0}
+.shell.sidebar-collapsed .sidebar-fold-btn::after{content:'옵션 선택';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-90deg);font-size:12px;font-weight:950;color:#2359D8;white-space:nowrap;opacity:.38}
+/* 분할/이중 모두 접기 버튼 사용 */
+
+/* 접힘 상태: 영상 패널은 내용 높이만큼만, 하단 빈 여백 최소화 */
+.shell.sidebar-collapsed{align-items:start}
+.shell.sidebar-collapsed .sidebar{height:var(--stage-video-height-collapsed);max-height:var(--stage-video-height-collapsed);align-self:start}
+.shell.sidebar-collapsed .viewer{align-self:start;min-height:0;padding-bottom:10px}
+.shell.sidebar-collapsed .stage-wrap{margin-bottom:0}
+.shell.sidebar-collapsed .footer-note{padding-top:0;margin-top:2px}
+
+@media (max-width:1280px){
+  .shell.sidebar-collapsed{grid-template-columns:1fr}
+  .shell.sidebar-collapsed .sidebar{min-height:56px;height:56px;margin-bottom:8px}
+  .shell.sidebar-collapsed .sidebar-fold-btn{left:50%;right:auto;top:auto;bottom:-22px;transform:translateX(-50%) rotate(90deg);width:42px;height:58px}
+}
+
 .sidebar{padding:16px;display:flex;flex-direction:column;gap:14px;position:sticky;top:16px;height:fit-content;background:#FFFFFF;border:1px solid rgba(220,227,238,.95);border-radius:26px;box-shadow:0 12px 28px rgba(8,24,68,.12)}
-.viewer{padding:16px;display:flex;flex-direction:column;gap:10px;min-height:100%;background:#FFFFFF;border:1px solid rgba(220,227,238,.95);border-radius:26px;box-shadow:0 12px 28px rgba(8,24,68,.12)}
+.viewer{padding:16px;display:flex;flex-direction:column;gap:8px;min-height:0;background:#FFFFFF;border:1px solid rgba(220,227,238,.95);border-radius:26px;box-shadow:0 12px 28px rgba(8,24,68,.12)}
 .hero{
   display:flex;
   align-items:center;
@@ -50,22 +81,15 @@ body{
   min-height:104px;
   border-radius:24px;
   color:#fff;
-  background:linear-gradient(135deg,#0A245E 0%, #173B88 44%, #2E69D7 100%);
+  background:linear-gradient(180deg,#082760 0%, #061F4D 100%);
   position:relative;
   overflow:hidden;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 10px 26px rgba(8,24,68,.16);
 }
-.hero:before{
-  content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;
-  background:rgba(255,255,255,.13);
-}
-.hero:after{
-  content:"";position:absolute;left:-24px;bottom:-34px;width:120px;height:120px;border-radius:50%;
-  background:rgba(255,255,255,.10);
-}
+.hero:before,.hero:after{display:none;content:none}
 .hero-text{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;gap:10px;flex:1 1 auto;min-width:0;max-width:calc(100% - 170px)}
-.hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;align-self:flex-start;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(111,165,255,.18);border:1px solid rgba(255,255,255,.08);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.hero-kicker-wordmark{display:inline-flex;align-items:center;justify-content:center;padding:2px 10px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);font-size:12px;font-weight:950;letter-spacing:.08em}.hero-kicker-sub{opacity:.96}
-.hero h1{position:relative;z-index:1;margin:0;font-size:31px;line-height:1.02;font-weight:950;letter-spacing:-.03em;word-break:keep-all}
+.hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;align-self:flex-start;gap:8px;padding:9px 18px;border-radius:999px;background:linear-gradient(180deg,#246AF3,#1651CC);border:1px solid rgba(255,255,255,.16);font-size:14px;font-weight:950;letter-spacing:.08em;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 8px 18px rgba(0,0,0,.12)}
+.hero h1{position:relative;z-index:1;margin:0;font-size:36px;line-height:1.02;font-weight:950;letter-spacing:-.04em;word-break:keep-all;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.18)}
 .hero-pack{
   position:relative;
   right:auto;
@@ -118,17 +142,17 @@ body{
 .field label{font-size:13px;font-weight:900;color:#3E5C80}
 .field-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .field-head label{margin:0}
-.select-shell{position:relative}.select-shell select{position:relative;z-index:1}.select-shell .select-inline-tag{z-index:2}
-.select-inline-tag{display:none;position:absolute;right:50px;top:50%;transform:translateY(-50%);height:26px;padding:0 12px;border-radius:9px;background:#EAF1FF;border:1px solid #DDE8FF;color:#6E8FEF;font-size:11px;font-weight:800;line-height:1;align-items:center;justify-content:center;white-space:nowrap;pointer-events:none;z-index:2}
-.select-shell.has-tag .select-inline-tag{display:inline-flex}
-.select-shell.has-tag select{padding-right:158px}
-.select-shell:after{content:"▾";position:absolute;right:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#5C7BA1;pointer-events:none;z-index:3}
-.select-shell.is-product:after{color:#4E6D95}
+.select-shell{position:relative}
+.select-inline-tag{display:none!important}
+.select-shell.has-tag .select-inline-tag{display:none!important}
+.select-shell.has-tag select{padding-right:44px}
+.select-shell:after{content:"⌄";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#5C7BA1;pointer-events:none}
+.select-shell.product-selected select{border-color:#5C91FF;box-shadow:0 0 0 3px rgba(35,89,216,.12), inset 0 1px 0 rgba(255,255,255,.7)}
 select{
   width:100%;height:50px;padding:0 44px 0 16px;
   border-radius:16px;border:1px solid #D6DCE7;
   background:#FFFFFF;
-  color:#3C4658;font-size:15px;font-weight:700;
+  color:#3C4658;font-size:14px;font-weight:700;
   outline:none;-webkit-appearance:none;appearance:none;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
@@ -142,6 +166,7 @@ select optgroup{
 }
 select option{
   padding-left:10px;
+  font-size:13px;
 }
 .product-groups-note{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px
@@ -296,27 +321,24 @@ select option{
   height:46px;padding:0 20px;border-radius:16px;border:1px solid #AEB8C8;background:#A8B4C4;color:#FFFFFF;font-weight:900;cursor:pointer
 }
 .ghost-btn:hover{border-color:#76B4F8;background:#F6FBFF}
-.stage-wrap{padding:4px;border-radius:24px;background:#FFFFFF;border:1px solid rgba(220,227,238,.95);box-shadow:0 10px 26px rgba(8,24,68,.10)}
-.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px;align-items:stretch}
-.video-card{position:relative;overflow:hidden;border-radius:20px;border:1px solid #DCE8F5;background:#0B1B32;aspect-ratio:16/9;min-height:clamp(360px, 25vw, 480px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.stage-wrap{position:relative;padding:6px;border-radius:24px;background:#FFFFFF;border:1px solid rgba(220,227,238,.95);box-shadow:0 10px 26px rgba(8,24,68,.10);overflow:hidden}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px;align-items:stretch;min-width:0}
+.video-card{position:relative;overflow:hidden;border-radius:20px;border:1px solid #DCE8F5;background:#0B1B32;aspect-ratio:16/9;min-height:clamp(300px, 22vw, 430px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06);min-width:0}
 .video-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
 .side-label{
-  position:absolute;top:14px;left:12px;right:12px;display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:18px;
-  background:rgba(255,255,255,.99);border:2px solid rgba(108,151,241,.78);color:#26456A;box-shadow:0 10px 24px rgba(13,43,92,.10), inset 0 1px 0 rgba(255,255,255,.95);z-index:4;font-weight:800;
+  position:absolute;top:14px;left:12px;right:12px;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:16px;
+  background:rgba(255,255,255,.96);border:1px solid rgba(0,94,184,.16);color:#005EB8;box-shadow:0 8px 24px rgba(0,94,184,.10);z-index:4;font-weight:800;
   max-width:none;
 }
 .dual-label{justify-content:flex-start}
-.dual-label .select-shell,.split-stage .side-label .select-shell{flex:1 1 auto;min-width:0}
-.dual-label .info-btn,.split-stage .side-label .info-btn{margin-left:auto;flex:0 0 auto}
+.dual-label .label-select{flex:1 1 auto;min-width:0}
+.dual-label .info-btn{margin-left:auto;flex:0 0 auto}
 .side-name{display:none}
-.label-select{height:36px;border-radius:12px;padding:0 44px 0 14px;background:transparent;border:0;color:#26456A;font-weight:900;font-size:13px;min-width:0;flex:1 1 auto;width:100%;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-shadow:none}
-.label-select:focus{box-shadow:none;border:0}
-.overlay-select-shell:after{right:10px;width:auto;height:auto;border-radius:0;background:none;color:#7A8FAE;font-size:14px;font-weight:900;display:block;line-height:1}
-.overlay-select-shell .label-select{padding-right:38px}
-.overlay-select-shell .select-inline-tag{right:34px;top:50%;transform:translateY(-50%);height:24px;padding:0 10px;border-radius:999px;background:#EEF3FF;border:1px solid #D8E4FF;color:#7993E8;font-size:10px;font-weight:900}
-.overlay-select-shell.has-tag .label-select{padding-right:148px}
-.info-btn{width:34px;height:34px;border-radius:50%;border:2px solid rgba(108,151,241,.42);background:#fff;color:#5E79C8;font-weight:900;font-size:17px;display:grid;place-items:center;cursor:pointer;box-shadow:none;flex:0 0 34px}
-.info-btn:hover{background:#F6FAFF}
+.label-select{height:34px;border-radius:12px;padding:0 30px 0 12px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;font-size:11px;min-width:0;flex:1 1 auto;width:auto;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;-webkit-appearance:none;appearance:none;background-image:linear-gradient(180deg,#0E73D8,#005EB8),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 20 20'%3E%3Cpath fill='white' d='M5.5 7.5 10 12l4.5-4.5 1.4 1.4L10 14.8 4.1 8.9z'/%3E%3C/svg%3E");background-repeat:no-repeat,no-repeat;background-position:center,right 10px center;background-size:auto,14px}
+.blue-tag{display:none!important}
+.blue-tag.show{display:none!important}
+.info-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08);flex:0 0 32px}
+.info-btn:hover{background:#F1F7FF}
 .video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
 .video-label.left{left:16px}.video-label.right{right:78px}
 .play-toggle{
@@ -326,45 +348,9 @@ select option{
 }
 .play-toggle:hover{background:rgba(10,22,41,.72)}
 .footer-note{font-size:12px;color:#5D7799;text-align:center;padding-top:2px;line-height:1.45}
-.product-pop{position:absolute;top:76px;z-index:8;width:min(360px,39%);max-height:calc(100% - 96px);overflow:auto;display:none;background:#fff;color:#12203A;border-radius:22px;box-shadow:0 20px 46px rgba(0,0,0,.24);border:1px solid #D7E6F8}
+.product-pop{position:absolute;top:76px;z-index:80;width:min(440px,46%);max-height:calc(100% - 96px);overflow:auto;display:none;background:#fff;color:#12203A;border-radius:22px;box-shadow:0 20px 46px rgba(0,0,0,.24);border:1px solid #D7E6F8}
 .product-pop.open{display:block}.product-pop.left-pop{left:18px}.product-pop.right-pop{right:18px}
-
-/* dual mode: move sections 1,2,3 above the video area to maximize stage size */
-.shell.dual-layout{grid-template-columns:1fr;gap:14px}
-.shell.dual-layout .sidebar{position:static;top:auto;height:auto;display:grid;grid-template-columns:minmax(150px,190px) minmax(240px,300px) minmax(380px,1.65fr) minmax(220px,250px);gap:12px;align-items:stretch;padding:12px}
-.shell.dual-layout .sidebar > *{min-width:0}
-.shell.dual-layout .hero{min-height:96px;height:100%;padding:10px 12px;border-radius:20px}
-.shell.dual-layout .hero-text{max-width:calc(100% - 92px);gap:8px}
-.shell.dual-layout .hero-kicker{padding:7px 12px;font-size:10px}.shell.dual-layout .hero-kicker-wordmark{font-size:11px;padding:2px 8px}
-.shell.dual-layout .hero h1{font-size:18px;line-height:1.02}
-.shell.dual-layout .hero-pack{width:74px;height:38px;flex-basis:74px}
-.shell.dual-layout .section{height:100%;padding:12px 14px;border-radius:20px}
-.shell.dual-layout .section-head{gap:8px;margin-bottom:8px}
-.shell.dual-layout .section-title{font-size:15px;line-height:1.1}
-.shell.dual-layout .section-sub{margin-top:2px;font-size:10px;line-height:1.25}
-.shell.dual-layout .section-num{width:20px;height:20px;font-size:10px}
-.shell.dual-layout .grid-chip{display:grid;grid-template-columns:repeat(3,minmax(58px,1fr));gap:8px}
-.shell.dual-layout .chip{min-height:36px;font-size:12px;padding:0 10px}
-.shell.dual-layout .scene-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.shell.dual-layout .scene-chip{min-height:36px;padding:0 8px;border-radius:16px}
-.shell.dual-layout .scene-chip strong{font-size:12px}
-.shell.dual-layout .select-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:end}
-.shell.dual-layout .field{gap:6px}
-.shell.dual-layout .field + .field{margin-top:0}
-.shell.dual-layout .field label{font-size:11px;white-space:nowrap}
-.shell.dual-layout select{height:42px;font-size:13px;padding-left:12px}
-.shell.dual-layout .select-shell.has-tag select{padding-right:142px}
-.shell.dual-layout .select-inline-tag{right:42px;height:22px;padding:0 10px;font-size:10px;border-radius:8px}
-.shell.dual-layout .viewer{min-width:0;padding:12px;gap:8px}
-.shell.dual-layout .toolbar{gap:10px}
-.shell.dual-layout .stage-wrap{padding:8px 10px 6px}
-.shell.dual-layout .stage{gap:0}
-.shell.dual-layout .video-card{min-height:clamp(300px,24vw,390px);max-height:400px}
-.shell.dual-layout .split-stage{min-height:clamp(310px,24vw,400px);max-height:410px}
-
-@media (max-width:1180px){
-  .shell.dual-layout .sidebar{grid-template-columns:1fr 1fr;gap:12px}.shell.dual-layout .select-wrap{grid-template-columns:1fr}.shell.dual-layout .field + .field{margin-top:8px}
-}
+.pop-close{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;border:0;background:#F2F6FB;color:#203047;font-size:24px;cursor:pointer}
 .pop-head{padding:20px 18px 12px;border-bottom:1px solid #E6EEF7;background:linear-gradient(180deg,#F9FBFF,#F1F7FF)}
 .pop-kicker{display:inline-block;margin-bottom:8px;padding:6px 10px;border-radius:999px;background:#EAF4FF;color:#005EB8;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .pop-title{margin:0 40px 0 0;font-size:18px;line-height:1.3;font-weight:900;color:#15294D}
@@ -372,14 +358,89 @@ select option{
 .pop-pack{width:100%;height:168px;object-fit:contain;object-position:center center;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:14px;padding:4px;display:block}
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
 .pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;line-height:1.5;color:#8A97A8;border-top:1px solid #EEF3F8;padding-top:10px}
-@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.label-select{font-size:11px}.blue-tag{font-size:9px;padding:0 8px}.video-card{min-height:360px}.shell.dual-layout .sidebar{grid-template-columns:1fr 1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:320px;max-height:none}}
-@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:5px 7px;gap:5px}.label-select{height:32px;font-size:10px;padding:0 34px 0 10px}.overlay-select-shell .select-inline-tag{right:28px;height:16px;padding:0 6px;font-size:7px}.overlay-select-shell.has-tag .label-select{padding-right:92px}.select-inline-tag{right:34px;height:18px;padding:0 6px;font-size:8px}.select-shell.has-tag select{padding-right:112px}.info-btn{width:28px;height:28px;font-size:15px}.stage{grid-template-columns:1fr;gap:8px}.video-card{min-height:240px}.shell.dual-layout .sidebar{grid-template-columns:1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:240px}}
+@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.label-select{font-size:11px}.blue-tag{font-size:9px;padding:0 8px}.video-card{min-height:300px}}
+@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px}.label-select{height:30px;font-size:10px;padding:0 10px}.blue-tag{height:18px;padding:0 6px;font-size:8px}.select-inline-tag{right:38px;height:18px;padding:0 6px;font-size:8px}.select-shell.has-tag select{padding-right:112px}.info-btn{width:28px;height:28px;font-size:13px}.stage{grid-template-columns:1fr;gap:8px}.video-card{min-height:220px}}
+
+
+/* Product dropdown: MAX 블루라이트 차단은 선택값 텍스트가 아니라 리스트 안 태그로만 표시 */
+select.product-enhanced-native{display:none!important}
+.product-select-ui{position:relative;width:100%;min-width:0}
+.product-select-btn{
+  width:100%;height:50px;padding:0 44px 0 16px;border-radius:16px;border:1px solid #D6DCE7;background:#fff;color:#16213A;
+  font-size:13px;font-weight:850;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;
+  outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;
+}
+.product-select-btn .product-select-current{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.product-select-btn:after{content:"⌄";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#0F2747;font-weight:950;pointer-events:none}
+.product-select-ui.open .product-select-btn,.select-shell.product-selected .product-select-btn{border-color:#5C91FF;box-shadow:0 0 0 3px rgba(35,89,216,.12), inset 0 1px 0 rgba(255,255,255,.7)}
+.product-select-menu{display:none;position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:80;background:#fff;border:1px solid #D9E3F3;border-radius:16px;box-shadow:0 18px 38px rgba(8,24,68,.18);padding:8px;max-height:310px;overflow:auto}
+.product-select-ui.open .product-select-menu{display:block}
+.product-select-group{padding:8px 10px 5px;font-size:11px;font-weight:950;color:#6B7C96;letter-spacing:-.02em}
+.product-select-option{width:100%;border:0;background:#fff;border-radius:12px;padding:10px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;font-size:12.5px;font-weight:800;color:#16213A;text-align:left}
+.product-select-option:hover,.product-select-option.active{background:#F1F6FF}
+.product-select-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.product-select-badge{flex:0 0 auto;display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#EEF5FF;color:#246AF3;font-size:11px;font-weight:950;white-space:nowrap}
+.side-label .product-select-btn{height:34px;padding-left:12px;padding-right:34px;border-radius:999px;font-size:11px;background:rgba(255,255,255,.94)}
+.side-label .product-select-btn:after{right:12px;font-size:15px}
+.side-label .product-select-menu{top:calc(100% + 6px);min-width:245px;max-height:270px}
+.side-label.right .product-select-menu{left:auto;right:0}
+@media (max-width:760px){.product-select-btn{height:48px;font-size:12.5px}.product-select-option{font-size:12px}.product-select-badge{font-size:10px;padding:0 7px}.side-label .product-select-btn{height:30px;font-size:10px}.side-label .product-select-menu{min-width:220px}}
+
+
+
+/* 2026-05: 영상 비율 유지 + 옵션 패널/접힘 상태 정렬 */
+:root{
+  /* 펼친 상태: 아까 괜찮았던 영상 비율 유지 */
+  --stage-video-height: clamp(500px, 35vw, 580px);
+  /* 접은 상태: 가로만 늘어나지 않도록 세로도 함께 확대 */
+  --stage-video-height-collapsed: clamp(560px, 43vw, 700px);
+}
+.stage-wrap{padding:8px;}
+.stage{align-items:stretch;}
+.video-card,
+.split-stage{
+  aspect-ratio:auto !important;
+  height:var(--stage-video-height) !important;
+  min-height:var(--stage-video-height) !important;
+}
+.video-card video,
+.compare-pane video{
+  object-fit:cover !important;
+  object-position:center center !important;
+}
+.shell.sidebar-collapsed .video-card,
+.shell.sidebar-collapsed .split-stage{
+  height:var(--stage-video-height-collapsed) !important;
+  min-height:var(--stage-video-height-collapsed) !important;
+}
+/* 펼친 옵션 영역은 영상+상단 툴바 높이에 맞춰 늘림 */
+.shell:not(.sidebar-collapsed) .sidebar{
+  min-height:calc(var(--stage-video-height) + 112px);
+}
+/* 접힌 옵션 막대는 접은 상태의 영상 세로 길이에 맞춤 */
+.shell.sidebar-collapsed .sidebar{
+  height:var(--stage-video-height-collapsed) !important;
+  min-height:var(--stage-video-height-collapsed) !important;
+  max-height:var(--stage-video-height-collapsed) !important;
+  align-self:start;
+}
+.shell.sidebar-collapsed .sidebar-fold-btn::after{opacity:.58;}
+@media (max-width:1280px){
+  :root{--stage-video-height:clamp(470px, 46vw, 600px);--stage-video-height-collapsed:clamp(520px, 52vw, 680px)}
+  .shell:not(.sidebar-collapsed) .sidebar{min-height:auto;}
+  .shell.sidebar-collapsed .sidebar{height:64px !important;min-height:64px !important;max-height:64px !important;}
+}
+@media (max-width:760px){
+  :root{--stage-video-height:clamp(300px, 72vw, 460px);--stage-video-height-collapsed:clamp(320px, 82vw, 520px)}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="shell">
+  <div class="shell" id="appShell">
     <aside class="panel sidebar">
+      <button class="sidebar-fold-btn" id="sidebarFoldBtn" type="button" aria-label="옵션 선택 영역 접기" title="옵션 선택 영역 접기">‹</button>
       <div class="hero">
         <div class="hero-text">
           <div class="hero-kicker">ACUVUE®</div>
@@ -407,18 +468,18 @@ select option{
         <div class="section-head">
           <div class="section-num">2</div>
           <div>
-            <div class="section-title">제품 비교</div>
-            <div class="section-sub">좌/우 화면에 적용할 제품을 선택해 비교하세요.</div>
+            <div class="section-title">제품 선택</div>
+            <div class="section-sub">좌/우 화면에 적용할 제품을 선택하세요.</div>
           </div>
         </div>
         <div class="select-wrap">
           <div class="field">
             <div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div>
-            <div class="select-shell is-product" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div>
+            <div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div>
           </div>
           <div class="field">
             <div class="field-head"><label for="rightProduct">우측 화면 제품</label></div>
-            <div class="select-shell is-product" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div>
+            <div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div>
           </div>
 
         </div>
@@ -446,19 +507,19 @@ select option{
           <span class="badge" id="conditionBadge"><span class="badge-accent"></span>상태 : 근/원시</span>
           <span class="badge" id="sceneBadge"><span class="badge-accent"></span>환경 : 마트</span>
           <div class="outcome-inline">
-            <span class="outcome-inline-title">결과 범위</span>
+            <span class="outcome-inline-title">시야 품질</span>
             <div class="outcome-options" id="outcomeOptions">
               <label class="outcome-option"><input type="radio" name="outcomeLevel" value="low">Low</label>
               <label class="outcome-option"><input type="radio" name="outcomeLevel" value="medium">Medium</label>
               <label class="outcome-option"><input type="radio" name="outcomeLevel" value="high" checked>High</label>
             </div>
-            <button class="outcome-info-btn" id="outcomeInfoBtn" type="button" aria-label="결과 범위 안내">i</button>
+            <button class="outcome-info-btn" id="outcomeInfoBtn" type="button" aria-label="시야 품질 안내">i</button>
           </div>
         </div>
         <div class="toolbar-right">
           <div class="view-toggle" id="viewToggle">
-            <button type="button" id="dualViewBtn" class="active">이중</button>
-            <button type="button" id="splitViewBtn">분할</button>
+            <button type="button" id="dualViewBtn" class="active">듀얼화면</button>
+            <button type="button" id="splitViewBtn">슬라이드화면</button>
           </div>
           <button class="ghost-btn" id="resetBtn">초기화</button>
         </div>
@@ -474,7 +535,8 @@ select option{
           <div class="video-card left-card">
             <video id="leftVideo" autoplay muted loop playsinline preload="auto"></video>
             <div class="side-label dual-label">
-              <div class="select-shell overlay-select-shell is-product" id="leftInlineShell"><select class="label-select" id="leftInline"></select><span class="select-inline-tag" id="leftInlineTag">블루라이트 차단</span></div>
+              <select class="label-select" id="leftInline"></select>
+              <span class="blue-tag" id="leftBlueTag">블루라이트 차단</span>
               <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
             </div>
             <div class="video-label left" id="leftVideoLabel"></div>
@@ -492,7 +554,8 @@ select option{
           <div class="video-card right-card">
             <video id="rightVideo" autoplay muted loop playsinline preload="auto"></video>
             <div class="side-label dual-label">
-              <div class="select-shell overlay-select-shell is-product" id="rightInlineShell"><select class="label-select" id="rightInline"></select><span class="select-inline-tag" id="rightInlineTag">블루라이트 차단</span></div>
+              <select class="label-select" id="rightInline"></select>
+              <span class="blue-tag" id="rightBlueTag">블루라이트 차단</span>
               <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
             </div>
             <div class="video-label right" id="rightVideoLabel"></div>
@@ -513,11 +576,13 @@ select option{
             <div class="compare-pane" id="splitRightPane"><video id="splitRightVideo" autoplay muted loop playsinline preload="auto"></video></div>
 
             <div class="side-label left">
-              <div class="select-shell overlay-select-shell is-product" id="splitLeftInlineShell"><select class="label-select" id="splitLeftInline"></select><span class="select-inline-tag" id="splitLeftInlineTag">블루라이트 차단</span></div>
+              <select class="label-select" id="splitLeftInline"></select>
+              <span class="blue-tag" id="splitLeftBlueTag">블루라이트 차단</span>
               <button class="info-btn" id="splitLeftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
             </div>
             <div class="side-label right">
-              <div class="select-shell overlay-select-shell is-product" id="splitRightInlineShell"><select class="label-select" id="splitRightInline"></select><span class="select-inline-tag" id="splitRightInlineTag">블루라이트 차단</span></div>
+              <select class="label-select" id="splitRightInline"></select>
+              <span class="blue-tag" id="splitRightBlueTag">블루라이트 차단</span>
               <button class="info-btn" id="splitRightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
             </div>
 
@@ -757,15 +822,16 @@ const PRODUCT_INFO={
     approval:'국내 공식 제품 페이지에서 개별 의료기기심의필 번호 미확인'
   }
 };
-const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50,outcome:'high',view:'dual'};
+const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50,outcome:'high',view:'dual',sidebarCollapsed:false};
 const OUTCOME_SHARPNESS={high:1.0, medium:0.95, low:0.90};
 const dom={
+  appShell:document.getElementById('appShell'),
+  sidebarFoldBtn:document.getElementById('sidebarFoldBtn'),
   conditionGrid:document.getElementById('conditionGrid'),
   sceneGrid:document.getElementById('sceneGrid'),
   leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),
   leftInline:document.getElementById('leftInline'),rightInline:document.getElementById('rightInline'),
-  leftInlineShell:document.getElementById('leftInlineShell'),rightInlineShell:document.getElementById('rightInlineShell'),
-  leftInlineTag:document.getElementById('leftInlineTag'),rightInlineTag:document.getElementById('rightInlineTag'),
+  leftBlueTag:document.getElementById('leftBlueTag'),rightBlueTag:document.getElementById('rightBlueTag'),
   sceneSelect:document.getElementById('sceneSelect'),
   conditionBadge:document.getElementById('conditionBadge'),sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),
@@ -776,8 +842,7 @@ const dom={
   playToggle:document.getElementById('playToggle'),splitPlayToggle:document.getElementById('splitPlayToggle'),
   dualViewBtn:document.getElementById('dualViewBtn'),splitViewBtn:document.getElementById('splitViewBtn'),
   splitLeftInline:document.getElementById('splitLeftInline'),splitRightInline:document.getElementById('splitRightInline'),
-  splitLeftInlineShell:document.getElementById('splitLeftInlineShell'),splitRightInlineShell:document.getElementById('splitRightInlineShell'),
-  splitLeftInlineTag:document.getElementById('splitLeftInlineTag'),splitRightInlineTag:document.getElementById('splitRightInlineTag'),
+  splitLeftBlueTag:document.getElementById('splitLeftBlueTag'),splitRightBlueTag:document.getElementById('splitRightBlueTag'),
   leftInfoBtn:document.getElementById('leftInfoBtn'),rightInfoBtn:document.getElementById('rightInfoBtn'),splitLeftInfoBtn:document.getElementById('splitLeftInfoBtn'),splitRightInfoBtn:document.getElementById('splitRightInfoBtn'),
   leftProductPop:document.getElementById('leftProductPop'),rightProductPop:document.getElementById('rightProductPop'),
   leftPopClose:document.getElementById('leftPopClose'),rightPopClose:document.getElementById('rightPopClose'),
@@ -790,6 +855,14 @@ const dom={
   leftProductTag:document.getElementById('leftProductTag'),rightProductTag:document.getElementById('rightProductTag'),
   outcomeInfoBtn:document.getElementById('outcomeInfoBtn'),outcomePop:document.getElementById('outcomePop')
 };
+
+// 제품 정보 팝업은 이중/분할 모드 모두에서 보여야 하므로, 숨겨지는 video-card 밖으로 이동
+const stageWrapEl = document.querySelector('.stage-wrap');
+if(stageWrapEl){
+  [dom.leftProductPop, dom.rightProductPop].forEach(pop=>{
+    if(pop) stageWrapEl.appendChild(pop);
+  });
+}
 function flags(){return{myohyperopia:state.selected.includes('myohyperopia'),astigmatism:state.selected.includes('astigmatism'),presbyopia:state.selected.includes('presbyopia')}}
 function productById(id){return products.find(p=>p.id===id)}
 function productOptions(){
@@ -801,25 +874,41 @@ function productOptions(){
   else ids=['oasys','max1day'];
   return ids.map(productById).filter(Boolean);
 }
+function stripAcuvueFromProductName(name){
+  return String(name||'')
+    .replace(/<sup[^>]*>.*?<\/sup>/gi,'®')
+    .replace(/원데이\s*아큐브\s*/g,'')
+    .replace(/아큐브\s*®?\s*/g,'')
+    .replace(/ACUVUE\s*®?\s*/gi,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
 function compactProductNameForOverlay(name){
-  return String(name||'').replace(/<sup[^>]*>.*?<\/sup>/gi,'®').replace(/\s+/g,' ').trim();
+  return stripAcuvueFromProductName(name);
 }
 function isMaxProduct(productId){
   return String(productId||'').toLowerCase().startsWith('max');
 }
 function updateBlueLightTags(){
+  const mapping = [
+    [dom.leftBlueTag, state.leftProduct],
+    [dom.rightBlueTag, state.rightProduct],
+    [dom.splitLeftBlueTag, state.leftProduct],
+    [dom.splitRightBlueTag, state.rightProduct]
+  ];
+  mapping.forEach(([el])=>{
+    if(!el) return;
+    el.classList.remove('show');
+  });
+
   const selectTags = [
     [dom.leftProductShell, dom.leftProductTag, state.leftProduct],
-    [dom.rightProductShell, dom.rightProductTag, state.rightProduct],
-    [dom.leftInlineShell, dom.leftInlineTag, state.leftProduct],
-    [dom.rightInlineShell, dom.rightInlineTag, state.rightProduct],
-    [dom.splitLeftInlineShell, dom.splitLeftInlineTag, state.leftProduct],
-    [dom.splitRightInlineShell, dom.splitRightInlineTag, state.rightProduct]
+    [dom.rightProductShell, dom.rightProductTag, state.rightProduct]
   ];
-  selectTags.forEach(([shell, tag, productId])=>{
-    const show = isMaxProduct(productId);
-    if(shell) shell.classList.toggle('has-tag', show);
-    if(tag) tag.style.display = show ? 'inline-flex' : 'none';
+  selectTags.forEach(([shell, tag])=>{
+    if(shell) shell.classList.add('product-selected');
+    if(shell) shell.classList.remove('has-tag');
+    if(tag) tag.style.display = 'none';
   });
 }
 function groupedProductOptions(){
@@ -909,16 +998,61 @@ function keepProductsValid(){
   if(!ids.includes(state.leftProduct)) state.leftProduct=ids.includes('max1day')?'max1day':ids[0];
   if(!ids.includes(state.rightProduct)) state.rightProduct=ids.includes('oasys')?'oasys':ids[1]||ids[0];
 }
+function optionLabel(p){
+  return stripAcuvueFromProductName(p.name);
+}
 function selectHTML(value){
   const groups=groupedProductOptions();
   let html='';
   ['multi','toric','sphere'].forEach(key=>{
     if(!groups[key].length) return;
-    html += `<optgroup label="${GROUP_LABEL[key]}">` + groups[key].map(p=>`<option value="${p.id}">${p.name}</option>`).join('') + '</optgroup>';
+    html += `<optgroup label="${GROUP_LABEL[key]}">` + groups[key].map(p=>`<option value="${p.id}">${optionLabel(p)}</option>`).join('') + '</optgroup>';
   });
   return html;
 }
 function fillSelect(sel,value){ sel.innerHTML=selectHTML(value); sel.value=value; }
+
+function productDisplayName(p){return stripAcuvueFromProductName(String((p&&p.name)||'').replace(/<[^>]+>/g,'').replace(/&reg;/g,'®'));}
+function buildProductCustomDropdown(sel,key){
+  if(!sel) return;
+  sel.classList.add('product-enhanced-native');
+  let ui = sel.nextElementSibling && sel.nextElementSibling.classList && sel.nextElementSibling.classList.contains('product-select-ui') ? sel.nextElementSibling : null;
+  if(!ui){
+    ui=document.createElement('div');
+    ui.className='product-select-ui';
+    ui.innerHTML='<button type="button" class="product-select-btn"><span class="product-select-current"></span></button><div class="product-select-menu"></div>';
+    sel.insertAdjacentElement('afterend', ui);
+  }
+  const current=ui.querySelector('.product-select-current');
+  const menu=ui.querySelector('.product-select-menu');
+  const selected=productById(sel.value);
+  current.textContent=productDisplayName(selected);
+  const groups=groupedProductOptions();
+  let html='';
+  ['multi','toric','sphere'].forEach(g=>{
+    if(!groups[g].length) return;
+    html += `<div class="product-select-group">${GROUP_LABEL[g]}</div>`;
+    groups[g].forEach(p=>{
+      html += `<button type="button" class="product-select-option ${p.id===sel.value?'active':''}" data-value="${p.id}"><span class="product-select-name">${productDisplayName(p)}</span>${isMaxProduct(p.id)?'<span class="product-select-badge">블루라이트 차단</span>':''}</button>`;
+    });
+  });
+  menu.innerHTML=html;
+  const btn=ui.querySelector('.product-select-btn');
+  btn.onclick=(e)=>{e.stopPropagation();document.querySelectorAll('.product-select-ui.open').forEach(x=>{if(x!==ui)x.classList.remove('open')});ui.classList.toggle('open');};
+  menu.querySelectorAll('.product-select-option').forEach(op=>{
+    op.onclick=(e)=>{e.stopPropagation();sel.value=op.dataset.value;sel.dispatchEvent(new Event('change',{bubbles:true}));ui.classList.remove('open');};
+  });
+}
+function refreshProductCustomDropdowns(){
+  buildProductCustomDropdown(dom.leftProduct,'leftProduct');
+  buildProductCustomDropdown(dom.rightProduct,'rightProduct');
+  buildProductCustomDropdown(dom.leftInline,'leftProduct');
+  buildProductCustomDropdown(dom.rightInline,'rightProduct');
+  buildProductCustomDropdown(dom.splitLeftInline,'leftProduct');
+  buildProductCustomDropdown(dom.splitRightInline,'rightProduct');
+}
+if(!window.__productDropdownCloseBound){window.__productDropdownCloseBound=true;document.addEventListener('click',()=>document.querySelectorAll('.product-select-ui.open').forEach(x=>x.classList.remove('open')));}
+
 function renderProducts(){
   keepProductsValid();
   fillSelect(dom.leftProduct,state.leftProduct); 
@@ -935,6 +1069,7 @@ function renderProducts(){
       controls.forEach(el=>{ if(el) el.value=state[key]; });
       updateInlineLabelText();
       updateBlueLightTags();
+      refreshProductCustomDropdowns();
       updateVideos();
       updateBadges();
       if(key==='leftProduct'&&dom.leftProductPop.classList.contains('open')) fillProductPop('left',state.leftProduct);
@@ -944,7 +1079,9 @@ function renderProducts(){
   };
   bind([dom.leftProduct, dom.leftInline, dom.splitLeftInline], 'leftProduct');
   bind([dom.rightProduct, dom.rightInline, dom.splitRightInline], 'rightProduct');
+  refreshProductCustomDropdowns();
 }
+
 function applyVideoAdjust(video,code){video.style.setProperty('--video-x','0px');video.style.setProperty('--video-y','0px');video.style.setProperty('--video-scale','1')}
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
 function allVideoEls(){
@@ -1150,14 +1287,21 @@ function updateViewMode(){
   const splitStage = document.getElementById('splitStage');
   const cards = dom.stage.querySelectorAll('.video-card');
   const isSplit = state.view === 'split';
-  const shell = document.querySelector('.shell');
-  const useDualTopLayout = !isSplit;
 
   dom.stage.classList.toggle('split-mode', isSplit);
   cards.forEach(card => { card.style.display = isSplit ? 'none' : ''; });
   if(splitStage){ splitStage.style.display = isSplit ? 'block' : 'none'; splitStage.style.setProperty('--split', state.split + '%'); }
-  if(shell) shell.classList.toggle('dual-layout', useDualTopLayout);
 
+  if(dom.appShell){
+    dom.appShell.classList.toggle('dual-mode', !isSplit);
+    dom.appShell.classList.toggle('split-view-mode', isSplit);
+    dom.appShell.classList.toggle('sidebar-collapsed', state.sidebarCollapsed);
+  }
+  if(dom.sidebarFoldBtn){
+    dom.sidebarFoldBtn.textContent = state.sidebarCollapsed ? '›' : '‹';
+    dom.sidebarFoldBtn.setAttribute('aria-label', state.sidebarCollapsed ? '옵션 선택 영역 펼치기' : '옵션 선택 영역 접기');
+    dom.sidebarFoldBtn.setAttribute('title', state.sidebarCollapsed ? '옵션 선택 영역 펼치기' : '옵션 선택 영역 접기');
+  }
   if(dom.dualViewBtn) dom.dualViewBtn.classList.toggle('active', !isSplit);
   if(dom.splitViewBtn) dom.splitViewBtn.classList.toggle('active', isSplit);
 }
@@ -1207,11 +1351,11 @@ if(splitStageEl){
   });
 }
 dom.sceneSelect.onchange=e=>{state.scene=e.target.value; renderSceneGrid(); updateVideos(); updateBadges();};
-dom.resetBtn.onclick=()=>{state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; state.view='dual'; setSplit(50); renderAll();};
+dom.resetBtn.onclick=()=>{state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; state.view='dual'; state.sidebarCollapsed=false; setSplit(50); renderAll();};
 dom.dualViewBtn.onclick=()=>{state.view='dual'; updateViewMode(); updateVideos();};
 dom.splitViewBtn.onclick=()=>{state.view='split'; updateViewMode(); updateVideos();};
+if(dom.sidebarFoldBtn){dom.sidebarFoldBtn.onclick=()=>{state.sidebarCollapsed=!state.sidebarCollapsed; updateViewMode(); setTimeout(()=>{try{updateVideos();}catch(e){}},320);};}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){playBothVideos();}});
-window.addEventListener('resize',()=>updateViewMode());
 document.addEventListener('click',()=>{playBothVideos();},{once:true});
 document.addEventListener('touchstart',()=>{playBothVideos();},{once:true,passive:true});
 [dom.leftVideo,dom.rightVideo,dom.splitLeftVideo,dom.splitRightVideo].forEach(v=>v && v.addEventListener('canplay',()=>updatePlayButton()));
@@ -1233,3 +1377,53 @@ updatePlayButton();
 </script>
 </body>
 </html>
+<!-- fold rail height alignment patch -->
+<style>
+/* 접었을 때 왼쪽 흰 막대는 영상 카드의 세로 길이와 맞추고, 영상 시작선에 맞춰 정렬 */
+.shell.sidebar-collapsed .sidebar{
+  margin-top:58px !important;
+  height:var(--stage-video-height-collapsed) !important;
+  min-height:var(--stage-video-height-collapsed) !important;
+  max-height:var(--stage-video-height-collapsed) !important;
+}
+.shell.sidebar-collapsed .sidebar-fold-btn{
+  top:50% !important;
+}
+@media (max-width:1280px){
+  .shell.sidebar-collapsed .sidebar{
+    margin-top:0 !important;
+    height:64px !important;
+    min-height:64px !important;
+    max-height:64px !important;
+  }
+}
+</style>
+
+<style>
+/* product info popup tuning */
+.stage-wrap{position:relative !important;}
+.product-pop{width:min(440px,46%) !important;z-index:80 !important;}
+@media (max-width:1280px){.product-pop{width:min(420px,52%) !important;}}
+</style>
+
+<style id="final-align-complete-patch">
+/* 최종: 옵션 펼침 상태에서는 좌측 옵션 영역과 우측 영상 영역 하단 라인을 동일하게 맞춤 */
+@media (min-width:1281px){
+  .shell:not(.sidebar-collapsed){
+    align-items:stretch !important;
+  }
+  .shell:not(.sidebar-collapsed) .sidebar{
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    align-self:stretch !important;
+  }
+  .shell:not(.sidebar-collapsed) .viewer{
+    align-self:stretch !important;
+  }
+  /* 접힌 상태는 이전에 마음에 든 사이즈 그대로 유지 */
+  .shell.sidebar-collapsed{
+    align-items:start !important;
+  }
+}
+</style>
