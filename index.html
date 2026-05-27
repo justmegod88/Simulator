@@ -509,9 +509,9 @@ select.product-enhanced-native{display:none!important}
           <div class="outcome-inline">
             <span class="outcome-inline-title">시야 품질</span>
             <div class="outcome-options" id="outcomeOptions">
-              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="low">Low</label>
-              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="medium">Medium</label>
-              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="high" checked>High</label>
+              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="low">하</label>
+              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="medium">중</label>
+              <label class="outcome-option"><input type="radio" name="outcomeLevel" value="high" checked>상</label>
             </div>
             <button class="outcome-info-btn" id="outcomeInfoBtn" type="button" aria-label="시야 품질 안내">i</button>
           </div>
@@ -1371,10 +1371,77 @@ document.addEventListener('click',e=>{ if(dom.outcomePop.classList.contains('ope
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left'); closeProductPop('right'); dom.outcomePop.classList.remove('open');}});
 dom.playToggle.onclick=()=>{ if(allVideoEls().some(v=>v.paused)) playBothVideos(); else pauseBothVideos(); };
 dom.splitPlayToggle && (dom.splitPlayToggle.onclick=()=>{ if(allVideoEls().some(v=>v.paused)) playBothVideos(); else pauseBothVideos(); });
+
+/* 옵션 펼침 상태: 좌측 옵션 패널 높이에 맞춰 실제 영상 높이를 계산해서 적용 */
+function syncExpandedVideoHeight(){
+  try{
+    if(!dom.appShell || !document.querySelector('.sidebar') || !document.querySelector('.viewer')) return;
+    const isWide = window.matchMedia('(min-width:1281px)').matches;
+    if(!isWide || state.sidebarCollapsed){
+      document.documentElement.style.removeProperty('--stage-video-height-synced');
+      return;
+    }
+    const sidebar = document.querySelector('.sidebar');
+    const viewer = document.querySelector('.viewer');
+    const toolbar = viewer.querySelector('.toolbar');
+    const stageWrap = viewer.querySelector('.stage-wrap');
+    const footer = viewer.querySelector('.footer-note');
+    if(!sidebar || !viewer || !toolbar || !stageWrap) return;
+
+    const sidebarH = sidebar.getBoundingClientRect().height;
+    const viewerStyle = getComputedStyle(viewer);
+    const viewerGap = parseFloat(viewerStyle.rowGap || viewerStyle.gap || 0) || 0;
+    const wrapStyle = getComputedStyle(stageWrap);
+    const wrapPadY = (parseFloat(wrapStyle.paddingTop)||0) + (parseFloat(wrapStyle.paddingBottom)||0);
+    const toolbarH = toolbar.getBoundingClientRect().height;
+    const footerH = footer ? footer.getBoundingClientRect().height : 0;
+
+    // viewer 내부 구성: toolbar + gap + stageWrap(video+padding) + gap + footer-note
+    const targetVideoH = sidebarH - toolbarH - footerH - (viewerGap * 2) - wrapPadY - 14;
+    const clamped = Math.max(420, Math.min(760, Math.round(targetVideoH)));
+    document.documentElement.style.setProperty('--stage-video-height-synced', clamped + 'px');
+  }catch(e){}
+}
+const _oldUpdateViewMode = updateViewMode;
+updateViewMode = function(){
+  _oldUpdateViewMode();
+  requestAnimationFrame(syncExpandedVideoHeight);
+};
+window.addEventListener('resize', ()=>requestAnimationFrame(syncExpandedVideoHeight));
+window.addEventListener('load', ()=>requestAnimationFrame(syncExpandedVideoHeight));
+
 renderAll();
+syncExpandedVideoHeight();
 updateViewMode();
 updatePlayButton();
 </script>
+
+<style id="left-slight-extend-patch">
+/* 요청 반영: 이전 영상 비율은 유지하고, 옵션 펼침 상태에서 좌측 패널만 시각적으로 살짝 연장 */
+@media (min-width:1281px){
+  .shell:not(.sidebar-collapsed) .sidebar{
+    position:sticky !important;
+    overflow:visible !important;
+  }
+  .shell:not(.sidebar-collapsed) .sidebar::after{
+    content:"";
+    position:absolute;
+    left:-1px;
+    right:-1px;
+    bottom:-10px;
+    height:10px;
+    background:#FFFFFF;
+    border-left:1px solid rgba(220,227,238,.95);
+    border-right:1px solid rgba(220,227,238,.95);
+    border-bottom:1px solid rgba(220,227,238,.95);
+    border-radius:0 0 26px 26px;
+    box-shadow:0 12px 18px rgba(8,24,68,.06);
+    pointer-events:none;
+  }
+  .shell.sidebar-collapsed .sidebar::after{display:none !important;}
+}
+</style>
+
 </body>
 </html>
 <!-- fold rail height alignment patch -->
@@ -1407,23 +1474,23 @@ updatePlayButton();
 </style>
 
 <style id="final-align-complete-patch">
-/* 최종: 옵션 펼침 상태에서는 좌측 옵션 영역과 우측 영상 영역 하단 라인을 동일하게 맞춤 */
+/* 최종 보정: 옵션 펼침 상태에서는 여백이 아니라 실제 영상 카드 높이를 조정해서 좌/우 하단을 맞춤 */
+/* 2026-05 final: 우측 영상 영역을 좌측 옵션 패널보다 살짝 짧게 보정 */
 @media (min-width:1281px){
-  .shell:not(.sidebar-collapsed){
-    align-items:stretch !important;
-  }
+  .shell:not(.sidebar-collapsed){align-items:start !important;}
   .shell:not(.sidebar-collapsed) .sidebar{
-    height:auto !important;
+    height:fit-content !important;
     min-height:0 !important;
     max-height:none !important;
-    align-self:stretch !important;
+    align-self:start !important;
   }
-  .shell:not(.sidebar-collapsed) .viewer{
-    align-self:stretch !important;
+  .shell:not(.sidebar-collapsed) .viewer{align-self:start !important;}
+  .shell:not(.sidebar-collapsed) .video-card,
+  .shell:not(.sidebar-collapsed) .split-stage{
+    height:var(--stage-video-height-synced, var(--stage-video-height)) !important;
+    min-height:var(--stage-video-height-synced, var(--stage-video-height)) !important;
   }
   /* 접힌 상태는 이전에 마음에 든 사이즈 그대로 유지 */
-  .shell.sidebar-collapsed{
-    align-items:start !important;
-  }
+  .shell.sidebar-collapsed{align-items:start !important;}
 }
 </style>
