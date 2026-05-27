@@ -64,7 +64,7 @@ body{
   background:rgba(255,255,255,.10);
 }
 .hero-text{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;gap:10px;flex:1 1 auto;min-width:0;max-width:calc(100% - 170px)}
-.hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;align-self:flex-start;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(111,165,255,.18);border:1px solid rgba(255,255,255,.08);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.hero-kicker{position:relative;z-index:1;display:inline-flex;align-items:center;align-self:flex-start;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(111,165,255,.18);border:1px solid rgba(255,255,255,.08);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.hero-kicker-wordmark{display:inline-flex;align-items:center;justify-content:center;padding:2px 10px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);font-size:12px;font-weight:950;letter-spacing:.08em}.hero-kicker-sub{opacity:.96}
 .hero h1{position:relative;z-index:1;margin:0;font-size:31px;line-height:1.02;font-weight:950;letter-spacing:-.03em;word-break:keep-all}
 .hero-pack{
   position:relative;
@@ -119,10 +119,11 @@ body{
 .field-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .field-head label{margin:0}
 .select-shell{position:relative}.select-shell select{position:relative;z-index:1}.select-shell .select-inline-tag{z-index:2}
-.select-inline-tag{display:none;position:absolute;right:48px;top:50%;transform:translateY(-50%);height:26px;padding:0 12px;border-radius:9px;background:#EAF1FF;border:1px solid #DDE8FF;color:#6E8FEF;font-size:11px;font-weight:800;line-height:1;align-items:center;justify-content:center;white-space:nowrap;pointer-events:none;z-index:2}
+.select-inline-tag{display:none;position:absolute;right:50px;top:50%;transform:translateY(-50%);height:26px;padding:0 12px;border-radius:9px;background:#EAF1FF;border:1px solid #DDE8FF;color:#6E8FEF;font-size:11px;font-weight:800;line-height:1;align-items:center;justify-content:center;white-space:nowrap;pointer-events:none;z-index:2}
 .select-shell.has-tag .select-inline-tag{display:inline-flex}
-.select-shell.has-tag select{padding-right:152px}
-.select-shell:after{content:"⌄";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#5C7BA1;pointer-events:none}
+.select-shell.has-tag select{padding-right:158px}
+.select-shell:after{content:"▾";position:absolute;right:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#5C7BA1;pointer-events:none;z-index:3}
+.select-shell.is-product:after{color:#4E6D95}
 select{
   width:100%;height:50px;padding:0 44px 0 16px;
   border-radius:16px;border:1px solid #D6DCE7;
@@ -300,21 +301,22 @@ select option{
 .video-card{position:relative;overflow:hidden;border-radius:20px;border:1px solid #DCE8F5;background:#0B1B32;aspect-ratio:16/9;min-height:clamp(360px, 25vw, 480px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
 .video-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
 .side-label{
-  position:absolute;top:14px;left:12px;right:12px;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:16px;
-  background:rgba(255,255,255,.96);border:1px solid rgba(0,94,184,.16);color:#005EB8;box-shadow:0 8px 24px rgba(0,94,184,.10);z-index:4;font-weight:800;
+  position:absolute;top:14px;left:12px;right:12px;display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:18px;
+  background:rgba(255,255,255,.98);border:1px solid rgba(186,204,226,.95);color:#26456A;box-shadow:0 10px 24px rgba(13,43,92,.10);z-index:4;font-weight:800;
   max-width:none;
 }
 .dual-label{justify-content:flex-start}
 .dual-label .select-shell,.split-stage .side-label .select-shell{flex:1 1 auto;min-width:0}
 .dual-label .info-btn,.split-stage .side-label .info-btn{margin-left:auto;flex:0 0 auto}
 .side-name{display:none}
-.label-select{height:34px;border-radius:12px;padding:0 14px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;font-size:12px;min-width:0;flex:1 1 auto;width:100%;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.overlay-select-shell:after{right:12px;color:rgba(255,255,255,.92);font-size:15px}
-.overlay-select-shell .label-select{padding-right:34px}
-.overlay-select-shell .select-inline-tag{right:34px;top:50%;transform:translateY(-50%);height:20px;padding:0 8px;border-radius:8px;background:#EAF1FF;border:1px solid #DDE8FF;color:#6E8FEF;font-size:9px;font-weight:800}
-.overlay-select-shell.has-tag .label-select{padding-right:116px}
-.info-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08);flex:0 0 32px}
-.info-btn:hover{background:#F1F7FF}
+.label-select{height:36px;border-radius:12px;padding:0 44px 0 14px;background:transparent;border:0;color:#26456A;font-weight:900;font-size:13px;min-width:0;flex:1 1 auto;width:100%;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-shadow:none}
+.label-select:focus{box-shadow:none;border:0}
+.overlay-select-shell:after{right:10px;width:auto;height:auto;border-radius:0;background:none;color:#7A8FAE;font-size:14px;font-weight:900;display:block;line-height:1}
+.overlay-select-shell .label-select{padding-right:38px}
+.overlay-select-shell .select-inline-tag{right:34px;top:50%;transform:translateY(-50%);height:24px;padding:0 10px;border-radius:999px;background:#EEF3FF;border:1px solid #D8E4FF;color:#7993E8;font-size:10px;font-weight:900}
+.overlay-select-shell.has-tag .label-select{padding-right:148px}
+.info-btn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(185,202,224,.95);background:#fff;color:#6F85A7;font-weight:950;font-size:18px;display:grid;place-items:center;cursor:pointer;box-shadow:none;flex:0 0 34px}
+.info-btn:hover{background:#F6FAFF}
 .video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
 .video-label.left{left:16px}.video-label.right{right:78px}
 .play-toggle{
@@ -333,7 +335,7 @@ select option{
 .shell.dual-layout .sidebar > *{min-width:0}
 .shell.dual-layout .hero{min-height:96px;height:100%;padding:10px 12px;border-radius:20px}
 .shell.dual-layout .hero-text{max-width:calc(100% - 92px);gap:8px}
-.shell.dual-layout .hero-kicker{padding:7px 12px;font-size:10px}
+.shell.dual-layout .hero-kicker{padding:7px 12px;font-size:10px}.shell.dual-layout .hero-kicker-wordmark{font-size:11px;padding:2px 8px}
 .shell.dual-layout .hero h1{font-size:18px;line-height:1.02}
 .shell.dual-layout .hero-pack{width:74px;height:38px;flex-basis:74px}
 .shell.dual-layout .section{height:100%;padding:12px 14px;border-radius:20px}
@@ -371,7 +373,7 @@ select option{
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
 .pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;line-height:1.5;color:#8A97A8;border-top:1px solid #EEF3F8;padding-top:10px}
 @media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.label-select{font-size:11px}.blue-tag{font-size:9px;padding:0 8px}.video-card{min-height:360px}.shell.dual-layout .sidebar{grid-template-columns:1fr 1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:320px;max-height:none}}
-@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px}.label-select{height:30px;font-size:10px;padding:0 10px}.overlay-select-shell .select-inline-tag{right:30px;height:17px;padding:0 6px;font-size:8px}.overlay-select-shell.has-tag .label-select{padding-right:96px}.select-inline-tag{right:34px;height:18px;padding:0 6px;font-size:8px}.select-shell.has-tag select{padding-right:112px}.info-btn{width:28px;height:28px;font-size:13px}.stage{grid-template-columns:1fr;gap:8px}.video-card{min-height:240px}.shell.dual-layout .sidebar{grid-template-columns:1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:240px}}
+@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:5px 7px;gap:5px}.label-select{height:32px;font-size:10px;padding:0 34px 0 10px}.overlay-select-shell .select-inline-tag{right:28px;height:16px;padding:0 6px;font-size:7px}.overlay-select-shell.has-tag .label-select{padding-right:92px}.select-inline-tag{right:34px;height:18px;padding:0 6px;font-size:8px}.select-shell.has-tag select{padding-right:112px}.info-btn{width:28px;height:28px;font-size:15px}.stage{grid-template-columns:1fr;gap:8px}.video-card{min-height:240px}.shell.dual-layout .sidebar{grid-template-columns:1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:240px}}
 </style>
 </head>
 <body>
@@ -412,11 +414,11 @@ select option{
         <div class="select-wrap">
           <div class="field">
             <div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div>
-            <div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div>
+            <div class="select-shell is-product" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div>
           </div>
           <div class="field">
             <div class="field-head"><label for="rightProduct">우측 화면 제품</label></div>
-            <div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div>
+            <div class="select-shell is-product" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div>
           </div>
 
         </div>
@@ -472,8 +474,8 @@ select option{
           <div class="video-card left-card">
             <video id="leftVideo" autoplay muted loop playsinline preload="auto"></video>
             <div class="side-label dual-label">
-              <div class="select-shell overlay-select-shell" id="leftInlineShell"><select class="label-select" id="leftInline"></select><span class="select-inline-tag" id="leftInlineTag">블루라이트 차단</span></div>
-              <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
+              <div class="select-shell overlay-select-shell is-product" id="leftInlineShell"><select class="label-select" id="leftInline"></select><span class="select-inline-tag" id="leftInlineTag">블루라이트 차단</span></div>
+              <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">!</button>
             </div>
             <div class="video-label left" id="leftVideoLabel"></div>
             <div class="product-pop left-pop" id="leftProductPop">
@@ -490,8 +492,8 @@ select option{
           <div class="video-card right-card">
             <video id="rightVideo" autoplay muted loop playsinline preload="auto"></video>
             <div class="side-label dual-label">
-              <div class="select-shell overlay-select-shell" id="rightInlineShell"><select class="label-select" id="rightInline"></select><span class="select-inline-tag" id="rightInlineTag">블루라이트 차단</span></div>
-              <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
+              <div class="select-shell overlay-select-shell is-product" id="rightInlineShell"><select class="label-select" id="rightInline"></select><span class="select-inline-tag" id="rightInlineTag">블루라이트 차단</span></div>
+              <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">!</button>
             </div>
             <div class="video-label right" id="rightVideoLabel"></div>
             <button class="play-toggle" id="playToggle" type="button" aria-label="일시중지">❚❚</button>
@@ -511,12 +513,12 @@ select option{
             <div class="compare-pane" id="splitRightPane"><video id="splitRightVideo" autoplay muted loop playsinline preload="auto"></video></div>
 
             <div class="side-label left">
-              <div class="select-shell overlay-select-shell" id="splitLeftInlineShell"><select class="label-select" id="splitLeftInline"></select><span class="select-inline-tag" id="splitLeftInlineTag">블루라이트 차단</span></div>
-              <button class="info-btn" id="splitLeftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
+              <div class="select-shell overlay-select-shell is-product" id="splitLeftInlineShell"><select class="label-select" id="splitLeftInline"></select><span class="select-inline-tag" id="splitLeftInlineTag">블루라이트 차단</span></div>
+              <button class="info-btn" id="splitLeftInfoBtn" type="button" aria-label="좌측 제품 정보">!</button>
             </div>
             <div class="side-label right">
-              <div class="select-shell overlay-select-shell" id="splitRightInlineShell"><select class="label-select" id="splitRightInline"></select><span class="select-inline-tag" id="splitRightInlineTag">블루라이트 차단</span></div>
-              <button class="info-btn" id="splitRightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
+              <div class="select-shell overlay-select-shell is-product" id="splitRightInlineShell"><select class="label-select" id="splitRightInline"></select><span class="select-inline-tag" id="splitRightInlineTag">블루라이트 차단</span></div>
+              <button class="info-btn" id="splitRightInfoBtn" type="button" aria-label="우측 제품 정보">!</button>
             </div>
 
             <div class="video-label left" id="splitLeftVideoLabel"></div>
