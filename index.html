@@ -1458,6 +1458,28 @@ updatePlayButton();
 
 
 
+
+<style id="left-panel-stretch-final">
+/* 펼친 상태에서 좌측 옵션 패널의 실제 바닥선을 우측 영상 영역과 맞춤 */
+@media (min-width:1281px){
+  .shell:not(.sidebar-collapsed){
+    align-items:stretch !important;
+  }
+  .shell:not(.sidebar-collapsed) .viewer{
+    align-self:stretch !important;
+  }
+  .shell:not(.sidebar-collapsed) .sidebar{
+    height:auto !important;
+    min-height:100% !important;
+    align-self:stretch !important;
+    overflow:visible !important;
+  }
+  .shell:not(.sidebar-collapsed) .sidebar::after{
+    content:none !important;
+    display:none !important;
+  }
+}
+</style>
 </body>
 </html>
 <!-- fold rail height alignment patch -->
