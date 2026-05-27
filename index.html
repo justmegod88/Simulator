@@ -402,7 +402,7 @@ select.product-enhanced-native{display:none!important}
 /* 2026-05: 영상 비율 유지 + 옵션 패널/접힘 상태 정렬 */
 :root{
   /* 펼친 상태: 아까 괜찮았던 영상 비율 유지 */
-  --stage-video-height: clamp(480px, 34vw, 560px);
+  --stage-video-height: clamp(468px, 33.2vw, 546px);
   /* 접은 상태: 가로만 늘어나지 않도록 세로도 함께 확대 */
   --stage-video-height-collapsed: clamp(560px, 43vw, 700px);
 }
@@ -437,12 +437,12 @@ select.product-enhanced-native{display:none!important}
 }
 .shell.sidebar-collapsed .sidebar-fold-btn::after{opacity:.58;}
 @media (max-width:1280px){
-  :root{--stage-video-height:clamp(450px, 44vw, 575px);--stage-video-height-collapsed:clamp(520px, 52vw, 680px)}
+  :root{--stage-video-height:clamp(438px, 43vw, 560px);--stage-video-height-collapsed:clamp(520px, 52vw, 680px)}
   .shell:not(.sidebar-collapsed) .sidebar{min-height:auto;}
   .shell.sidebar-collapsed .sidebar{height:64px !important;min-height:64px !important;max-height:64px !important;}
 }
 @media (max-width:760px){
-  :root{--stage-video-height:clamp(285px, 68vw, 440px);--stage-video-height-collapsed:clamp(320px, 82vw, 520px)}
+  :root{--stage-video-height:clamp(278px, 66vw, 428px);--stage-video-height-collapsed:clamp(320px, 82vw, 520px)}
 }
 
 </style>
@@ -1502,7 +1502,7 @@ function syncExpandedVideoHeight(){
     const footerH = footer ? footer.getBoundingClientRect().height : 0;
 
     // viewer 내부 구성: toolbar + gap + stageWrap(video+padding) + gap + footer-note
-    const targetVideoH = sidebarH - toolbarH - footerH - (viewerGap * 2) - wrapPadY - 14;
+    const targetVideoH = sidebarH - toolbarH - footerH - (viewerGap * 2) - wrapPadY - 32;
     const clamped = Math.max(420, Math.min(760, Math.round(targetVideoH)));
     document.documentElement.style.setProperty('--stage-video-height-synced', clamped + 'px');
   }catch(e){}
