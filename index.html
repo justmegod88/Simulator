@@ -448,6 +448,36 @@ select.product-enhanced-native{display:none!important}
   }
 }
 </style>
+
+<style id="sidebar-spacing-height-final-fix">
+/* 좌측 옵션 영역 높이를 억지 여백이 아니라 타이틀/카드 간격으로 자연스럽게 맞춤 */
+@media (min-width:1281px){
+  .shell:not(.sidebar-collapsed) .sidebar{
+    min-height:calc(var(--stage-video-height) + 128px) !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:space-between !important;
+    gap:18px !important;
+    padding:18px !important;
+    overflow:hidden !important;
+  }
+  .shell:not(.sidebar-collapsed) .hero{
+    min-height:128px !important;
+    padding-top:20px !important;
+    padding-bottom:20px !important;
+  }
+  .shell:not(.sidebar-collapsed) .section{
+    padding-top:18px !important;
+    padding-bottom:18px !important;
+  }
+  .shell:not(.sidebar-collapsed) .section-head{
+    margin-bottom:14px !important;
+  }
+  .shell:not(.sidebar-collapsed) .field + .field{
+    margin-top:16px !important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -1480,17 +1510,6 @@ updatePlayButton();
   }
 }
 </style>
-
-
-<!-- final micro extension: left option panel bottom +8px -->
-<style id="left-final-micro-extend">
-@media (min-width:1281px){
-  .shell:not(.sidebar-collapsed) .sidebar{
-    padding-bottom:24px !important;
-  }
-}
-</style>
-
 </body>
 </html>
 <!-- fold rail height alignment patch -->
