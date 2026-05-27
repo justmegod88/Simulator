@@ -356,6 +356,17 @@ select option{
 .pop-title{margin:0 40px 0 0;font-size:18px;line-height:1.3;font-weight:900;color:#15294D}
 .pop-body{padding:12px 16px 16px}
 .pop-pack{width:100%;height:168px;object-fit:contain;object-position:center center;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:14px;padding:4px;display:block}
+.pop-quick-detail{display:none;margin:2px 0 14px;border:1px solid #E1E8F1;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 8px 20px rgba(8,24,68,.06)}
+.pop-quick-detail.show{display:block}
+.quick-top{padding:14px 16px;text-align:center;color:#fff;font-weight:950;font-size:15px;line-height:1.35;word-break:keep-all;letter-spacing:-.02em}
+.quick-top.green,.quick-tech.green{background:#078B89}.quick-top.navy,.quick-tech.navy{background:#13264A}
+.quick-body{padding:13px 14px 15px;background:#fff}
+.quick-meta{text-align:center;font-size:16px;font-weight:950;color:#17243B;margin-bottom:10px;line-height:1.25;word-break:keep-all}
+.quick-line{height:1px;background:#E5EAF1;margin:0 0 12px}
+.quick-material{text-align:center;color:#17243B;font-size:15px;font-weight:900;margin-bottom:10px}
+.quick-tech{padding:10px 12px;color:#fff;text-align:center;font-size:18px;font-weight:950;line-height:1.25;letter-spacing:-.02em}
+.quick-benefit{display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center;padding:12px 4px;border-bottom:1px solid #E8EDF4;color:#17243B;font-size:13.5px;font-weight:850;line-height:1.35;word-break:keep-all}
+.quick-benefit:last-child{border-bottom:0;padding-bottom:4px}.quick-icon{font-size:28px;line-height:1;text-align:center;color:#0A7170}.pop-quick-detail.navy .quick-icon{color:#13264A}
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
 .pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;line-height:1.5;color:#8A97A8;border-top:1px solid #EEF3F8;padding-top:10px}
 @media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.label-select{font-size:11px}.blue-tag{font-size:9px;padding:0 8px}.video-card{min-height:300px}}
@@ -391,7 +402,7 @@ select.product-enhanced-native{display:none!important}
 /* 2026-05: 영상 비율 유지 + 옵션 패널/접힘 상태 정렬 */
 :root{
   /* 펼친 상태: 아까 괜찮았던 영상 비율 유지 */
-  --stage-video-height: clamp(500px, 35vw, 580px);
+  --stage-video-height: clamp(480px, 34vw, 560px);
   /* 접은 상태: 가로만 늘어나지 않도록 세로도 함께 확대 */
   --stage-video-height-collapsed: clamp(560px, 43vw, 700px);
 }
@@ -426,12 +437,12 @@ select.product-enhanced-native{display:none!important}
 }
 .shell.sidebar-collapsed .sidebar-fold-btn::after{opacity:.58;}
 @media (max-width:1280px){
-  :root{--stage-video-height:clamp(470px, 46vw, 600px);--stage-video-height-collapsed:clamp(520px, 52vw, 680px)}
+  :root{--stage-video-height:clamp(450px, 44vw, 575px);--stage-video-height-collapsed:clamp(520px, 52vw, 680px)}
   .shell:not(.sidebar-collapsed) .sidebar{min-height:auto;}
   .shell.sidebar-collapsed .sidebar{height:64px !important;min-height:64px !important;max-height:64px !important;}
 }
 @media (max-width:760px){
-  :root{--stage-video-height:clamp(300px, 72vw, 460px);--stage-video-height-collapsed:clamp(320px, 82vw, 520px)}
+  :root{--stage-video-height:clamp(285px, 68vw, 440px);--stage-video-height-collapsed:clamp(320px, 82vw, 520px)}
 }
 
 </style>
@@ -588,6 +599,7 @@ select.product-enhanced-native{display:none!important}
               <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="leftPopTitle"></h3></div>
               <div class="pop-body">
                 <img class="pop-pack" id="leftPopPack" alt="좌측 제품 팩샷" />
+                <div class="pop-quick-detail" id="leftQuickDetail"></div>
                 <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="leftPopOverview"></p></div>
                 <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="leftPopFeatures"></ul><p class="pop-note" id="leftPopNote"></p></div>
               </div>
@@ -608,6 +620,7 @@ select.product-enhanced-native{display:none!important}
               <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="rightPopTitle"></h3></div>
               <div class="pop-body">
                 <img class="pop-pack" id="rightPopPack" alt="우측 제품 팩샷" />
+                <div class="pop-quick-detail" id="rightQuickDetail"></div>
                 <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="rightPopOverview"></p></div>
                 <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="rightPopFeatures"></ul><p class="pop-note" id="rightPopNote"></p></div>
               </div>
@@ -920,6 +933,7 @@ const dom={
   leftPopOverview:document.getElementById('leftPopOverview'),rightPopOverview:document.getElementById('rightPopOverview'),
   leftPopFeatures:document.getElementById('leftPopFeatures'),rightPopFeatures:document.getElementById('rightPopFeatures'),
   leftPopNote:document.getElementById('leftPopNote'),rightPopNote:document.getElementById('rightPopNote'),
+  leftQuickDetail:document.getElementById('leftQuickDetail'),rightQuickDetail:document.getElementById('rightQuickDetail'),
   leftProductShell:document.getElementById('leftProductShell'),rightProductShell:document.getElementById('rightProductShell'),
   leftProductTag:document.getElementById('leftProductTag'),rightProductTag:document.getElementById('rightProductTag'),
   outcomeInfoBtn:document.getElementById('outcomeInfoBtn'),outcomePop:document.getElementById('outcomePop')
@@ -1309,11 +1323,32 @@ function preparePackshotDisplay(imgEl){
   };
 }
 
+
+const PRODUCT_QUICK_DETAIL={
+  oasys:{theme:'green',top:'20시간 촉촉함 유지 하여<br>하루 종일 편안한 착용감 제공',meta:'구면, 난시',material:'실리콘하이드로겔',tech:'하이드라럭스™ 기술',benefits:[['💧💧','20시간 촉촉함* 유지 하여<br>하루 종일 편안한 착용감 제공'],['🛡️','자외선 차단 1등급<br>UVA 90% / UVB 99% 이상 차단'],['🤏','쉬운 삽입 및 제거***']]},
+  max1day:{theme:'navy',top:'하루종일 편안한 착용감과 선명한 시야를 제공하고<br>블루라이트*로부터 눈을 보호',meta:'구면, 난시, 멀티포컬',material:'실리콘하이드로겔',tech:'눈물안정화™ 기술',benefits:[['💧💧💧','아큐브 오아시스 원데이® 대비<br>20% 개선된 수분으로<br>더 촉촉하고 편안한 착용감'],['🛡️','자외선 차단 1등급<br>UVA 90% / UVB 99% 이상 차단'],['🤏','쉬운 삽입 및 제거⁹'],['📱','블루라이트 55% 차단으로<br>빛 번짐 및 눈 피로 감소']]}
+};
+function renderQuickDetail(target,productId){
+  if(!target) return;
+  const d=PRODUCT_QUICK_DETAIL[productId];
+  if(!d){target.className='pop-quick-detail'; target.innerHTML=''; return;}
+  target.className='pop-quick-detail show '+d.theme;
+  target.innerHTML=`
+    <div class="quick-top ${d.theme}">${d.top}</div>
+    <div class="quick-body">
+      <div class="quick-meta">${d.meta}</div>
+      <div class="quick-line"></div>
+      <div class="quick-material">${d.material}</div>
+      <div class="quick-tech ${d.theme}">${d.tech}</div>
+      ${d.benefits.map(([icon,txt])=>`<div class="quick-benefit"><div class="quick-icon">${icon}</div><div>${txt}</div></div>`).join('')}
+    </div>`;
+}
 function fillProductPop(side,productId){
   const info=PRODUCT_INFO[productId]; if(!info) return;
   const isLeft=side==='left';
   const title=isLeft?dom.leftPopTitle:dom.rightPopTitle, pack=isLeft?dom.leftPopPack:dom.rightPopPack, overview=isLeft?dom.leftPopOverview:dom.rightPopOverview, features=isLeft?dom.leftPopFeatures:dom.rightPopFeatures, note=isLeft?dom.leftPopNote:dom.rightPopNote;
   title.textContent=info.title; overview.textContent=info.overview; features.innerHTML=info.features.map(v=>`<li>${v}</li>`).join(''); note.textContent=info.approval || '';
+  renderQuickDetail(isLeft?dom.leftQuickDetail:dom.rightQuickDetail, productId);
   const packBase=`./${info.pack}`;
   preparePackshotDisplay(pack);
   pack.onerror=function(){ if(this.dataset.try==='png'){this.dataset.try='jpg'; this.src=packBase+'.jpg';} else if(this.dataset.try==='jpg'){this.dataset.try='jpeg'; this.src=packBase+'.jpeg';} else {this.onerror=null; this.removeAttribute('src'); this.alt='팩샷 이미지를 찾을 수 없습니다';} };
