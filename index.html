@@ -116,7 +116,12 @@ body{
 .select-wrap,.field{display:flex;flex-direction:column;gap:8px}
 .field + .field{margin-top:14px}
 .field label{font-size:13px;font-weight:900;color:#3E5C80}
+.field-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.field-head label{margin:0}
 .select-shell{position:relative}
+.select-inline-tag{display:none;position:absolute;right:44px;top:50%;transform:translateY(-50%);height:24px;padding:0 10px;border-radius:10px;background:#EAF1FF;border:1px solid #D6E4FF;color:#6A85E8;font-size:10px;font-weight:900;line-height:1;align-items:center;justify-content:center;white-space:nowrap;pointer-events:none;z-index:2;box-shadow:0 1px 0 rgba(255,255,255,.8) inset}
+.select-shell.has-tag .select-inline-tag{display:inline-flex}
+.select-shell.has-tag select{padding-right:138px}
 .select-shell:after{content:"⌄";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#5C7BA1;pointer-events:none}
 select{
   width:100%;height:50px;padding:0 44px 0 16px;
@@ -189,6 +194,37 @@ select option{
   padding:0 0 2px 0;
 }
 .toolbar-left,.toolbar-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.view-toggle{
+  display:inline-flex;align-items:center;gap:6px;padding:6px;border-radius:999px;
+  background:#FFFFFF;border:1px solid #D6DCE7;
+}
+.view-toggle button{
+  height:36px;padding:0 14px;border-radius:999px;border:1px solid transparent;background:transparent;
+  color:#2D4F78;font-size:13px;font-weight:900;cursor:pointer;
+}
+.view-toggle button.active{
+  background:linear-gradient(180deg,#2E68F0,#2359D8);
+  color:#fff;box-shadow:0 8px 20px rgba(35,89,216,.18);
+}
+.stage.split-mode{display:block}
+.stage.split-mode .video-card{display:none}
+.stage.split-mode .split-stage{display:block}
+.split-stage{display:none;position:relative;overflow:hidden;border-radius:20px;border:1px solid #DCE8F5;background:#0B1B32;aspect-ratio:16/9;min-height:clamp(380px, 31vw, 520px);--split:50%}
+.compare-pane{position:absolute;inset:0;overflow:hidden}
+.compare-pane video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
+#splitLeftPane{clip-path:polygon(0 0,var(--split) 0,var(--split) 100%,0 100%)}
+#splitRightPane{clip-path:polygon(var(--split) 0,100% 0,100% 100%,var(--split) 100%)}
+.divider{position:absolute;top:0;bottom:0;left:var(--split);width:2px;background:rgba(255,255,255,.78);transform:translateX(-1px);z-index:5}
+.handle{position:absolute;top:50%;left:var(--split);transform:translate(-50%,-50%);z-index:6;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:#fff;color:#23456C;display:grid;place-items:center;font-size:22px;font-weight:900;cursor:ew-resize;user-select:none;touch-action:none;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.split-stage .side-label.left{left:12px;right:auto;width:calc(50% - 18px)}
+.split-stage .side-label.right{right:12px;left:auto;width:calc(50% - 18px)}
+.split-stage .side-label .label-select{flex:1 1 auto;min-width:0}
+.split-stage .side-label .info-btn{margin-left:auto}
+.split-stage .video-label.left{left:16px}
+.split-stage .video-label.right{right:78px}
+@media (max-width:1100px){
+  .view-toggle{width:100%;justify-content:center}
+}
 .outcome-inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:999px;background:#FFFFFF;border:1px solid #D6DCE7}
 .outcome-inline-title{font-size:14px;font-weight:900;color:#26486F}
 .outcome-options{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -219,6 +255,37 @@ select option{
 
 .toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
 .toolbar-left,.toolbar-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.view-toggle{
+  display:inline-flex;align-items:center;gap:6px;padding:6px;border-radius:999px;
+  background:#FFFFFF;border:1px solid #D6DCE7;
+}
+.view-toggle button{
+  height:36px;padding:0 14px;border-radius:999px;border:1px solid transparent;background:transparent;
+  color:#2D4F78;font-size:13px;font-weight:900;cursor:pointer;
+}
+.view-toggle button.active{
+  background:linear-gradient(180deg,#2E68F0,#2359D8);
+  color:#fff;box-shadow:0 8px 20px rgba(35,89,216,.18);
+}
+.stage.split-mode{display:block}
+.stage.split-mode .video-card{display:none}
+.stage.split-mode .split-stage{display:block}
+.split-stage{display:none;position:relative;overflow:hidden;border-radius:20px;border:1px solid #DCE8F5;background:#0B1B32;aspect-ratio:16/9;min-height:clamp(380px, 31vw, 520px);--split:50%}
+.compare-pane{position:absolute;inset:0;overflow:hidden}
+.compare-pane video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
+#splitLeftPane{clip-path:polygon(0 0,var(--split) 0,var(--split) 100%,0 100%)}
+#splitRightPane{clip-path:polygon(var(--split) 0,100% 0,100% 100%,var(--split) 100%)}
+.divider{position:absolute;top:0;bottom:0;left:var(--split);width:2px;background:rgba(255,255,255,.78);transform:translateX(-1px);z-index:5}
+.handle{position:absolute;top:50%;left:var(--split);transform:translate(-50%,-50%);z-index:6;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:#fff;color:#23456C;display:grid;place-items:center;font-size:22px;font-weight:900;cursor:ew-resize;user-select:none;touch-action:none;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.split-stage .side-label.left{left:12px;right:auto;width:calc(50% - 18px)}
+.split-stage .side-label.right{right:12px;left:auto;width:calc(50% - 18px)}
+.split-stage .side-label .label-select{flex:1 1 auto;min-width:0}
+.split-stage .side-label .info-btn{margin-left:auto}
+.split-stage .video-label.left{left:16px}
+.split-stage .video-label.right{right:78px}
+@media (max-width:1100px){
+  .view-toggle{width:100%;justify-content:center}
+}
 .badge{
   display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:999px;
   background:#FFFFFF;border:1px solid #D6DCE7;color:#2D3A54;font-size:14px;font-weight:800
@@ -228,22 +295,22 @@ select option{
   height:46px;padding:0 20px;border-radius:16px;border:1px solid #AEB8C8;background:#A8B4C4;color:#FFFFFF;font-weight:900;cursor:pointer
 }
 .ghost-btn:hover{border-color:#76B4F8;background:#F6FBFF}
-.stage-wrap{padding:10px;border-radius:24px;background:#FFFFFF;border:1px solid rgba(220,227,238,.95);box-shadow:0 10px 26px rgba(8,24,68,.10)}
-.stage{position:relative;overflow:hidden;border-radius:22px;border:1px solid #DCE8F5;aspect-ratio:16/9;background:#0B1B32;--split:50%}
-.compare-pane{position:absolute;inset:0;overflow:hidden}
-.compare-pane video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
-#leftPane{clip-path:polygon(0 0,var(--split) 0,var(--split) 100%,0 100%)}
-#rightPane{clip-path:polygon(var(--split) 0,100% 0,100% 100%,var(--split) 100%)}
-.divider{position:absolute;top:0;bottom:0;left:var(--split);width:2px;background:rgba(255,255,255,.78);transform:translateX(-1px);z-index:5}
-.handle{position:absolute;top:50%;left:var(--split);transform:translate(-50%,-50%);z-index:6;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:#fff;color:#23456C;display:grid;place-items:center;font-size:22px;font-weight:900;cursor:ew-resize;user-select:none;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.stage-wrap{padding:6px;border-radius:24px;background:#FFFFFF;border:1px solid rgba(220,227,238,.95);box-shadow:0 10px 26px rgba(8,24,68,.10)}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px;align-items:stretch}
+.video-card{position:relative;overflow:hidden;border-radius:20px;border:1px solid #DCE8F5;background:#0B1B32;aspect-ratio:16/9;min-height:clamp(360px, 25vw, 480px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.video-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background:#000;transform:translate(var(--video-x,0px),var(--video-y,0px)) scale(var(--video-scale,1));transform-origin:center center}
 .side-label{
-  position:absolute;top:14px;display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:18px;
-  background:rgba(255,255,255,.92);border:1px solid rgba(0,94,184,.16);color:#005EB8;box-shadow:0 8px 24px rgba(0,94,184,.10);z-index:4;font-weight:800;
-  max-width:calc(50% - 18px);
+  position:absolute;top:14px;left:12px;right:12px;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:16px;
+  background:rgba(255,255,255,.96);border:1px solid rgba(0,94,184,.16);color:#005EB8;box-shadow:0 8px 24px rgba(0,94,184,.10);z-index:4;font-weight:800;
+  max-width:none;
 }
-.side-label.left{left:16px}.side-label.right{right:16px}
-.side-name{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:32px;padding:0 8px;border-radius:12px;background:#EAF4FF;color:#005EB8;font-size:12px;font-weight:900}
-.label-select{height:34px;border-radius:12px;padding:0 34px 0 12px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;font-size:12px;min-width:0;width:210px;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dual-label{justify-content:flex-start}
+.dual-label .label-select{flex:1 1 auto;min-width:0}
+.dual-label .info-btn{margin-left:auto;flex:0 0 auto}
+.side-name{display:none}
+.label-select{height:34px;border-radius:12px;padding:0 14px;background:linear-gradient(180deg,#0E73D8,#005EB8);border:1px solid rgba(255,255,255,.75);color:#fff;font-weight:800;font-size:12px;min-width:0;flex:1 1 auto;width:auto;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.blue-tag{display:none;align-items:center;justify-content:center;height:22px;padding:0 10px;border-radius:10px;background:#EAF1FF;border:1px solid #D6E4FF;color:#6A85E8;font-size:10px;font-weight:900;line-height:1;white-space:nowrap;flex:0 0 auto;letter-spacing:-0.01em}
+.blue-tag.show{display:inline-flex}
 .info-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,94,184,.18);background:#fff;color:#005EB8;font-weight:950;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,94,184,.08);flex:0 0 32px}
 .info-btn:hover{background:#F1F7FF}
 .video-label{position:absolute;bottom:14px;padding:7px 12px;border-radius:999px;background:rgba(10,22,41,.48);backdrop-filter:blur(8px);font-size:12px;font-weight:800;z-index:4;color:#fff;border:1px solid rgba(255,255,255,.12)}
@@ -257,7 +324,35 @@ select option{
 .footer-note{font-size:12px;color:#5D7799;text-align:center;padding-top:2px;line-height:1.45}
 .product-pop{position:absolute;top:76px;z-index:8;width:min(360px,39%);max-height:calc(100% - 96px);overflow:auto;display:none;background:#fff;color:#12203A;border-radius:22px;box-shadow:0 20px 46px rgba(0,0,0,.24);border:1px solid #D7E6F8}
 .product-pop.open{display:block}.product-pop.left-pop{left:18px}.product-pop.right-pop{right:18px}
-.pop-close{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;border:0;background:#F2F6FB;color:#203047;font-size:24px;cursor:pointer}
+
+/* dual mode: move sections 1,2,3 above the video area to maximize stage size */
+.shell.dual-layout{grid-template-columns:1fr;gap:18px}
+.shell.dual-layout .sidebar{position:static;top:auto;height:auto;display:grid;grid-template-columns:minmax(220px,300px) minmax(220px,1.05fr) minmax(320px,1.35fr) minmax(220px,1fr);gap:14px;align-items:stretch;padding:14px}
+.shell.dual-layout .sidebar > *{min-width:0}
+.shell.dual-layout .hero{min-height:138px;height:100%;padding:16px 18px}
+.shell.dual-layout .hero-text{max-width:calc(100% - 120px)}
+.shell.dual-layout .hero h1{font-size:28px}
+.shell.dual-layout .hero-pack{width:108px;height:56px;flex-basis:108px}
+.shell.dual-layout .section{height:100%;padding:16px 18px;border-radius:22px}
+.shell.dual-layout .section-head{margin-bottom:10px}
+.shell.dual-layout .section-title{font-size:16px}
+.shell.dual-layout .section-sub{font-size:11px;line-height:1.35}
+.shell.dual-layout .section-num{width:22px;height:22px;font-size:11px}
+.shell.dual-layout .grid-chip{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.shell.dual-layout .chip{min-height:44px;font-size:14px;padding:0 12px}
+.shell.dual-layout .scene-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.shell.dual-layout .scene-chip{min-height:44px;padding:0 10px;border-radius:18px}
+.shell.dual-layout .scene-chip strong{font-size:13px}
+.shell.dual-layout .field + .field{margin-top:10px}
+.shell.dual-layout .field label{font-size:12px}
+.shell.dual-layout .viewer{min-width:0}
+.shell.dual-layout .stage{gap:6px}
+.shell.dual-layout .video-card{min-height:clamp(420px,34vw,620px)}
+.shell.dual-layout .split-stage{min-height:clamp(420px,34vw,620px)}
+
+@media (max-width:1180px){
+  .shell.dual-layout .sidebar{grid-template-columns:1fr 1fr;gap:12px}
+}
 .pop-head{padding:20px 18px 12px;border-bottom:1px solid #E6EEF7;background:linear-gradient(180deg,#F9FBFF,#F1F7FF)}
 .pop-kicker{display:inline-block;margin-bottom:8px;padding:6px 10px;border-radius:999px;background:#EAF4FF;color:#005EB8;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .pop-title{margin:0 40px 0 0;font-size:18px;line-height:1.3;font-weight:900;color:#15294D}
@@ -265,8 +360,8 @@ select option{
 .pop-pack{width:100%;height:168px;object-fit:contain;object-position:center center;border-radius:16px;background:#fff;border:1px solid #DCE6F5;margin-bottom:14px;padding:4px;display:block}
 .pop-section{border-top:1px solid #E6EEF7;padding-top:12px;margin-top:12px}.pop-section:first-of-type{border-top:0;margin-top:0;padding-top:0}
 .pop-section h4{margin:0 0 8px;font-size:14px;color:#173866}.pop-overview{margin:0;color:#3F536D;font-size:13px;line-height:1.55}.pop-features{margin:0;padding-left:18px;color:#3F536D;font-size:13px;line-height:1.55}.pop-note{margin:10px 0 0;font-size:11px;line-height:1.5;color:#8A97A8;border-top:1px solid #EEF3F8;padding-top:10px}
-@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.side-label{max-width:calc(50% - 16px)}.label-select{width:190px;max-width:190px;font-size:11px}}
-@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px;max-width:calc(50% - 12px)}.side-name{min-width:34px;height:28px;font-size:11px}.label-select{height:30px;width:150px;max-width:150px;font-size:10px;padding:0 28px 0 8px}.info-btn{width:28px;height:28px;font-size:13px}}
+@media (max-width:1280px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero{padding:14px 18px;min-height:92px}.hero-text{max-width:calc(100% - 146px)}.hero h1{font-size:27px}.hero-pack{width:126px;height:64px;flex-basis:126px;margin-right:4px}.label-select{font-size:11px}.blue-tag{font-size:9px;padding:0 8px}.video-card{min-height:360px}.shell.dual-layout .sidebar{grid-template-columns:1fr 1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:360px}}
+@media (max-width:760px){.app{padding:12px}.hero{padding:12px 14px;min-height:86px;gap:10px}.hero-text{max-width:calc(100% - 104px);gap:8px}.hero-kicker{padding:7px 12px;font-size:10px}.hero h1{font-size:24px}.hero-pack{width:92px;height:48px;flex-basis:92px;margin-right:0}.scene-grid{gap:6px}.scene-chip{padding:8px 8px;min-height:36px}.scene-chip strong{font-size:12px}.side-label{top:10px;padding:6px 8px;gap:5px}.label-select{height:30px;font-size:10px;padding:0 10px}.blue-tag{height:18px;padding:0 6px;font-size:8px}.select-inline-tag{right:38px;height:18px;padding:0 6px;font-size:8px}.select-shell.has-tag select{padding-right:112px}.info-btn{width:28px;height:28px;font-size:13px}.stage{grid-template-columns:1fr;gap:8px}.video-card{min-height:240px}.shell.dual-layout .sidebar{grid-template-columns:1fr}.shell.dual-layout .video-card,.shell.dual-layout .split-stage{min-height:240px}}
 </style>
 </head>
 <body>
@@ -306,13 +401,14 @@ select option{
         </div>
         <div class="select-wrap">
           <div class="field">
-            <label for="leftProduct">좌측 화면 제품</label>
-            <div class="select-shell"><select id="leftProduct"></select></div>
+            <div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div>
+            <div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div>
           </div>
           <div class="field">
-            <label for="rightProduct">우측 화면 제품</label>
-            <div class="select-shell"><select id="rightProduct"></select></div>
+            <div class="field-head"><label for="rightProduct">우측 화면 제품</label></div>
+            <div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div>
           </div>
+
         </div>
       </div>
 
@@ -348,6 +444,10 @@ select option{
           </div>
         </div>
         <div class="toolbar-right">
+          <div class="view-toggle" id="viewToggle">
+            <button type="button" id="dualViewBtn" class="active">이중</button>
+            <button type="button" id="splitViewBtn">분할</button>
+          </div>
           <button class="ghost-btn" id="resetBtn">초기화</button>
         </div>
       </div>
@@ -359,46 +459,66 @@ select option{
 
       <div class="stage-wrap">
         <div class="stage" id="stage">
-          <div class="compare-pane" id="leftPane"><video id="leftVideo" autoplay muted loop playsinline preload="auto"></video></div>
-          <div class="compare-pane" id="rightPane"><video id="rightVideo" autoplay muted loop playsinline preload="auto"></video></div>
-
-          <div class="side-label left">
-            <span class="side-name">좌측</span>
-            <select class="label-select" id="leftInline"></select>
-            <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
-          </div>
-          <div class="side-label right">
-            <span class="side-name">우측</span>
-            <select class="label-select" id="rightInline"></select>
-            <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
-          </div>
-
-          <div class="video-label left" id="leftVideoLabel"></div>
-          <div class="video-label right" id="rightVideoLabel"></div>
-
-          <button class="play-toggle" id="playToggle" type="button" aria-label="일시중지">❚❚</button>
-
-          <div class="product-pop left-pop" id="leftProductPop">
-            <button class="pop-close" id="leftPopClose" type="button" aria-label="닫기">×</button>
-            <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="leftPopTitle"></h3></div>
-            <div class="pop-body">
-              <img class="pop-pack" id="leftPopPack" alt="좌측 제품 팩샷" />
-              <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="leftPopOverview"></p></div>
-              <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="leftPopFeatures"></ul><p class="pop-note" id="leftPopNote"></p></div>
+          <div class="video-card left-card">
+            <video id="leftVideo" autoplay muted loop playsinline preload="auto"></video>
+            <div class="side-label dual-label">
+              <select class="label-select" id="leftInline"></select>
+              <span class="blue-tag" id="leftBlueTag">블루라이트 차단</span>
+              <button class="info-btn" id="leftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
             </div>
-          </div>
-          <div class="product-pop right-pop" id="rightProductPop">
-            <button class="pop-close" id="rightPopClose" type="button" aria-label="닫기">×</button>
-            <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="rightPopTitle"></h3></div>
-            <div class="pop-body">
-              <img class="pop-pack" id="rightPopPack" alt="우측 제품 팩샷" />
-              <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="rightPopOverview"></p></div>
-              <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="rightPopFeatures"></ul><p class="pop-note" id="rightPopNote"></p></div>
+            <div class="video-label left" id="leftVideoLabel"></div>
+            <div class="product-pop left-pop" id="leftProductPop">
+              <button class="pop-close" id="leftPopClose" type="button" aria-label="닫기">×</button>
+              <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="leftPopTitle"></h3></div>
+              <div class="pop-body">
+                <img class="pop-pack" id="leftPopPack" alt="좌측 제품 팩샷" />
+                <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="leftPopOverview"></p></div>
+                <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="leftPopFeatures"></ul><p class="pop-note" id="leftPopNote"></p></div>
+              </div>
             </div>
           </div>
 
-          <div class="divider"></div>
-          <div class="handle" id="handle">‹›</div>
+          <div class="video-card right-card">
+            <video id="rightVideo" autoplay muted loop playsinline preload="auto"></video>
+            <div class="side-label dual-label">
+              <select class="label-select" id="rightInline"></select>
+              <span class="blue-tag" id="rightBlueTag">블루라이트 차단</span>
+              <button class="info-btn" id="rightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
+            </div>
+            <div class="video-label right" id="rightVideoLabel"></div>
+            <button class="play-toggle" id="playToggle" type="button" aria-label="일시중지">❚❚</button>
+            <div class="product-pop right-pop" id="rightProductPop">
+              <button class="pop-close" id="rightPopClose" type="button" aria-label="닫기">×</button>
+              <div class="pop-head"><span class="pop-kicker">Product Info</span><h3 class="pop-title" id="rightPopTitle"></h3></div>
+              <div class="pop-body">
+                <img class="pop-pack" id="rightPopPack" alt="우측 제품 팩샷" />
+                <div class="pop-section"><h4>개요</h4><p class="pop-overview" id="rightPopOverview"></p></div>
+                <div class="pop-section"><h4>주요 특징</h4><ul class="pop-features" id="rightPopFeatures"></ul><p class="pop-note" id="rightPopNote"></p></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="split-stage" id="splitStage">
+            <div class="compare-pane" id="splitLeftPane"><video id="splitLeftVideo" autoplay muted loop playsinline preload="auto"></video></div>
+            <div class="compare-pane" id="splitRightPane"><video id="splitRightVideo" autoplay muted loop playsinline preload="auto"></video></div>
+
+            <div class="side-label left">
+              <select class="label-select" id="splitLeftInline"></select>
+              <span class="blue-tag" id="splitLeftBlueTag">블루라이트 차단</span>
+              <button class="info-btn" id="splitLeftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
+            </div>
+            <div class="side-label right">
+              <select class="label-select" id="splitRightInline"></select>
+              <span class="blue-tag" id="splitRightBlueTag">블루라이트 차단</span>
+              <button class="info-btn" id="splitRightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
+            </div>
+
+            <div class="video-label left" id="splitLeftVideoLabel"></div>
+            <div class="video-label right" id="splitRightVideoLabel"></div>
+            <button class="play-toggle" id="splitPlayToggle" type="button" aria-label="일시중지">❚❚</button>
+            <div class="divider"></div>
+            <div class="handle" id="handle">‹›</div>
+          </div>
         </div>
       </div>
       <div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션 영상입니다. 실제 시야와 차이가 있을 수 있습니다.</div>
@@ -541,8 +661,8 @@ const PRODUCT_INFO={
     overview:'디지털 라이프와 현대인의 눈 건강. 그 어느 때보다 디지털 기기를 사용하는 시간이 길어지면서 눈 깜빡임이 줄어 눈이 불편하고 시야가 흐릿해질 수 있습니다. 블루라이트는 디지털 화면, LED 조명, 특히 태양 등 어디에나 존재하며 눈에 더 많이 빛번짐이 일어나 시각적 선명도에 영향을 줄 수 있습니다. 오아시스 MAX 원데이는 오늘날의 디지털 중심 환경에 맞도록 혁신적인 기술을 사용하여 설계된 제품입니다.',
     features:[
       'MAX의 편안함, MAX의 선명함*, MAX의 퍼포먼스',
-      '옵티블루™ 기술 (OptiBlue™) - 높은 레벨의 블루라이트 차단±',
-      '옵티블루™ 기술 (OptiBlue™)로 블루라이트의 약 55% 차단',
+      '옵티블루™ 기술 (블루라이트 차단) - 높은 레벨의 블루라이트 차단±',
+      '옵티블루™ 기술 (블루라이트 차단)로 블루라이트의 약 55% 차단',
       '눈물 안정화™ 기술(Tearstable™) - 하루 종일 편안하게',
       '수분 증발을 막고 눈 속 눈물층을 오랫 동안 유지',
       '자외선 차단 1등급 - UVA 90%, UVB 99% 이상 차단#',
@@ -574,7 +694,7 @@ const PRODUCT_INFO={
     features:[
       'MAX*의 편안함, MAX*의 선명함, MAX*의 보호력',
       '3가지 기술력의 조화',
-      '옵티블루™ 기술 (OptiBlue™)',
+      '옵티블루™ 기술 (블루라이트 차단)',
       '눈물안정화 기술 (Tearstable™)',
       'ASD 기술',
       '디지털 환경이 일상인 현대인의 라이프스타일에서도 편안하고, 선명하며 안정적인 시야를 제공합니다.'
@@ -606,8 +726,8 @@ const PRODUCT_INFO={
       '다양한 거리, 낮에도 밤에도 / 하루 말미까지 촉촉한 편안함',
       '183개 동공 크기별 디자인 (Pupil Optimized Design)',
       '나이에 따라 달라지는 동공 사이즈. 183가지 동공크기별 디자인으로 더욱 선명한 시력 제공',
-      '옵티블루™ 기술 (OptiBlue™) - 높은 레벨의 블루라이트 차단±',
-      '옵티블루™ 기술 (OptiBlue™)로 블루라이트의 약 55% 차단',
+      '옵티블루™ 기술 (블루라이트 차단) - 높은 레벨의 블루라이트 차단±',
+      '옵티블루™ 기술 (블루라이트 차단)로 블루라이트의 약 55% 차단',
       '자외선 차단 1등급 - UVA 90%, UVB 99% 이상 차단#',
       '1박스 약 1개월 (30렌즈) / 3개월 (90렌즈) 분량'
     ],
@@ -622,26 +742,33 @@ const PRODUCT_INFO={
       '낮에도 밤에도 선명한 시야와 하루 말미까지 촉촉한 편안함',
       '편안하고, 선명하며 안정적인 시야',
       '183개 동공 크기별 디자인 (Pupil Optimized Design)',
-      '옵티블루™ 기술 (OptiBlue™)',
+      '옵티블루™ 기술 (블루라이트 차단)',
       '눈물안정화 기술 (Tearstable™)',
       'ASD 기술'
     ],
     approval:'국내 공식 제품 페이지에서 개별 의료기기심의필 번호 미확인'
   }
 };
-const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50,outcome:'high'};
+const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50,outcome:'high',view:'dual'};
 const OUTCOME_SHARPNESS={high:1.0, medium:0.95, low:0.90};
 const dom={
   conditionGrid:document.getElementById('conditionGrid'),
   sceneGrid:document.getElementById('sceneGrid'),
   leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),
   leftInline:document.getElementById('leftInline'),rightInline:document.getElementById('rightInline'),
+  leftBlueTag:document.getElementById('leftBlueTag'),rightBlueTag:document.getElementById('rightBlueTag'),
   sceneSelect:document.getElementById('sceneSelect'),
   conditionBadge:document.getElementById('conditionBadge'),sceneBadge:document.getElementById('sceneBadge'),
   resetBtn:document.getElementById('resetBtn'),stage:document.getElementById('stage'),handle:document.getElementById('handle'),
   leftVideo:document.getElementById('leftVideo'),rightVideo:document.getElementById('rightVideo'),
-  leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel'),playToggle:document.getElementById('playToggle'),
-  leftInfoBtn:document.getElementById('leftInfoBtn'),rightInfoBtn:document.getElementById('rightInfoBtn'),
+  splitLeftVideo:document.getElementById('splitLeftVideo'),splitRightVideo:document.getElementById('splitRightVideo'),
+  leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel'),
+  splitLeftVideoLabel:document.getElementById('splitLeftVideoLabel'),splitRightVideoLabel:document.getElementById('splitRightVideoLabel'),
+  playToggle:document.getElementById('playToggle'),splitPlayToggle:document.getElementById('splitPlayToggle'),
+  dualViewBtn:document.getElementById('dualViewBtn'),splitViewBtn:document.getElementById('splitViewBtn'),
+  splitLeftInline:document.getElementById('splitLeftInline'),splitRightInline:document.getElementById('splitRightInline'),
+  splitLeftBlueTag:document.getElementById('splitLeftBlueTag'),splitRightBlueTag:document.getElementById('splitRightBlueTag'),
+  leftInfoBtn:document.getElementById('leftInfoBtn'),rightInfoBtn:document.getElementById('rightInfoBtn'),splitLeftInfoBtn:document.getElementById('splitLeftInfoBtn'),splitRightInfoBtn:document.getElementById('splitRightInfoBtn'),
   leftProductPop:document.getElementById('leftProductPop'),rightProductPop:document.getElementById('rightProductPop'),
   leftPopClose:document.getElementById('leftPopClose'),rightPopClose:document.getElementById('rightPopClose'),
   leftPopTitle:document.getElementById('leftPopTitle'),rightPopTitle:document.getElementById('rightPopTitle'),
@@ -649,6 +776,8 @@ const dom={
   leftPopOverview:document.getElementById('leftPopOverview'),rightPopOverview:document.getElementById('rightPopOverview'),
   leftPopFeatures:document.getElementById('leftPopFeatures'),rightPopFeatures:document.getElementById('rightPopFeatures'),
   leftPopNote:document.getElementById('leftPopNote'),rightPopNote:document.getElementById('rightPopNote'),
+  leftProductShell:document.getElementById('leftProductShell'),rightProductShell:document.getElementById('rightProductShell'),
+  leftProductTag:document.getElementById('leftProductTag'),rightProductTag:document.getElementById('rightProductTag'),
   outcomeInfoBtn:document.getElementById('outcomeInfoBtn'),outcomePop:document.getElementById('outcomePop')
 };
 function flags(){return{myohyperopia:state.selected.includes('myohyperopia'),astigmatism:state.selected.includes('astigmatism'),presbyopia:state.selected.includes('presbyopia')}}
@@ -664,6 +793,31 @@ function productOptions(){
 }
 function compactProductNameForOverlay(name){
   return String(name||'').replace(/<sup[^>]*>.*?<\/sup>/gi,'®').replace(/\s+/g,' ').trim();
+}
+function isMaxProduct(productId){
+  return String(productId||'').toLowerCase().startsWith('max');
+}
+function updateBlueLightTags(){
+  const mapping = [
+    [dom.leftBlueTag, state.leftProduct],
+    [dom.rightBlueTag, state.rightProduct],
+    [dom.splitLeftBlueTag, state.leftProduct],
+    [dom.splitRightBlueTag, state.rightProduct]
+  ];
+  mapping.forEach(([el, productId])=>{
+    if(!el) return;
+    el.classList.toggle('show', isMaxProduct(productId));
+  });
+
+  const selectTags = [
+    [dom.leftProductShell, dom.leftProductTag, state.leftProduct],
+    [dom.rightProductShell, dom.rightProductTag, state.rightProduct]
+  ];
+  selectTags.forEach(([shell, tag, productId])=>{
+    const show = isMaxProduct(productId);
+    if(shell) shell.classList.toggle('has-tag', show);
+    if(tag) tag.style.display = show ? 'inline-flex' : 'none';
+  });
 }
 function groupedProductOptions(){
   const opts=productOptions();
@@ -764,61 +918,91 @@ function selectHTML(value){
 function fillSelect(sel,value){ sel.innerHTML=selectHTML(value); sel.value=value; }
 function renderProducts(){
   keepProductsValid();
-  fillSelect(dom.leftProduct,state.leftProduct); fillSelect(dom.rightProduct,state.rightProduct);
-  fillSelect(dom.leftInline,state.leftProduct); fillSelect(dom.rightInline,state.rightProduct);
-  const bind=(a,b,key)=>{
-    const fn=e=>{state[key]=e.target.value; a.value=state[key]; b.value=state[key]; updateInlineLabelText(); updateVideos(); updateBadges(); if(key==='leftProduct'&&dom.leftProductPop.classList.contains('open'))fillProductPop('left',state.leftProduct); if(key==='rightProduct'&&dom.rightProductPop.classList.contains('open'))fillProductPop('right',state.rightProduct);};
-    a.onchange=fn; b.onchange=fn;
+  fillSelect(dom.leftProduct,state.leftProduct); 
+  fillSelect(dom.rightProduct,state.rightProduct);
+  fillSelect(dom.leftInline,state.leftProduct); 
+  fillSelect(dom.rightInline,state.rightProduct);
+  fillSelect(dom.splitLeftInline,state.leftProduct); 
+  fillSelect(dom.splitRightInline,state.rightProduct);
+  updateBlueLightTags();
+
+  const bind=(controls,key)=>{
+    const fn=e=>{
+      state[key]=e.target.value;
+      controls.forEach(el=>{ if(el) el.value=state[key]; });
+      updateInlineLabelText();
+      updateBlueLightTags();
+      updateVideos();
+      updateBadges();
+      if(key==='leftProduct'&&dom.leftProductPop.classList.contains('open')) fillProductPop('left',state.leftProduct);
+      if(key==='rightProduct'&&dom.rightProductPop.classList.contains('open')) fillProductPop('right',state.rightProduct);
+    };
+    controls.forEach(el=>{ if(el) el.onchange=fn; });
   };
-  bind(dom.leftProduct,dom.leftInline,'leftProduct');
-  bind(dom.rightProduct,dom.rightInline,'rightProduct');
+  bind([dom.leftProduct, dom.leftInline, dom.splitLeftInline], 'leftProduct');
+  bind([dom.rightProduct, dom.rightInline, dom.splitRightInline], 'rightProduct');
 }
 function applyVideoAdjust(video,code){video.style.setProperty('--video-x','0px');video.style.setProperty('--video-y','0px');video.style.setProperty('--video-scale','1')}
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
+function allVideoEls(){
+  return [dom.leftVideo,dom.rightVideo,dom.splitLeftVideo,dom.splitRightVideo].filter(Boolean);
+}
 function updatePlayButton(){
-  const paused = dom.leftVideo.paused || dom.rightVideo.paused;
-  dom.playToggle.textContent = paused ? '▶' : '❚❚';
-  dom.playToggle.setAttribute('aria-label', paused ? '재생' : '일시중지');
+  const paused = allVideoEls().some(v=>v.paused);
+  [dom.playToggle, dom.splitPlayToggle].forEach(btn=>{
+    if(!btn) return;
+    btn.textContent = paused ? '▶' : '❚❚';
+    btn.setAttribute('aria-label', paused ? '재생' : '일시중지');
+  });
 }
 function pauseBothVideos(){
-  try{dom.leftVideo.pause();}catch(e){}
-  try{dom.rightVideo.pause();}catch(e){}
+  allVideoEls().forEach(v=>{try{v.pause();}catch(e){}});
   updatePlayButton();
 }
 function playBothVideos(){
-  safePlay(dom.leftVideo);
-  safePlay(dom.rightVideo);
+  allVideoEls().forEach(v=>safePlay(v));
   updatePlayButton();
 }
 function prepareVideo(video,src){if(video.dataset.src===src) return; video.dataset.src=src; video.src=src; video.muted=true; video.loop=true; video.playsInline=true; video.setAttribute('muted',''); video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline',''); try{video.load();}catch(e){} safePlay(video)}
 let restartToken=0;
 function restartBothVideos(){
-  const token=++restartToken; const left=dom.leftVideo, right=dom.rightVideo;
-  const forceZero=()=>{try{left.pause()}catch(e){} try{right.pause()}catch(e){} try{left.currentTime=0}catch(e){} try{right.currentTime=0}catch(e){}};
-  const playBoth=()=>{if(token!==restartToken) return; forceZero(); requestAnimationFrame(()=>{if(token!==restartToken) return; try{left.currentTime=0; right.currentTime=0}catch(e){} safePlay(left); safePlay(right); setTimeout(()=>{if(token!==restartToken) return; try{left.currentTime=0; right.currentTime=0}catch(e){} safePlay(left); safePlay(right)},120)});
-  };
+  const token=++restartToken;
+  const videos=allVideoEls();
+  const forceZero=()=>{videos.forEach(v=>{try{v.pause()}catch(e){} try{v.currentTime=0}catch(e){}})};
+  const playAll=()=>{if(token!==restartToken) return; forceZero(); requestAnimationFrame(()=>{if(token!==restartToken) return; videos.forEach(v=>{try{v.currentTime=0}catch(e){} safePlay(v)}); setTimeout(()=>{if(token!==restartToken) return; videos.forEach(v=>{try{v.currentTime=0}catch(e){} safePlay(v)});},120)});};
   forceZero();
-  if(left.readyState>=1 && right.readyState>=1) playBoth();
+  if(videos.every(v=>v.readyState>=1)) playAll();
   else {
-    const tryPlay=()=>{if(left.readyState>=1 && right.readyState>=1) playBoth()};
-    left.addEventListener('loadedmetadata',tryPlay,{once:true}); right.addEventListener('loadedmetadata',tryPlay,{once:true});
-    left.addEventListener('canplay',tryPlay,{once:true}); right.addEventListener('canplay',tryPlay,{once:true});
-    setTimeout(playBoth,400);
+    const tryPlay=()=>{if(videos.every(v=>v.readyState>=1)) playAll()};
+    videos.forEach(v=>{v.addEventListener('loadedmetadata',tryPlay,{once:true}); v.addEventListener('canplay',tryPlay,{once:true});});
+    setTimeout(playAll,400);
   }
 }
-function syncVideoTiming(){try{if(dom.leftVideo.readyState>=2 && dom.rightVideo.readyState>=2){const diff=Math.abs(dom.leftVideo.currentTime-dom.rightVideo.currentTime); if(diff>0.06){const t=Math.min(dom.leftVideo.currentTime,dom.rightVideo.currentTime); dom.leftVideo.currentTime=t; dom.rightVideo.currentTime=t;}}}catch(e){}}
+function syncVideoTiming(){
+  try{
+    const pairs=[[dom.leftVideo,dom.rightVideo],[dom.splitLeftVideo,dom.splitRightVideo]];
+    pairs.forEach(([a,b])=>{
+      if(a && b && a.readyState>=2 && b.readyState>=2){
+        const diff=Math.abs(a.currentTime-b.currentTime);
+        if(diff>0.06){
+          const t=Math.min(a.currentTime,b.currentTime);
+          a.currentTime=t; b.currentTime=t;
+        }
+      }
+    });
+  }catch(e){}
+}
 function updateVideos(){
   const leftCode=videoCode(state.leftProduct), rightCode=videoCode(state.rightProduct);
   const leftSrc=videoSrc(state.leftProduct), rightSrc=videoSrc(state.rightProduct);
-  applyVideoAdjust(dom.leftVideo,leftCode); 
-  applyVideoAdjust(dom.rightVideo,rightCode);
-  applyOutcomeSharpness(dom.leftVideo);
-  applyOutcomeSharpness(dom.rightVideo);
-  prepareVideo(dom.leftVideo,leftSrc); 
-  prepareVideo(dom.rightVideo,rightSrc);
-  dom.leftVideoLabel.textContent=`좌측 ${leftCode}.mp4`; 
+  [dom.leftVideo,dom.splitLeftVideo].forEach(v=>{applyVideoAdjust(v,leftCode); applyOutcomeSharpness(v); prepareVideo(v,leftSrc);});
+  [dom.rightVideo,dom.splitRightVideo].forEach(v=>{applyVideoAdjust(v,rightCode); applyOutcomeSharpness(v); prepareVideo(v,rightSrc);});
+  dom.leftVideoLabel.textContent=`좌측 ${leftCode}.mp4`;
   dom.rightVideoLabel.textContent=`우측 ${rightCode}.mp4`;
+  dom.splitLeftVideoLabel.textContent=`좌측 ${leftCode}.mp4`;
+  dom.splitRightVideoLabel.textContent=`우측 ${rightCode}.mp4`;
   restartBothVideos();
+  updateViewMode();
   updatePlayButton();
 }
 
@@ -928,7 +1112,8 @@ function fillProductPop(side,productId){
 function toggleProductPop(side){ if(side==='left'){fillProductPop('left',state.leftProduct); dom.leftProductPop.classList.toggle('open');} else {fillProductPop('right',state.rightProduct); dom.rightProductPop.classList.toggle('open');}}
 function closeProductPop(side){ if(side==='left') dom.leftProductPop.classList.remove('open'); if(side==='right') dom.rightProductPop.classList.remove('open'); }
 function updateInlineLabelText(){
-  [dom.leftInline, dom.rightInline].forEach(sel=>{
+  [dom.leftInline, dom.rightInline, dom.splitLeftInline, dom.splitRightInline].forEach(sel=>{
+    if(!sel) return;
     const options = [...sel.options];
     options.forEach(opt=>{
       const product = productById(opt.value);
@@ -957,35 +1142,90 @@ function toggleOutcomePop(){
   pop.style.top = `${top}px`;
 }
 
+function updateViewMode(){
+  if(!dom.stage) return;
+  const splitStage = document.getElementById('splitStage');
+  const cards = dom.stage.querySelectorAll('.video-card');
+  const isSplit = state.view === 'split';
+  const shell = document.querySelector('.shell');
+  const useDualTopLayout = !isSplit;
+
+  dom.stage.classList.toggle('split-mode', isSplit);
+  cards.forEach(card => { card.style.display = isSplit ? 'none' : ''; });
+  if(splitStage){ splitStage.style.display = isSplit ? 'block' : 'none'; splitStage.style.setProperty('--split', state.split + '%'); }
+  if(shell) shell.classList.toggle('dual-layout', useDualTopLayout);
+
+  if(dom.dualViewBtn) dom.dualViewBtn.classList.toggle('active', !isSplit);
+  if(dom.splitViewBtn) dom.splitViewBtn.classList.toggle('active', isSplit);
+}
 function updateBadges(){
   const conditionText=conditions.filter(c=>state.selected.includes(c.id)).map(c=>c.label).join(' + ');
   dom.conditionBadge.innerHTML=`<span class="badge-accent"></span>상태 : ${conditionText}`;
   dom.sceneBadge.innerHTML=`<span class="badge-accent"></span>환경 : ${scenes[state.scene].label}`;
 }
-function renderAll(){ renderConditions(); renderSceneGrid(); renderProducts(); bindOutcomeControls(); updateInlineLabelText(); updateVideos(); updateBadges(); }
-function setSplit(percent){state.split=Math.max(15,Math.min(85,percent)); dom.stage.style.setProperty('--split',state.split+'%')}
+function renderAll(){ renderConditions(); renderSceneGrid(); renderProducts(); bindOutcomeControls(); updateInlineLabelText(); updateVideos(); updateBadges(); updateViewMode(); }
+function setSplit(percent){
+  state.split=Math.max(15,Math.min(85,percent));
+  if(dom.stage) dom.stage.style.setProperty('--split',state.split+'%');
+  const splitStage = document.getElementById('splitStage');
+  if(splitStage) splitStage.style.setProperty('--split',state.split+'%');
+}
 setSplit(50);
 let dragging=false;
-function moveSplit(clientX){const rect=dom.stage.getBoundingClientRect(); setSplit(((clientX-rect.left)/rect.width)*100)}
-dom.handle.addEventListener('pointerdown',e=>{dragging=true; dom.handle.setPointerCapture(e.pointerId)});
-dom.handle.addEventListener('pointermove',e=>{if(dragging) moveSplit(e.clientX)});
-dom.handle.addEventListener('pointerup',()=>dragging=false);
-dom.stage.addEventListener('pointerdown',e=>{if(e.target===dom.stage||e.target.classList.contains('divider')) moveSplit(e.clientX)});
+function activeSplitSurface(){
+  return document.getElementById('splitStage') || dom.stage;
+}
+function moveSplit(clientX){
+  const surface = activeSplitSurface();
+  if(!surface) return;
+  const rect=surface.getBoundingClientRect();
+  setSplit(((clientX-rect.left)/rect.width)*100);
+}
+if(dom.handle){
+  dom.handle.addEventListener('pointerdown',e=>{
+    dragging=true;
+    try{ dom.handle.setPointerCapture(e.pointerId); }catch(err){}
+    e.preventDefault();
+  });
+  dom.handle.addEventListener('pointermove',e=>{
+    if(dragging) moveSplit(e.clientX);
+  });
+  dom.handle.addEventListener('pointerup',()=>{dragging=false;});
+  dom.handle.addEventListener('pointercancel',()=>{dragging=false;});
+  document.addEventListener('pointermove',e=>{
+    if(dragging) moveSplit(e.clientX);
+  });
+  document.addEventListener('pointerup',()=>{dragging=false;});
+}
+const splitStageEl = document.getElementById('splitStage');
+if(splitStageEl){
+  splitStageEl.addEventListener('pointerdown',e=>{
+    if(e.target===splitStageEl || e.target.classList.contains('divider')) moveSplit(e.clientX);
+  });
+}
 dom.sceneSelect.onchange=e=>{state.scene=e.target.value; renderSceneGrid(); updateVideos(); updateBadges();};
-dom.resetBtn.onclick=()=>{state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; setSplit(50); renderAll();};
+dom.resetBtn.onclick=()=>{state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; state.view='dual'; setSplit(50); renderAll();};
+dom.dualViewBtn.onclick=()=>{state.view='dual'; updateViewMode(); updateVideos();};
+dom.splitViewBtn.onclick=()=>{state.view='split'; updateViewMode(); updateVideos();};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){playBothVideos();}});
+window.addEventListener('resize',()=>updateViewMode());
 document.addEventListener('click',()=>{playBothVideos();},{once:true});
 document.addEventListener('touchstart',()=>{playBothVideos();},{once:true,passive:true});
-dom.leftVideo.addEventListener('canplay',()=>updatePlayButton()); dom.rightVideo.addEventListener('canplay',()=>updatePlayButton());
-dom.leftVideo.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoCode(state.leftProduct)}.mp4 파일 확인 필요`;});
-dom.rightVideo.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoCode(state.rightProduct)}.mp4 파일 확인 필요`;});
+[dom.leftVideo,dom.rightVideo,dom.splitLeftVideo,dom.splitRightVideo].forEach(v=>v && v.addEventListener('canplay',()=>updatePlayButton()));
+[dom.leftVideo,dom.splitLeftVideo].forEach(v=>v && v.addEventListener('error',()=>{dom.leftVideoLabel.textContent=`좌측 ${videoCode(state.leftProduct)}.mp4 파일 확인 필요`; dom.splitLeftVideoLabel.textContent=`좌측 ${videoCode(state.leftProduct)}.mp4 파일 확인 필요`;}));
+[dom.rightVideo,dom.splitRightVideo].forEach(v=>v && v.addEventListener('error',()=>{dom.rightVideoLabel.textContent=`우측 ${videoCode(state.rightProduct)}.mp4 파일 확인 필요`; dom.splitRightVideoLabel.textContent=`우측 ${videoCode(state.rightProduct)}.mp4 파일 확인 필요`;}));
 setInterval(syncVideoTiming,250);
-dom.leftInfoBtn.onclick=()=>toggleProductPop('left'); dom.rightInfoBtn.onclick=()=>toggleProductPop('right'); dom.leftPopClose.onclick=()=>closeProductPop('left'); dom.rightPopClose.onclick=()=>closeProductPop('right');
+dom.leftInfoBtn.onclick=()=>toggleProductPop('left'); dom.rightInfoBtn.onclick=()=>toggleProductPop('right');
+dom.splitLeftInfoBtn && (dom.splitLeftInfoBtn.onclick=()=>toggleProductPop('left'));
+dom.splitRightInfoBtn && (dom.splitRightInfoBtn.onclick=()=>toggleProductPop('right'));
+dom.leftPopClose.onclick=()=>closeProductPop('left'); dom.rightPopClose.onclick=()=>closeProductPop('right');
 dom.outcomeInfoBtn.onclick=(e)=>{e.stopPropagation(); toggleOutcomePop();};
 document.addEventListener('click',e=>{ if(dom.outcomePop.classList.contains('open') && !dom.outcomePop.contains(e.target) && e.target !== dom.outcomeInfoBtn){ dom.outcomePop.classList.remove('open'); }});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left'); closeProductPop('right'); dom.outcomePop.classList.remove('open');}});
-dom.playToggle.onclick=()=>{ if(dom.leftVideo.paused || dom.rightVideo.paused) playBothVideos(); else pauseBothVideos(); };
+dom.playToggle.onclick=()=>{ if(allVideoEls().some(v=>v.paused)) playBothVideos(); else pauseBothVideos(); };
+dom.splitPlayToggle && (dom.splitPlayToggle.onclick=()=>{ if(allVideoEls().some(v=>v.paused)) playBothVideos(); else pauseBothVideos(); });
 renderAll();
+updateViewMode();
 updatePlayButton();
 </script>
 </body>
