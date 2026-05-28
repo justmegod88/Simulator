@@ -992,6 +992,76 @@ select.product-enhanced-native{display:none!important}
   .hero-subtitle{transform:translate(-5px,-1px) !important;}
 }
 </style>
+
+<style id="scene-guide-pulse-final">
+/* 139: 영상별 소비자 가이드 문구 + 은은한 원형 펄스 */
+.video-card, .split-stage{position:relative;}
+.scene-pulse{
+  position:absolute;
+  left:var(--pulse-x,50%);
+  top:var(--pulse-y,55%);
+  width:var(--pulse-size,128px);
+  height:var(--pulse-size,128px);
+  transform:translate(-50%,-50%);
+  border-radius:999px;
+  z-index:3;
+  pointer-events:none;
+  opacity:.92;
+}
+.scene-pulse::before,
+.scene-pulse::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+  border:2px solid rgba(255,255,255,.55);
+  background:radial-gradient(circle, rgba(255,255,255,.18) 0%, rgba(255,255,255,.06) 42%, rgba(255,255,255,0) 72%);
+  box-shadow:0 0 28px rgba(255,255,255,.18), inset 0 0 18px rgba(255,255,255,.10);
+  animation:softScenePulse 2.8s ease-out infinite;
+}
+.scene-pulse::after{
+  inset:-12px;
+  border-color:rgba(255,255,255,.22);
+  animation-delay:.45s;
+}
+.scene-pulse.right-pulse{
+  left:var(--pulse-x-right,var(--pulse-x,50%));
+  top:var(--pulse-y-right,var(--pulse-y,55%));
+}
+.scene-pulse.left-pulse{
+  left:var(--pulse-x-left,var(--pulse-x,50%));
+  top:var(--pulse-y-left,var(--pulse-y,55%));
+}
+.video-label{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-height:26px;
+  padding:7px 11px !important;
+  font-size:10.5px !important;
+  background:rgba(10,22,41,.62) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+}
+.video-label::before{
+  content:"";
+  width:6px;
+  height:6px;
+  flex:0 0 6px;
+  border-radius:50%;
+  background:rgba(255,255,255,.95);
+  box-shadow:0 0 10px rgba(255,255,255,.55);
+}
+@keyframes softScenePulse{
+  0%{transform:scale(.72);opacity:0;}
+  18%{opacity:.75;}
+  100%{transform:scale(1.28);opacity:0;}
+}
+@media (max-width:760px){
+  .scene-pulse{width:var(--pulse-size-mobile,92px);height:var(--pulse-size-mobile,92px);}
+  .video-label{font-size:9.5px !important;max-width:58% !important;}
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -1091,6 +1161,7 @@ select.product-enhanced-native{display:none!important}
         <div class="stage" id="stage">
           <div class="video-card left-card">
             <video id="leftVideo" autoplay muted loop playsinline preload="auto"></video>
+            <div class="scene-pulse left-pulse" id="leftScenePulse" aria-hidden="true"></div>
             <div class="side-label dual-label">
               <select class="label-select" id="leftInline"></select>
               <span class="blue-tag" id="leftBlueTag">블루라이트 차단</span>
@@ -1111,6 +1182,7 @@ select.product-enhanced-native{display:none!important}
 
           <div class="video-card right-card">
             <video id="rightVideo" autoplay muted loop playsinline preload="auto"></video>
+            <div class="scene-pulse right-pulse" id="rightScenePulse" aria-hidden="true"></div>
             <div class="side-label dual-label">
               <select class="label-select" id="rightInline"></select>
               <span class="blue-tag" id="rightBlueTag">블루라이트 차단</span>
@@ -1131,8 +1203,8 @@ select.product-enhanced-native{display:none!important}
           </div>
 
           <div class="split-stage" id="splitStage">
-            <div class="compare-pane" id="splitLeftPane"><video id="splitLeftVideo" autoplay muted loop playsinline preload="auto"></video></div>
-            <div class="compare-pane" id="splitRightPane"><video id="splitRightVideo" autoplay muted loop playsinline preload="auto"></video></div>
+            <div class="compare-pane" id="splitLeftPane"><video id="splitLeftVideo" autoplay muted loop playsinline preload="auto"></video><div class="scene-pulse left-pulse" id="splitLeftScenePulse" aria-hidden="true"></div></div>
+            <div class="compare-pane" id="splitRightPane"><video id="splitRightVideo" autoplay muted loop playsinline preload="auto"></video><div class="scene-pulse right-pulse" id="splitRightScenePulse" aria-hidden="true"></div></div>
 
             <div class="side-label left">
               <select class="label-select" id="splitLeftInline"></select>
@@ -1260,30 +1332,30 @@ const VIDEO_MATRIX = {
 
 const VIDEO_ADJUST = {};
 const VIDEO_GUIDE_TEXT = {
-  '1-1':'핸드폰 화면을 확인해 보세요',
-  '1-2':'블루라이트 빛번짐 감소',
-  '1-3':'핸드폰 화면을 확인해 보세요',
-  '1-4':'전체적인 시야 및 근거리를 확인해 보세요',
-  '1-5':'전체적인 시야를 비교해 보세요',
-  '1-6':'전체적인 시야를 비교해 보세요',
-  '1-7':'전체적인 시야 및 근거리를 확인해 보세요',
-  '1-8':'전체적인 시야 및 근거리를 확인해 보세요',
-  '2-1':'자동차 라이트를 확인해 보세요',
-  '2-2':'블루라이트 빛번짐 감소',
-  '2-3':'자동차 라이트를 확인해 보세요',
-  '2-4':'전체적인 시야 및 네비게이션을 확인해 보세요',
-  '2-5':'전체적인 시야를 비교해 보세요',
-  '2-6':'전체적인 시야를 비교해 보세요',
-  '2-7':'전체적인 시야 및 네비게이션을 확인해 보세요',
-  '2-8':'전체적인 시야 및 네비게이션을 확인해 보세요',
-  '3-1':'촛불을 확인해 보세요',
-  '3-2':'블루라이트 빛번짐 감소',
-  '3-3':'촛불을 확인해 보세요',
-  '3-4':'전체적인 시야 및 메뉴판을 확인해 보세요',
-  '3-5':'전체적인 시야를 비교해 보세요',
-  '3-6':'전체적인 시야를 비교해 보세요',
-  '3-7':'전체적인 시야 및 메뉴판을 확인해 보세요',
-  '3-8':'전체적인 시야 및 메뉴판을 확인해 보세요'
+  '1-1':'📱 핸드폰 화면과 전체 시야의 선명도를 확인해 보세요',
+  '1-2':'✨ 핸드폰 화면 주변 빛 번짐 감소 효과를 확인해 보세요',
+  '1-3':'🔍 가까운 거리의 초점 흐림을 확인해 보세요',
+  '1-4':'🌫️ 전체 시야와 근거리 흐림 정도를 비교해 보세요',
+  '1-5':'👀 전체적인 시야 선명도를 비교해 보세요',
+  '1-6':'📦 진열대와 과일 경계의 선명도를 비교해 보세요',
+  '1-7':'📱 근거리 화면과 주변 시야를 함께 확인해 보세요',
+  '1-8':'🔎 가까운 거리와 전체 시야 흐림 정도를 확인해 보세요',
+  '2-1':'🚗 자동차 라이트의 선명도를 확인해 보세요',
+  '2-2':'✨ 야간 빛 번짐 감소 효과를 확인해 보세요',
+  '2-3':'🌙 야간 시야의 흐림 정도를 확인해 보세요',
+  '2-4':'🗺️ 네비게이션과 도로 시야를 함께 확인해 보세요',
+  '2-5':'👀 전체적인 야간 시야 선명도를 비교해 보세요',
+  '2-6':'💡 차량 라이트 주변 번짐 정도를 비교해 보세요',
+  '2-7':'🚘 도로 시야와 네비게이션 선명도를 함께 확인해 보세요',
+  '2-8':'🌫️ 야간 주행 시 전체적인 흐림 정도를 확인해 보세요',
+  '3-1':'🕯️ 촛불 주변의 선명도를 확인해 보세요',
+  '3-2':'✨ 조명 주변 빛 번짐 감소 효과를 확인해 보세요',
+  '3-3':'📖 가까운 메뉴판 글씨 흐림 정도를 확인해 보세요',
+  '3-4':'🍽️ 메뉴판과 주변 시야를 함께 확인해 보세요',
+  '3-5':'👀 전체적인 실내 시야 선명도를 비교해 보세요',
+  '3-6':'💡 조명 주변 번짐 정도를 비교해 보세요',
+  '3-7':'📋 메뉴판과 테이블 시야를 함께 확인해 보세요',
+  '3-8':'🌫️ 가까운 거리와 전체 시야 흐림 정도를 확인해 보세요'
 };
 const products=[
   {id:'oasys',name:'아큐브 오아시스 원데이®',group:'sphere'},
@@ -1424,6 +1496,8 @@ const dom={
   splitLeftVideo:document.getElementById('splitLeftVideo'),splitRightVideo:document.getElementById('splitRightVideo'),
   leftVideoLabel:document.getElementById('leftVideoLabel'),rightVideoLabel:document.getElementById('rightVideoLabel'),
   splitLeftVideoLabel:document.getElementById('splitLeftVideoLabel'),splitRightVideoLabel:document.getElementById('splitRightVideoLabel'),
+  leftScenePulse:document.getElementById('leftScenePulse'),rightScenePulse:document.getElementById('rightScenePulse'),
+  splitLeftScenePulse:document.getElementById('splitLeftScenePulse'),splitRightScenePulse:document.getElementById('splitRightScenePulse'),
   playToggle:document.getElementById('playToggle'),splitPlayToggle:document.getElementById('splitPlayToggle'),
   dualViewBtn:document.getElementById('dualViewBtn'),splitViewBtn:document.getElementById('splitViewBtn'),
   splitLeftInline:document.getElementById('splitLeftInline'),splitRightInline:document.getElementById('splitRightInline'),
@@ -1532,7 +1606,44 @@ function videoCode(productId){
   return ({day:'1-1', night:'2-1', dine:'3-1'})[state.scene] || '1-1';
 }
 function videoSrc(productId){return `./${videoCode(productId)}.mp4`}
+
 function guideText(code){return VIDEO_GUIDE_TEXT[code] || `${code}`;}
+
+const VIDEO_PULSE_POINT = {
+  '1-1':{x:50,y:70,size:132},
+  '1-2':{x:50,y:70,size:132},
+  '1-3':{x:53,y:68,size:132},
+  '1-4':{x:54,y:64,size:150},
+  '1-5':{x:50,y:54,size:165},
+  '1-6':{x:50,y:45,size:150},
+  '1-7':{x:52,y:70,size:142},
+  '1-8':{x:52,y:66,size:152},
+  '2-1':{x:58,y:34,size:132},
+  '2-2':{x:60,y:34,size:142},
+  '2-3':{x:58,y:38,size:142},
+  '2-4':{x:50,y:68,size:132},
+  '2-5':{x:56,y:46,size:165},
+  '2-6':{x:60,y:34,size:150},
+  '2-7':{x:50,y:68,size:142},
+  '2-8':{x:54,y:50,size:165},
+  '3-1':{x:31,y:63,size:124},
+  '3-2':{x:31,y:63,size:132},
+  '3-3':{x:57,y:66,size:132},
+  '3-4':{x:57,y:66,size:142},
+  '3-5':{x:50,y:54,size:165},
+  '3-6':{x:31,y:63,size:150},
+  '3-7':{x:57,y:66,size:142},
+  '3-8':{x:54,y:64,size:155}
+};
+function applyPulsePoint(el, code){
+  if(!el) return;
+  const p = VIDEO_PULSE_POINT[code] || {x:50,y:55,size:140};
+  el.style.setProperty('--pulse-x', p.x + '%');
+  el.style.setProperty('--pulse-y', p.y + '%');
+  el.style.setProperty('--pulse-size', p.size + 'px');
+  el.style.setProperty('--pulse-size-mobile', Math.max(76, Math.round(p.size * 0.72)) + 'px');
+}
+
 
 function applyOutcomeSharpness(video){
   const factor = OUTCOME_SHARPNESS[state.outcome] || 1;
@@ -1728,6 +1839,10 @@ function updateVideos(){
   dom.rightVideoLabel.textContent=guideText(rightCode);
   dom.splitLeftVideoLabel.textContent=guideText(leftCode);
   dom.splitRightVideoLabel.textContent=guideText(rightCode);
+  applyPulsePoint(dom.leftScenePulse,leftCode);
+  applyPulsePoint(dom.rightScenePulse,rightCode);
+  applyPulsePoint(dom.splitLeftScenePulse,leftCode);
+  applyPulsePoint(dom.splitRightScenePulse,rightCode);
   restartBothVideos();
   updateViewMode();
   updatePlayButton();
