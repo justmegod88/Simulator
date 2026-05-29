@@ -1019,8 +1019,7 @@ select.product-enhanced-native{display:none!important}
   background:transparent;
   box-shadow:
     0 0 0 3px rgba(0,0,0,.10),
-    0 0 34px rgba(255,255,255,.34),
-    inset 0 0 24px rgba(255,255,255,.16);
+    0 0 34px rgba(255,255,255,.34);
   animation:softScenePulse 2.45s ease-out infinite;
 }
 .scene-pulse::after{
@@ -1107,14 +1106,6 @@ select.product-enhanced-native{display:none!important}
   .video-label{font-size:9.4px !important;max-width:76% !important;}
   .video-label .guide-cause{font-size:10px;}
   .video-label .guide-target{font-size:9.2px;}
-}
-</style>
-
-<style id="pulse-center-transparent-final">
-/* 펄스 중앙 흰색 채움 제거: 선명도에 영향 없도록 링만 표시 */
-.scene-pulse::before,
-.scene-pulse::after{
-  background:transparent !important;
 }
 </style>
 </head>
@@ -1730,50 +1721,31 @@ const GUIDE_PULSE_TARGETS_DUAL = {
   }
 };
 
-/* 슬라이드화면은 좌/우 영상이 하나의 넓은 stage 안에서 반씩 잘려 보이므로
-   듀얼화면과 별도 좌표를 사용한다. */
+/* 듀얼화면과 슬라이드화면은 영상 크롭/표시 영역이 달라 보여 좌표만 분리함. 원형 개수 로직은 유지. */
 const GUIDE_PULSE_TARGETS_SPLIT = {
-  left:{
-    day:{
-      astig:{x:31,y:56,size:250},
-      near:{x:36,y:58,size:198},
-      glare:{x:36,y:58,size:198},
-      clear:{x:31,y:56,size:248}
-    },
-    night:{
-      astig:{x:31,y:56,size:260},
-      near:{x:34,y:75,size:188},
-      glare:{x:34,y:45,size:220},
-      clear:{x:31,y:56,size:254}
-    },
-    dine:{
-      astig:{x:31,y:59,size:260},
-      near:{x:34,y:76,size:210},
-      glare:{x:43,y:84,size:156},
-      clear:{x:31,y:59,size:254}
-    }
+  day:{
+    astig:{x:46,y:55,size:272},
+    near:{x:57,y:58,size:210},
+    glare:{x:57,y:58,size:210},
+    clear:{x:50,y:56,size:268}
   },
-  right:{
-    day:{
-      astig:{x:69,y:56,size:250},
-      near:{x:64,y:58,size:198},
-      glare:{x:64,y:58,size:198},
-      clear:{x:69,y:56,size:248}
-    },
-    night:{
-      astig:{x:69,y:56,size:260},
-      near:{x:66,y:75,size:188},
-      glare:{x:66,y:45,size:220},
-      clear:{x:69,y:56,size:254}
-    },
-    dine:{
-      astig:{x:69,y:59,size:260},
-      near:{x:66,y:76,size:210},
-      glare:{x:57,y:84,size:156},
-      clear:{x:69,y:59,size:254}
-    }
+  night:{
+    astig:{x:50,y:57,size:280},
+    near:{x:42,y:75,size:198},
+    glare:{x:51,y:46,size:236},
+    clear:{x:50,y:57,size:274}
+  },
+  dine:{
+    astig:{x:50,y:59,size:280},
+    near:{x:47,y:76,size:222},
+    glare:{x:69,y:82,size:166},
+    clear:{x:50,y:59,size:274}
   }
 };
+
+function guidePulseTargetsForMode(mode){
+  return mode === 'split' ? GUIDE_PULSE_TARGETS_SPLIT : GUIDE_PULSE_TARGETS_DUAL;
+}
 
 function sceneKeyFromVideoCode(code){
   const scenePrefix = String(code || '').split('-')[0];
@@ -1784,56 +1756,24 @@ function effectNoFromVideoCode(code){
   return Number(String(code || '').split('-')[1]) || 2;
 }
 
-function targetSetForPulse(mode, side, sceneKey){
-  if(mode === 'split'){
-    return ((GUIDE_PULSE_TARGETS_SPLIT[side] || GUIDE_PULSE_TARGETS_SPLIT.left)[sceneKey]) || GUIDE_PULSE_TARGETS_SPLIT.left.day;
-  }
-  return GUIDE_PULSE_TARGETS_DUAL[sceneKey] || GUIDE_PULSE_TARGETS_DUAL.day;
-}
-
-function pulsePointsForCode(code, mode='dual', side='left'){
+function pulsePointsForCode(code, mode='dual'){
   const sceneKey = sceneKeyFromVideoCode(code);
   const effectNo = effectNoFromVideoCode(code);
   const causes = GUIDE_EFFECT_CAUSES[effectNo] || [];
-  const targets = targetSetForPulse(mode, side, sceneKey);
+  const targetSet = guidePulseTargetsForMode(mode);
+  const targets = targetSet[sceneKey] || targetSet.day;
 
-  if(!causes.length) return [{...targets.clear}];
+  // 교정된 시야는 문구만 표시하고 원형 펄스는 표시하지 않음
+  if(!causes.length) return [];
 
-  const points = [];
-  const hasAstig = causes.includes('난시 미교정');
-  const hasNear = causes.includes('노안 미교정');
+  // 원형 개수는 절대 늘리지 않고, 화면당 1개만 표시.
+  // 우선순위: 블루라이트 미차단(광원/밝기) > 노안 미교정(근거리) > 난시 미교정(전체 시야)
+  // 마트: 핸드폰 / 야간운전: 네비 또는 자동차 라이트 / 레스토랑: 메뉴판 또는 촛불
+  if(causes.includes('블루라이트 미차단')) return [{...targets.glare}];
+  if(causes.includes('노안 미교정')) return [{...targets.near}];
+  if(causes.includes('난시 미교정')) return [{...targets.astig}];
 
-  // 전체 시야(난시)와 근거리(노안)가 함께 있을 때는 원이 겹치지 않도록 하나로 합침
-  if(hasAstig && hasNear){
-    points.push({
-      ...targets.astig,
-      size: Math.max(targets.astig.size || 0, targets.near.size || 0) + 8
-    });
-  }else{
-    if(hasAstig) points.push({...targets.astig});
-    if(hasNear) points.push({...targets.near});
-  }
-
-  if(causes.includes('블루라이트 미차단')) {
-    const glarePoint = targets.glare;
-    const nearPoint = targets.near;
-    const nearAlreadySameArea =
-      hasNear && !hasAstig &&
-      Math.abs((nearPoint.x || 0) - (glarePoint.x || 0)) < 4 &&
-      Math.abs((nearPoint.y || 0) - (glarePoint.y || 0)) < 4;
-
-    // 마트처럼 노안/블루라이트 확인 위치가 같은 사물일 때는 원을 하나만 크게 표시
-    if(nearAlreadySameArea){
-      const last = points[points.length - 1];
-      if(last){
-        last.size = Math.max(last.size || 0, glarePoint.size || 0) + 10;
-      }
-    }else{
-      points.push({...glarePoint});
-    }
-  }
-
-  return points.length ? points : [{...targets.clear}];
+  return [];
 }
 
 function setPulseStyle(el, p){
@@ -1843,27 +1783,23 @@ function setPulseStyle(el, p){
   el.style.setProperty('--pulse-size-mobile', Math.max(82, Math.round(p.size * 0.72)) + 'px');
 }
 
-function applyPulsePoint(el, code, mode='dual', side='left'){
+function applyPulsePoint(el, code){
   if(!el) return;
+  const mode = (el.id && el.id.toLowerCase().includes('split')) ? 'split' : 'dual';
   const parent = el.parentElement;
   if(parent){
+    // 이전 버전에서 생긴 추가 원형이 남아있지 않도록 모두 제거
     parent.querySelectorAll('.scene-pulse-extra').forEach(node=>node.remove());
   }
-  const points = pulsePointsForCode(code, mode, side);
-  const primary = points[0] || {x:50,y:55,size:150};
-  setPulseStyle(el, primary);
+  const points = pulsePointsForCode(code, mode);
+  if(!points.length){
+    el.style.display = 'none';
+    return;
+  }
+  setPulseStyle(el, points[0]);
   el.style.display = 'block';
-
-  if(!parent) return;
-  points.slice(1).forEach((p, idx)=>{
-    const extra = document.createElement('div');
-    extra.className = 'scene-pulse scene-pulse-extra';
-    extra.setAttribute('aria-hidden','true');
-    extra.dataset.pulseIndex = String(idx + 2);
-    setPulseStyle(extra, p);
-    parent.appendChild(extra);
-  });
 }
+
 
 
 function applyOutcomeSharpness(video){
@@ -2060,10 +1996,10 @@ function updateVideos(){
   dom.rightVideoLabel.innerHTML=guideText(rightCode);
   dom.splitLeftVideoLabel.innerHTML=guideText(leftCode);
   dom.splitRightVideoLabel.innerHTML=guideText(rightCode);
-  applyPulsePoint(dom.leftScenePulse,leftCode,'dual','left');
-  applyPulsePoint(dom.rightScenePulse,rightCode,'dual','right');
-  applyPulsePoint(dom.splitLeftScenePulse,leftCode,'split','left');
-  applyPulsePoint(dom.splitRightScenePulse,rightCode,'split','right');
+  applyPulsePoint(dom.leftScenePulse,leftCode);
+  applyPulsePoint(dom.rightScenePulse,rightCode);
+  applyPulsePoint(dom.splitLeftScenePulse,leftCode);
+  applyPulsePoint(dom.splitRightScenePulse,rightCode);
   restartBothVideos();
   updateViewMode();
   updatePlayButton();
