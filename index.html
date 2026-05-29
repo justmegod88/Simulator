@@ -1709,6 +1709,12 @@ function guideText(code){
         : '메뉴판, 촛불 및 조명을 확인해 보세요');
     return `<span class="guide-cause">노안 미교정 · 블루라이트 미차단 |</span><span class="guide-target">${sceneText}</span>`;
   }
+  if(effectNo === 6){
+    const sceneText = sceneKey === 'day'
+      ? '미교정 난시로 인한 흐림을 확인해 보세요'
+      : '미교정된 난시 시야와 빛번짐을 확인해 보세요';
+    return `<span class="guide-cause">난시 미교정 · 블루라이트 미차단 |</span><span class="guide-target">${sceneText}</span>`;
+  }
 
   const targetList = [];
   if(causes.includes('난시 미교정')) targetList.push(targets.astig);
