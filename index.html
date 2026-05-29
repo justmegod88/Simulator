@@ -1800,13 +1800,25 @@ function pulsePointsForCode(code, mode='dual', side='left'){
   if(!causes.length) return [{...targets.clear}];
 
   const points = [];
-  if(causes.includes('난시 미교정')) points.push({...targets.astig});
-  if(causes.includes('노안 미교정')) points.push({...targets.near});
+  const hasAstig = causes.includes('난시 미교정');
+  const hasNear = causes.includes('노안 미교정');
+
+  // 전체 시야(난시)와 근거리(노안)가 함께 있을 때는 원이 겹치지 않도록 하나로 합침
+  if(hasAstig && hasNear){
+    points.push({
+      ...targets.astig,
+      size: Math.max(targets.astig.size || 0, targets.near.size || 0) + 8
+    });
+  }else{
+    if(hasAstig) points.push({...targets.astig});
+    if(hasNear) points.push({...targets.near});
+  }
+
   if(causes.includes('블루라이트 미차단')) {
     const glarePoint = targets.glare;
     const nearPoint = targets.near;
     const nearAlreadySameArea =
-      causes.includes('노안 미교정') &&
+      hasNear && !hasAstig &&
       Math.abs((nearPoint.x || 0) - (glarePoint.x || 0)) < 4 &&
       Math.abs((nearPoint.y || 0) - (glarePoint.y || 0)) < 4;
 
