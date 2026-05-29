@@ -1374,19 +1374,19 @@ const GUIDE_EFFECT_CAUSES = {
 };
 const GUIDE_TARGETS = {
   day:{
-    astig:'난시 미교정된 시야',
+    astig:'전체 시야',
     near:'핸드폰 화면',
     glare:'핸드폰 밝기',
     clear:'선명한 시야'
   },
   night:{
-    astig:'난시 미교정된 시야',
+    astig:'전체 시야',
     near:'네비게이션',
     glare:'자동차 라이트',
     clear:'선명한 야간 시야'
   },
   dine:{
-    astig:'난시 미교정된 시야',
+    astig:'전체 시야',
     near:'메뉴판',
     glare:'촛불 및 조명',
     clear:'선명한 실내 시야'
@@ -1674,6 +1674,22 @@ function guideText(code){
     return `<span class="guide-cause">교정된 시야 |</span><span class="guide-target">${targets.clear}를 확인해 보세요</span>`;
   }
 
+  // 요청 반영 2026-05: 상태 조합별 문구를 고정
+  if(effectNo === 5){
+    return `<span class="guide-cause">난시 미교정 |</span><span class="guide-target">난시 미교정된 시야를 확인해 보세요</span>`;
+  }
+  if(effectNo === 8 || effectNo === 4){
+    return `<span class="guide-cause">${causes.join(' · ')} |</span><span class="guide-target">전체적으로 흐린 시야를 확인해 보세요</span>`;
+  }
+  if(effectNo === 3){
+    const sceneText = sceneKey === 'day'
+      ? '핸드폰을 확인해 보세요'
+      : (sceneKey === 'night'
+        ? '네비게이션, 자동차 라이트를 확인해 보세요'
+        : '메뉴판, 촛불 및 조명을 확인해 보세요');
+    return `<span class="guide-cause">노안 미교정 · 블루라이트 미차단 |</span><span class="guide-target">${sceneText}</span>`;
+  }
+
   const targetList = [];
   if(causes.includes('난시 미교정')) targetList.push(targets.astig);
   if(causes.includes('노안 미교정')) targetList.push(targets.near);
@@ -1682,54 +1698,59 @@ function guideText(code){
   const uniqueTargets = [...new Set(targetList)];
   let targetText = uniqueTargets.join(' · ');
   if(sceneKey === 'day' && uniqueTargets.includes('핸드폰 화면') && uniqueTargets.includes('핸드폰 밝기')){
-    targetText = targetText.replace('핸드폰 화면 · 핸드폰 밝기','핸드폰 화면과 밝기');
-  }
-  if(sceneKey === 'dine' && uniqueTargets.includes('메뉴판') && uniqueTargets.includes('촛불 및 조명')){
-    targetText = targetText.replace('메뉴판 · 촛불 및 조명','메뉴판과 촛불 및 조명');
+    targetText = '핸드폰을 확인해 보세요';
+  }else if(sceneKey === 'dine' && uniqueTargets.includes('메뉴판') && uniqueTargets.includes('촛불 및 조명')){
+    targetText = '메뉴판, 촛불 및 조명을 확인해 보세요';
+  }else if(sceneKey === 'night' && uniqueTargets.includes('네비게이션') && uniqueTargets.includes('자동차 라이트')){
+    targetText = '네비게이션, 자동차 라이트를 확인해 보세요';
+  }else{
+    targetText = `${targetText}를 확인해 보세요`;
   }
 
-  return `<span class="guide-cause">${causes.join(' · ')} |</span><span class="guide-target">${targetText}를 확인해 보세요</span>`;
+  return `<span class="guide-cause">${causes.join(' · ')} |</span><span class="guide-target">${targetText}</span>`;
 }
 
 const GUIDE_PULSE_TARGETS_DUAL = {
   day:{
     astig:{x:47,y:55,size:282},
-    near:{x:58,y:57,size:218},
-    glare:{x:58,y:57,size:218},
+    near:{x:58,y:57,size:188},
+    glare:{x:58,y:57,size:188},
     clear:{x:50,y:56,size:278}
   },
   night:{
     astig:{x:50,y:56,size:292},
-    near:{x:43,y:74,size:206},
-    glare:{x:52,y:44,size:246},
+    near:{x:43,y:74,size:176},
+    glare:{x:74,y:38,size:188},
     clear:{x:50,y:56,size:286}
   },
   dine:{
     astig:{x:50,y:58,size:292},
-    near:{x:47,y:74,size:232},
-    glare:{x:70,y:84,size:172},
+    near:{x:47,y:74,size:186},
+    /* 레스토랑 블루라이트 원: 얼굴/중앙이 아니라 우측 촛불 쪽으로 최대 이동 */
+    glare:{x:86,y:78,size:148},
     clear:{x:50,y:58,size:286}
   }
 };
 
-/* 듀얼화면과 슬라이드화면은 영상 크롭/표시 영역이 달라 보여 좌표만 분리함. 원형 개수 로직은 유지. */
+/* 듀얼화면과 슬라이드화면은 영상 크롭/표시 영역이 달라 보여 좌표만 분리함. */
 const GUIDE_PULSE_TARGETS_SPLIT = {
   day:{
     astig:{x:46,y:55,size:272},
-    near:{x:57,y:58,size:210},
-    glare:{x:57,y:58,size:210},
+    near:{x:57,y:58,size:180},
+    glare:{x:57,y:58,size:180},
     clear:{x:50,y:56,size:268}
   },
   night:{
     astig:{x:50,y:57,size:280},
-    near:{x:42,y:75,size:198},
-    glare:{x:51,y:46,size:236},
+    near:{x:42,y:75,size:170},
+    glare:{x:73,y:40,size:180},
     clear:{x:50,y:57,size:274}
   },
   dine:{
     astig:{x:50,y:59,size:280},
-    near:{x:47,y:76,size:222},
-    glare:{x:69,y:82,size:166},
+    near:{x:47,y:76,size:178},
+    /* 슬라이드 화면 레스토랑도 촛불 쪽으로 이동 */
+    glare:{x:84,y:79,size:142},
     clear:{x:50,y:59,size:274}
   }
 };
@@ -1757,12 +1778,26 @@ function pulsePointsForCode(code, mode='dual'){
   // 교정된 시야는 문구만 표시하고 원형 펄스는 표시하지 않음
   if(!causes.length) return [];
 
-  // 원형 개수는 절대 늘리지 않고, 화면당 1개만 표시.
-  // 우선순위: 블루라이트 미차단(광원/밝기) > 노안 미교정(근거리) > 난시 미교정(전체 시야)
-  // 마트: 핸드폰 / 야간운전: 네비 또는 자동차 라이트 / 레스토랑: 메뉴판 또는 촛불
-  if(causes.includes('블루라이트 미차단')) return [{...targets.glare}];
-  if(causes.includes('노안 미교정')) return [{...targets.near}];
-  if(causes.includes('난시 미교정')) return [{...targets.astig}];
+  // 요청 반영 2026-05
+  // 5 난시만: 원 삭제
+  // 8 난시+노안: 원 삭제
+  // 4 난시+노안+블루라이트: 원 삭제
+  if(effectNo === 5 || effectNo === 8 || effectNo === 4) return [];
+
+  // 3 노안+블루라이트: 레스토랑/야간은 2개, 핸드폰 씬은 대상이 동일하므로 1개
+  if(effectNo === 3){
+    if(sceneKey === 'day') return [{...targets.near}];
+    return [{...targets.near}, {...targets.glare}];
+  }
+
+  // 6 난시+블루라이트: 블루라이트 광원만 1개 표시
+  if(effectNo === 6) return [{...targets.glare}];
+
+  // 1 블루라이트만: 블루라이트 광원만 1개 표시
+  if(effectNo === 1) return [{...targets.glare}];
+
+  // 7 노안만: 기존처럼 근거리 대상 1개 표시
+  if(effectNo === 7) return [{...targets.near}];
 
   return [];
 }
@@ -1779,7 +1814,6 @@ function applyPulsePoint(el, code){
   const mode = (el.id && el.id.toLowerCase().includes('split')) ? 'split' : 'dual';
   const parent = el.parentElement;
   if(parent){
-    // 이전 버전에서 생긴 추가 원형이 남아있지 않도록 모두 제거
     parent.querySelectorAll('.scene-pulse-extra').forEach(node=>node.remove());
   }
   const points = pulsePointsForCode(code, mode);
@@ -1789,7 +1823,20 @@ function applyPulsePoint(el, code){
   }
   setPulseStyle(el, points[0]);
   el.style.display = 'block';
+
+  // 노안+블루라이트 조합처럼 원이 2개 필요한 경우 추가 원 생성
+  if(parent && points.length > 1){
+    points.slice(1).forEach(p=>{
+      const extra = document.createElement('div');
+      extra.className = el.className + ' scene-pulse-extra';
+      extra.setAttribute('aria-hidden','true');
+      setPulseStyle(extra, p);
+      extra.style.display = 'block';
+      parent.appendChild(extra);
+    });
+  }
 }
+
 
 
 
