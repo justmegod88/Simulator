@@ -1073,20 +1073,40 @@ select.product-enhanced-native{display:none!important}
 
 
 <style id="guide-label-cause-target-clean-patch">
-/* 원인 + 확인 위치 문구: 아이콘 없이 더 선명하게 */
+/* 원인 + 확인 위치 문구: 아이콘 없이 2줄 표시 */
 .video-label{
-  max-width:72% !important;
+  max-width:76% !important;
   white-space:normal !important;
   word-break:keep-all !important;
-  line-height:1.35 !important;
+  line-height:1.24 !important;
   font-size:10.6px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:2px !important;
 }
 .video-label::before{
   content:none !important;
   display:none !important;
 }
+.video-label .guide-cause{
+  display:block;
+  color:#8FC1FF;
+  font-size:11.2px;
+  font-weight:950;
+  letter-spacing:-.01em;
+}
+.video-label .guide-target{
+  display:block;
+  color:#FFFFFF;
+  font-size:10.3px;
+  font-weight:750;
+  letter-spacing:-.015em;
+}
 @media (max-width:760px){
-  .video-label{font-size:9.4px !important;max-width:72% !important;}
+  .video-label{font-size:9.4px !important;max-width:76% !important;}
+  .video-label .guide-cause{font-size:10px;}
+  .video-label .guide-target{font-size:9.2px;}
 }
 </style>
 </head>
@@ -1252,7 +1272,7 @@ select.product-enhanced-native{display:none!important}
           </div>
         </div>
       </div>
-      <div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션으로 실제시야와 차이가 있을 수 있습니다. 안경사 교육용 자료이며 무단 복제 및 배포를 금지합니다. KR_2026_382</div>
+      <div class="footer-note">해당 영상은 이해를 돕기 위한 시뮬레이션 영상입니다. 실제 시야와 차이가 있을 수 있습니다.</div>
 
       
     </section>
@@ -1661,7 +1681,7 @@ function guideText(code){
   const targets = GUIDE_TARGETS[sceneKey] || GUIDE_TARGETS.day;
 
   if(!causes.length){
-    return `교정된 시야 | ${targets.clear}를 확인해 보세요`;
+    return `<span class="guide-cause">교정된 시야 |</span><span class="guide-target">${targets.clear}를 확인해 보세요</span>`;
   }
 
   const targetList = [];
@@ -1678,39 +1698,39 @@ function guideText(code){
     targetText = targetText.replace('메뉴판 · 촛불 및 조명','메뉴판과 촛불 및 조명');
   }
 
-  return `${causes.join(' · ')} | ${targetText}를 확인해 보세요`;
+  return `<span class="guide-cause">${causes.join(' · ')} |</span><span class="guide-target">${targetText}를 확인해 보세요</span>`;
 }
 
 const VIDEO_PULSE_POINT = {
   /* 마트: 휴대폰 화면 / 과일 진열대 중심 */
-  '1-1':{x:64,y:48,size:178},
-  '1-2':{x:64,y:48,size:178},
-  '1-3':{x:64,y:50,size:178},
-  '1-4':{x:64,y:50,size:190},
-  '1-5':{x:49,y:47,size:210},
-  '1-6':{x:49,y:47,size:210},
-  '1-7':{x:64,y:50,size:190},
-  '1-8':{x:64,y:50,size:190},
+  '1-1':{x:58,y:55,size:206},
+  '1-2':{x:58,y:55,size:206},
+  '1-3':{x:58,y:57,size:206},
+  '1-4':{x:58,y:57,size:220},
+  '1-5':{x:43,y:54,size:244},
+  '1-6':{x:43,y:54,size:244},
+  '1-7':{x:58,y:57,size:220},
+  '1-8':{x:58,y:57,size:220},
 
   /* 야간운전: 자동차 라이트/도로 + 네비게이션 */
-  '2-1':{x:39,y:48,size:205},
-  '2-2':{x:39,y:48,size:205},
-  '2-3':{x:48,y:68,size:170},
-  '2-4':{x:48,y:68,size:180},
-  '2-5':{x:39,y:48,size:220},
-  '2-6':{x:39,y:48,size:220},
-  '2-7':{x:48,y:66,size:190},
-  '2-8':{x:48,y:66,size:190},
+  '2-1':{x:33,y:55,size:238},
+  '2-2':{x:33,y:55,size:238},
+  '2-3':{x:42,y:75,size:197},
+  '2-4':{x:42,y:75,size:209},
+  '2-5':{x:33,y:55,size:255},
+  '2-6':{x:33,y:55,size:255},
+  '2-7':{x:42,y:73,size:220},
+  '2-8':{x:42,y:73,size:220},
 
   /* 레스토랑: 메뉴판 / 촛불 위치 */
-  '3-1':{x:53,y:68,size:190},
-  '3-2':{x:79,y:74,size:122},
-  '3-3':{x:53,y:68,size:190},
-  '3-4':{x:53,y:68,size:196},
-  '3-5':{x:52,y:56,size:215},
-  '3-6':{x:79,y:74,size:136},
-  '3-7':{x:53,y:68,size:196},
-  '3-8':{x:53,y:68,size:196}
+  '3-1':{x:47,y:75,size:220},
+  '3-2':{x:73,y:81,size:142},
+  '3-3':{x:47,y:75,size:220},
+  '3-4':{x:47,y:75,size:227},
+  '3-5':{x:46,y:63,size:249},
+  '3-6':{x:73,y:81,size:158},
+  '3-7':{x:47,y:75,size:227},
+  '3-8':{x:47,y:75,size:227}
 };
 function applyPulsePoint(el, code){
   if(!el) return;
@@ -1912,10 +1932,10 @@ function updateVideos(){
   const leftSrc=videoSrc(state.leftProduct), rightSrc=videoSrc(state.rightProduct);
   [dom.leftVideo,dom.splitLeftVideo].forEach(v=>{applyVideoAdjust(v,leftCode); applyOutcomeSharpness(v); prepareVideo(v,leftSrc);});
   [dom.rightVideo,dom.splitRightVideo].forEach(v=>{applyVideoAdjust(v,rightCode); applyOutcomeSharpness(v); prepareVideo(v,rightSrc);});
-  dom.leftVideoLabel.textContent=guideText(leftCode);
-  dom.rightVideoLabel.textContent=guideText(rightCode);
-  dom.splitLeftVideoLabel.textContent=guideText(leftCode);
-  dom.splitRightVideoLabel.textContent=guideText(rightCode);
+  dom.leftVideoLabel.innerHTML=guideText(leftCode);
+  dom.rightVideoLabel.innerHTML=guideText(rightCode);
+  dom.splitLeftVideoLabel.innerHTML=guideText(leftCode);
+  dom.splitRightVideoLabel.innerHTML=guideText(rightCode);
   applyPulsePoint(dom.leftScenePulse,leftCode);
   applyPulsePoint(dom.rightScenePulse,rightCode);
   applyPulsePoint(dom.splitLeftScenePulse,leftCode);
