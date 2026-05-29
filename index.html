@@ -1744,7 +1744,7 @@ const GUIDE_PULSE_TARGETS_DUAL = {
     near:{x:43,y:74,size:176},
     glare:{x:74,y:38,size:188},
     /* 블루라이트 미차단만: 야간은 자동차 라이트 쪽으로 많이 좌측 */
-    glareOnly:{x:61,y:39,size:188},
+    glareOnly:{x:53,y:39,size:188},
     clear:{x:50,y:56,size:286}
   },
   dine:{
@@ -1772,7 +1772,7 @@ const GUIDE_PULSE_TARGETS_SPLIT = {
     near:{x:42,y:75,size:170},
     glare:{x:73,y:40,size:180},
     /* 블루라이트 미차단만: 야간은 자동차 라이트 쪽으로 많이 좌측 */
-    glareOnly:{x:60,y:41,size:180},
+    glareOnly:{x:52,y:41,size:180},
     clear:{x:50,y:57,size:274}
   },
   dine:{
@@ -1780,7 +1780,7 @@ const GUIDE_PULSE_TARGETS_SPLIT = {
     near:{x:47,y:76,size:178},
     glare:{x:84,y:79,size:142},
     /* 블루라이트 미차단만 + 슬라이드화면: 촛불 쪽으로 어느 정도 좌측 */
-    glareOnly:{x:78,y:80,size:142},
+    glareOnly:{x:72,y:80,size:142},
     clear:{x:50,y:59,size:274}
   }
 };
@@ -1814,14 +1814,17 @@ function pulsePointsForCode(code, mode='dual'){
   // 4 난시+노안+블루라이트: 원 삭제
   if(effectNo === 5 || effectNo === 8 || effectNo === 4) return [];
 
-  // 3 노안+블루라이트: 레스토랑/야간은 2개, 핸드폰 씬은 대상이 동일하므로 1개
+  // 3 노안+블루라이트: 블루라이트 미차단 기준 좌표와 동일하게 적용
+  // - 마트/핸드폰은 근거리 대상과 블루라이트 대상이 같으므로 1개
+  // - 야간/레스토랑은 근거리 대상 + 블루라이트 광원 2개
   if(effectNo === 3){
-    if(sceneKey === 'day') return [{...targets.near}];
-    return [{...targets.near}, {...targets.glare}];
+    const bluePoint = {...(targets.glareOnly || targets.glare)};
+    if(sceneKey === 'day') return [bluePoint];
+    return [{...targets.near}, bluePoint];
   }
 
-  // 6 난시+블루라이트: 블루라이트 광원만 1개 표시
-  if(effectNo === 6) return [{...targets.glare}];
+  // 6 난시+블루라이트: 블루라이트 미차단 기준 좌표와 동일하게 적용
+  if(effectNo === 6) return [{...(targets.glareOnly || targets.glare)}];
 
   // 1 블루라이트만: 블루라이트 광원만 1개 표시
   if(effectNo === 1) return [{...(targets.glareOnly || targets.glare)}];
