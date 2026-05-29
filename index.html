@@ -1701,44 +1701,96 @@ function guideText(code){
   return `<span class="guide-cause">${causes.join(' · ')} |</span><span class="guide-target">${targetText}를 확인해 보세요</span>`;
 }
 
-const VIDEO_PULSE_POINT = {
-  /* 마트: 휴대폰 화면 / 과일 진열대 중심 */
-  '1-1':{x:58,y:55,size:206},
-  '1-2':{x:58,y:55,size:206},
-  '1-3':{x:58,y:57,size:206},
-  '1-4':{x:58,y:57,size:220},
-  '1-5':{x:43,y:54,size:244},
-  '1-6':{x:43,y:54,size:244},
-  '1-7':{x:58,y:57,size:220},
-  '1-8':{x:58,y:57,size:220},
-
-  /* 야간운전: 자동차 라이트/도로 + 네비게이션 */
-  '2-1':{x:33,y:55,size:238},
-  '2-2':{x:33,y:55,size:238},
-  '2-3':{x:42,y:75,size:197},
-  '2-4':{x:42,y:75,size:209},
-  '2-5':{x:33,y:55,size:255},
-  '2-6':{x:33,y:55,size:255},
-  '2-7':{x:42,y:73,size:220},
-  '2-8':{x:42,y:73,size:220},
-
-  /* 레스토랑: 메뉴판 / 촛불 위치 */
-  '3-1':{x:47,y:75,size:220},
-  '3-2':{x:73,y:81,size:142},
-  '3-3':{x:47,y:75,size:220},
-  '3-4':{x:47,y:75,size:227},
-  '3-5':{x:46,y:63,size:249},
-  '3-6':{x:73,y:81,size:158},
-  '3-7':{x:47,y:75,size:227},
-  '3-8':{x:47,y:75,size:227}
+const GUIDE_PULSE_TARGETS = {
+  day:{
+    astig:{x:47,y:55,size:282},
+    near:{x:58,y:57,size:218},
+    glare:{x:58,y:57,size:218},
+    clear:{x:50,y:56,size:278}
+  },
+  night:{
+    astig:{x:50,y:56,size:292},
+    near:{x:43,y:74,size:206},
+    glare:{x:52,y:44,size:246},
+    clear:{x:50,y:56,size:286}
+  },
+  dine:{
+    astig:{x:50,y:58,size:292},
+    near:{x:47,y:74,size:232},
+    glare:{x:70,y:84,size:172},
+    clear:{x:50,y:58,size:286}
+  }
 };
-function applyPulsePoint(el, code){
-  if(!el) return;
-  const p = VIDEO_PULSE_POINT[code] || {x:50,y:55,size:140};
+
+function sceneKeyFromVideoCode(code){
+  const scenePrefix = String(code || '').split('-')[0];
+  return scenePrefix === '2' ? 'night' : (scenePrefix === '3' ? 'dine' : 'day');
+}
+
+function effectNoFromVideoCode(code){
+  return Number(String(code || '').split('-')[1]) || 2;
+}
+
+function pulsePointsForCode(code){
+  const sceneKey = sceneKeyFromVideoCode(code);
+  const effectNo = effectNoFromVideoCode(code);
+  const causes = GUIDE_EFFECT_CAUSES[effectNo] || [];
+  const targets = GUIDE_PULSE_TARGETS[sceneKey] || GUIDE_PULSE_TARGETS.day;
+
+  if(!causes.length) return [{...targets.clear}];
+
+  const points = [];
+  if(causes.includes('난시 미교정')) points.push({...targets.astig});
+  if(causes.includes('노안 미교정')) points.push({...targets.near});
+  if(causes.includes('블루라이트 미차단')) {
+    const glarePoint = targets.glare;
+    const nearPoint = targets.near;
+    const nearAlreadySameArea =
+      causes.includes('노안 미교정') &&
+      Math.abs((nearPoint.x || 0) - (glarePoint.x || 0)) < 4 &&
+      Math.abs((nearPoint.y || 0) - (glarePoint.y || 0)) < 4;
+
+    // 마트처럼 노안/블루라이트 확인 위치가 같은 사물일 때는 원을 하나만 크게 표시
+    if(nearAlreadySameArea){
+      const last = points[points.length - 1];
+      if(last){
+        last.size = Math.max(last.size || 0, glarePoint.size || 0) + 10;
+      }
+    }else{
+      points.push({...glarePoint});
+    }
+  }
+
+  return points.length ? points : [{...targets.clear}];
+}
+
+function setPulseStyle(el, p){
   el.style.setProperty('--pulse-x', p.x + '%');
   el.style.setProperty('--pulse-y', p.y + '%');
   el.style.setProperty('--pulse-size', p.size + 'px');
-  el.style.setProperty('--pulse-size-mobile', Math.max(76, Math.round(p.size * 0.72)) + 'px');
+  el.style.setProperty('--pulse-size-mobile', Math.max(82, Math.round(p.size * 0.72)) + 'px');
+}
+
+function applyPulsePoint(el, code){
+  if(!el) return;
+  const parent = el.parentElement;
+  if(parent){
+    parent.querySelectorAll('.scene-pulse-extra').forEach(node=>node.remove());
+  }
+  const points = pulsePointsForCode(code);
+  const primary = points[0] || {x:50,y:55,size:150};
+  setPulseStyle(el, primary);
+  el.style.display = 'block';
+
+  if(!parent) return;
+  points.slice(1).forEach((p, idx)=>{
+    const extra = document.createElement('div');
+    extra.className = 'scene-pulse scene-pulse-extra';
+    extra.setAttribute('aria-hidden','true');
+    extra.dataset.pulseIndex = String(idx + 2);
+    setPulseStyle(extra, p);
+    parent.appendChild(extra);
+  });
 }
 
 
