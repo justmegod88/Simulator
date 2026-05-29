@@ -994,19 +994,19 @@ select.product-enhanced-native{display:none!important}
 </style>
 
 <style id="scene-guide-pulse-final">
-/* 139: 영상별 소비자 가이드 문구 + 은은한 원형 펄스 */
+/* 139 update: 영상별 확인 위치 문구 + 조금 더 강한 원형 펄스 */
 .video-card, .split-stage{position:relative;}
 .scene-pulse{
   position:absolute;
   left:var(--pulse-x,50%);
   top:var(--pulse-y,55%);
-  width:var(--pulse-size,128px);
-  height:var(--pulse-size,128px);
+  width:var(--pulse-size,150px);
+  height:var(--pulse-size,150px);
   transform:translate(-50%,-50%);
   border-radius:999px;
   z-index:3;
   pointer-events:none;
-  opacity:.92;
+  opacity:1;
 }
 .scene-pulse::before,
 .scene-pulse::after{
@@ -1014,15 +1014,20 @@ select.product-enhanced-native{display:none!important}
   position:absolute;
   inset:0;
   border-radius:999px;
-  border:2px solid rgba(255,255,255,.55);
-  background:radial-gradient(circle, rgba(255,255,255,.18) 0%, rgba(255,255,255,.06) 42%, rgba(255,255,255,0) 72%);
-  box-shadow:0 0 28px rgba(255,255,255,.18), inset 0 0 18px rgba(255,255,255,.10);
-  animation:softScenePulse 2.8s ease-out infinite;
+  border:4px solid rgba(255,255,255,.84);
+  background:radial-gradient(circle, rgba(255,255,255,.16) 0%, rgba(255,255,255,.08) 44%, rgba(255,255,255,0) 72%);
+  box-shadow:
+    0 0 0 3px rgba(0,0,0,.10),
+    0 0 34px rgba(255,255,255,.34),
+    inset 0 0 24px rgba(255,255,255,.16);
+  animation:softScenePulse 2.45s ease-out infinite;
 }
 .scene-pulse::after{
-  inset:-12px;
-  border-color:rgba(255,255,255,.22);
-  animation-delay:.45s;
+  inset:-18px;
+  border-width:2px;
+  border-color:rgba(255,255,255,.42);
+  background:transparent;
+  animation-delay:.38s;
 }
 .scene-pulse.right-pulse{
   left:var(--pulse-x-right,var(--pulse-x,50%));
@@ -1036,11 +1041,13 @@ select.product-enhanced-native{display:none!important}
   display:flex;
   align-items:center;
   gap:5px;
-  min-height:26px;
-  padding:7px 11px !important;
-  font-size:10.5px !important;
-  background:rgba(10,22,41,.62) !important;
-  border:1px solid rgba(255,255,255,.18) !important;
+  min-height:28px;
+  padding:8px 12px !important;
+  font-size:10.8px !important;
+  background:rgba(10,22,41,.68) !important;
+  backdrop-filter:blur(10px) !important;
+  border:1px solid rgba(255,255,255,.22) !important;
+  box-shadow:0 8px 20px rgba(0,0,0,.18) !important;
 }
 .video-label::before{
   content:"";
@@ -1048,17 +1055,18 @@ select.product-enhanced-native{display:none!important}
   height:6px;
   flex:0 0 6px;
   border-radius:50%;
-  background:rgba(255,255,255,.95);
-  box-shadow:0 0 10px rgba(255,255,255,.55);
+  background:rgba(255,255,255,.98);
+  box-shadow:0 0 12px rgba(255,255,255,.75);
 }
 @keyframes softScenePulse{
-  0%{transform:scale(.72);opacity:0;}
-  18%{opacity:.75;}
-  100%{transform:scale(1.28);opacity:0;}
+  0%{transform:scale(.68);opacity:0;}
+  16%{opacity:.95;}
+  100%{transform:scale(1.18);opacity:0;}
 }
 @media (max-width:760px){
-  .scene-pulse{width:var(--pulse-size-mobile,92px);height:var(--pulse-size-mobile,92px);}
-  .video-label{font-size:9.5px !important;max-width:58% !important;}
+  .scene-pulse{width:var(--pulse-size-mobile,108px);height:var(--pulse-size-mobile,108px);}
+  .scene-pulse::before{border-width:3px;}
+  .video-label{font-size:9.8px !important;max-width:64% !important;}
 }
 </style>
 
@@ -1332,30 +1340,30 @@ const VIDEO_MATRIX = {
 
 const VIDEO_ADJUST = {};
 const VIDEO_GUIDE_TEXT = {
-  '1-1':'📱 핸드폰 화면과 전체 시야의 선명도를 확인해 보세요',
-  '1-2':'✨ 핸드폰 화면 주변 빛 번짐 감소 효과를 확인해 보세요',
-  '1-3':'🔍 가까운 거리의 초점 흐림을 확인해 보세요',
-  '1-4':'🌫️ 전체 시야와 근거리 흐림 정도를 비교해 보세요',
-  '1-5':'👀 전체적인 시야 선명도를 비교해 보세요',
-  '1-6':'📦 진열대와 과일 경계의 선명도를 비교해 보세요',
-  '1-7':'📱 근거리 화면과 주변 시야를 함께 확인해 보세요',
-  '1-8':'🔎 가까운 거리와 전체 시야 흐림 정도를 확인해 보세요',
-  '2-1':'🚗 자동차 라이트의 선명도를 확인해 보세요',
-  '2-2':'✨ 야간 빛 번짐 감소 효과를 확인해 보세요',
-  '2-3':'🌙 야간 시야의 흐림 정도를 확인해 보세요',
-  '2-4':'🗺️ 네비게이션과 도로 시야를 함께 확인해 보세요',
-  '2-5':'👀 전체적인 야간 시야 선명도를 비교해 보세요',
-  '2-6':'💡 차량 라이트 주변 번짐 정도를 비교해 보세요',
-  '2-7':'🚘 도로 시야와 네비게이션 선명도를 함께 확인해 보세요',
-  '2-8':'🌫️ 야간 주행 시 전체적인 흐림 정도를 확인해 보세요',
-  '3-1':'🕯️ 촛불 주변의 선명도를 확인해 보세요',
-  '3-2':'✨ 조명 주변 빛 번짐 감소 효과를 확인해 보세요',
-  '3-3':'📖 가까운 메뉴판 글씨 흐림 정도를 확인해 보세요',
-  '3-4':'🍽️ 메뉴판과 주변 시야를 함께 확인해 보세요',
-  '3-5':'👀 전체적인 실내 시야 선명도를 비교해 보세요',
-  '3-6':'💡 조명 주변 번짐 정도를 비교해 보세요',
-  '3-7':'📋 메뉴판과 테이블 시야를 함께 확인해 보세요',
-  '3-8':'🌫️ 가까운 거리와 전체 시야 흐림 정도를 확인해 보세요'
+  '1-1':'📱 핸드폰 화면과 과일 진열대를 확인해 보세요',
+  '1-2':'✨ 핸드폰 화면 주변 빛 번짐을 확인해 보세요',
+  '1-3':'🔍 핸드폰 화면의 근거리 흐림을 확인해 보세요',
+  '1-4':'👀 핸드폰 화면과 겹쳐 보이는 시야를 확인해 보세요',
+  '1-5':'📦 과일 진열대와 전체 시야를 확인해 보세요',
+  '1-6':'📦 과일 진열대 경계와 겹쳐 보이는 시야를 확인해 보세요',
+  '1-7':'📱 핸드폰 화면과 주변 시야를 확인해 보세요',
+  '1-8':'🔎 핸드폰 화면과 겹쳐 보이는 근거리를 확인해 보세요',
+  '2-1':'🚗 자동차 라이트와 도로 시야를 확인해 보세요',
+  '2-2':'✨ 자동차 라이트 주변 빛 번짐을 확인해 보세요',
+  '2-3':'🗺️ 네비게이션 화면의 근거리 흐림을 확인해 보세요',
+  '2-4':'🗺️ 네비게이션 화면과 겹쳐 보이는 시야를 확인해 보세요',
+  '2-5':'🚗 도로와 자동차 라이트의 전체 시야를 확인해 보세요',
+  '2-6':'💡 자동차 라이트와 겹쳐 보이는 시야를 확인해 보세요',
+  '2-7':'🗺️ 네비게이션과 도로 시야를 확인해 보세요',
+  '2-8':'🌫️ 네비게이션과 겹쳐 보이는 시야를 확인해 보세요',
+  '3-1':'📖 메뉴판과 촛불을 확인해 보세요',
+  '3-2':'✨ 촛불 주변 빛 번짐을 확인해 보세요',
+  '3-3':'📖 메뉴판 글씨의 근거리 흐림을 확인해 보세요',
+  '3-4':'📖 메뉴판과 겹쳐 보이는 시야를 확인해 보세요',
+  '3-5':'🍽️ 메뉴판과 주변 인물의 전체 시야를 확인해 보세요',
+  '3-6':'🕯️ 촛불과 겹쳐 보이는 시야를 확인해 보세요',
+  '3-7':'📋 메뉴판과 촛불 주변 시야를 확인해 보세요',
+  '3-8':'🌫️ 메뉴판과 겹쳐 보이는 근거리 시야를 확인해 보세요'
 };
 const products=[
   {id:'oasys',name:'아큐브 오아시스 원데이®',group:'sphere'},
@@ -1610,30 +1618,35 @@ function videoSrc(productId){return `./${videoCode(productId)}.mp4`}
 function guideText(code){return VIDEO_GUIDE_TEXT[code] || `${code}`;}
 
 const VIDEO_PULSE_POINT = {
-  '1-1':{x:50,y:70,size:132},
-  '1-2':{x:50,y:70,size:132},
-  '1-3':{x:53,y:68,size:132},
-  '1-4':{x:54,y:64,size:150},
-  '1-5':{x:50,y:54,size:165},
-  '1-6':{x:50,y:45,size:150},
-  '1-7':{x:52,y:70,size:142},
-  '1-8':{x:52,y:66,size:152},
-  '2-1':{x:58,y:34,size:132},
-  '2-2':{x:60,y:34,size:142},
-  '2-3':{x:58,y:38,size:142},
-  '2-4':{x:50,y:68,size:132},
-  '2-5':{x:56,y:46,size:165},
-  '2-6':{x:60,y:34,size:150},
-  '2-7':{x:50,y:68,size:142},
-  '2-8':{x:54,y:50,size:165},
-  '3-1':{x:31,y:63,size:124},
-  '3-2':{x:31,y:63,size:132},
-  '3-3':{x:57,y:66,size:132},
-  '3-4':{x:57,y:66,size:142},
-  '3-5':{x:50,y:54,size:165},
-  '3-6':{x:31,y:63,size:150},
-  '3-7':{x:57,y:66,size:142},
-  '3-8':{x:54,y:64,size:155}
+  /* 마트: 휴대폰 화면 / 과일 진열대 중심 */
+  '1-1':{x:64,y:48,size:178},
+  '1-2':{x:64,y:48,size:178},
+  '1-3':{x:64,y:50,size:178},
+  '1-4':{x:64,y:50,size:190},
+  '1-5':{x:49,y:47,size:210},
+  '1-6':{x:49,y:47,size:210},
+  '1-7':{x:64,y:50,size:190},
+  '1-8':{x:64,y:50,size:190},
+
+  /* 야간운전: 자동차 라이트/도로 + 네비게이션 */
+  '2-1':{x:39,y:48,size:205},
+  '2-2':{x:39,y:48,size:205},
+  '2-3':{x:48,y:68,size:170},
+  '2-4':{x:48,y:68,size:180},
+  '2-5':{x:39,y:48,size:220},
+  '2-6':{x:39,y:48,size:220},
+  '2-7':{x:48,y:66,size:190},
+  '2-8':{x:48,y:66,size:190},
+
+  /* 레스토랑: 메뉴판 / 촛불 위치 */
+  '3-1':{x:53,y:68,size:190},
+  '3-2':{x:79,y:74,size:122},
+  '3-3':{x:53,y:68,size:190},
+  '3-4':{x:53,y:68,size:196},
+  '3-5':{x:52,y:56,size:215},
+  '3-6':{x:79,y:74,size:136},
+  '3-7':{x:53,y:68,size:196},
+  '3-8':{x:53,y:68,size:196}
 };
 function applyPulsePoint(el, code){
   if(!el) return;
