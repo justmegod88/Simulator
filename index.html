@@ -1068,6 +1068,12 @@ select.product-enhanced-native{display:none!important}
   .scene-pulse::before{border-width:3px;}
   .video-label{font-size:9.8px !important;max-width:64% !important;}
 }
+/* 원형 펄스 타이밍 동기화: 좌/우, 2개 원이 동시에 시작되도록 리셋용 클래스 */
+.scene-pulse.pulse-reset::before,
+.scene-pulse.pulse-reset::after{
+  animation:none !important;
+}
+
 </style>
 
 
@@ -1715,19 +1721,24 @@ const GUIDE_PULSE_TARGETS_DUAL = {
     astig:{x:47,y:55,size:282},
     near:{x:58,y:57,size:188},
     glare:{x:58,y:57,size:188},
+    /* 블루라이트 미차단만: 마트는 아주 살짝 좌측 */
+    glareOnly:{x:54,y:57,size:188},
     clear:{x:50,y:56,size:278}
   },
   night:{
     astig:{x:50,y:56,size:292},
     near:{x:43,y:74,size:176},
     glare:{x:74,y:38,size:188},
+    /* 블루라이트 미차단만: 야간은 자동차 라이트 쪽으로 많이 좌측 */
+    glareOnly:{x:61,y:39,size:188},
     clear:{x:50,y:56,size:286}
   },
   dine:{
     astig:{x:50,y:58,size:292},
     near:{x:47,y:74,size:186},
-    /* 레스토랑 블루라이트 원: 얼굴/중앙이 아니라 우측 촛불 쪽으로 최대 이동 */
     glare:{x:86,y:78,size:148},
+    /* 블루라이트 미차단만 + 듀얼화면: 촛불 위치 기준 우측 아래 */
+    glareOnly:{x:88,y:84,size:148},
     clear:{x:50,y:58,size:286}
   }
 };
@@ -1738,19 +1749,24 @@ const GUIDE_PULSE_TARGETS_SPLIT = {
     astig:{x:46,y:55,size:272},
     near:{x:57,y:58,size:180},
     glare:{x:57,y:58,size:180},
+    /* 블루라이트 미차단만: 마트는 아주 살짝 좌측 */
+    glareOnly:{x:53,y:58,size:180},
     clear:{x:50,y:56,size:268}
   },
   night:{
     astig:{x:50,y:57,size:280},
     near:{x:42,y:75,size:170},
     glare:{x:73,y:40,size:180},
+    /* 블루라이트 미차단만: 야간은 자동차 라이트 쪽으로 많이 좌측 */
+    glareOnly:{x:60,y:41,size:180},
     clear:{x:50,y:57,size:274}
   },
   dine:{
     astig:{x:50,y:59,size:280},
     near:{x:47,y:76,size:178},
-    /* 슬라이드 화면 레스토랑도 촛불 쪽으로 이동 */
     glare:{x:84,y:79,size:142},
+    /* 블루라이트 미차단만 + 슬라이드화면: 촛불 쪽으로 어느 정도 좌측 */
+    glareOnly:{x:78,y:80,size:142},
     clear:{x:50,y:59,size:274}
   }
 };
@@ -1794,7 +1810,7 @@ function pulsePointsForCode(code, mode='dual'){
   if(effectNo === 6) return [{...targets.glare}];
 
   // 1 블루라이트만: 블루라이트 광원만 1개 표시
-  if(effectNo === 1) return [{...targets.glare}];
+  if(effectNo === 1) return [{...(targets.glareOnly || targets.glare)}];
 
   // 7 노안만: 기존처럼 근거리 대상 1개 표시
   if(effectNo === 7) return [{...targets.near}];
@@ -1838,6 +1854,17 @@ function applyPulsePoint(el, code){
 }
 
 
+function syncPulseTiming(){
+  const pulses = Array.from(document.querySelectorAll('.scene-pulse'))
+    .filter(el => el && el.style.display !== 'none');
+  if(!pulses.length) return;
+  pulses.forEach(el => el.classList.add('pulse-reset'));
+  // force reflow so every visible circle starts the pulse animation at the same moment
+  pulses.forEach(el => void el.offsetWidth);
+  requestAnimationFrame(() => {
+    pulses.forEach(el => el.classList.remove('pulse-reset'));
+  });
+}
 
 
 function applyOutcomeSharpness(video){
@@ -2038,6 +2065,7 @@ function updateVideos(){
   applyPulsePoint(dom.rightScenePulse,rightCode);
   applyPulsePoint(dom.splitLeftScenePulse,leftCode);
   applyPulsePoint(dom.splitRightScenePulse,rightCode);
+  syncPulseTiming();
   restartBothVideos();
   updateViewMode();
   updatePlayButton();
