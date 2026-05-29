@@ -1016,7 +1016,7 @@ select.product-enhanced-native{display:none!important}
   inset:0;
   border-radius:999px;
   border:4px solid rgba(255,255,255,.84);
-  background:radial-gradient(circle, rgba(255,255,255,.16) 0%, rgba(255,255,255,.08) 44%, rgba(255,255,255,0) 72%);
+  background:transparent;
   box-shadow:
     0 0 0 3px rgba(0,0,0,.10),
     0 0 34px rgba(255,255,255,.34),
@@ -1107,6 +1107,14 @@ select.product-enhanced-native{display:none!important}
   .video-label{font-size:9.4px !important;max-width:76% !important;}
   .video-label .guide-cause{font-size:10px;}
   .video-label .guide-target{font-size:9.2px;}
+}
+</style>
+
+<style id="pulse-center-transparent-final">
+/* 펄스 중앙 흰색 채움 제거: 선명도에 영향 없도록 링만 표시 */
+.scene-pulse::before,
+.scene-pulse::after{
+  background:transparent !important;
 }
 </style>
 </head>
@@ -1701,7 +1709,7 @@ function guideText(code){
   return `<span class="guide-cause">${causes.join(' · ')} |</span><span class="guide-target">${targetText}를 확인해 보세요</span>`;
 }
 
-const GUIDE_PULSE_TARGETS = {
+const GUIDE_PULSE_TARGETS_DUAL = {
   day:{
     astig:{x:47,y:55,size:282},
     near:{x:58,y:57,size:218},
@@ -1722,6 +1730,51 @@ const GUIDE_PULSE_TARGETS = {
   }
 };
 
+/* 슬라이드화면은 좌/우 영상이 하나의 넓은 stage 안에서 반씩 잘려 보이므로
+   듀얼화면과 별도 좌표를 사용한다. */
+const GUIDE_PULSE_TARGETS_SPLIT = {
+  left:{
+    day:{
+      astig:{x:31,y:56,size:250},
+      near:{x:36,y:58,size:198},
+      glare:{x:36,y:58,size:198},
+      clear:{x:31,y:56,size:248}
+    },
+    night:{
+      astig:{x:31,y:56,size:260},
+      near:{x:34,y:75,size:188},
+      glare:{x:34,y:45,size:220},
+      clear:{x:31,y:56,size:254}
+    },
+    dine:{
+      astig:{x:31,y:59,size:260},
+      near:{x:34,y:76,size:210},
+      glare:{x:43,y:84,size:156},
+      clear:{x:31,y:59,size:254}
+    }
+  },
+  right:{
+    day:{
+      astig:{x:69,y:56,size:250},
+      near:{x:64,y:58,size:198},
+      glare:{x:64,y:58,size:198},
+      clear:{x:69,y:56,size:248}
+    },
+    night:{
+      astig:{x:69,y:56,size:260},
+      near:{x:66,y:75,size:188},
+      glare:{x:66,y:45,size:220},
+      clear:{x:69,y:56,size:254}
+    },
+    dine:{
+      astig:{x:69,y:59,size:260},
+      near:{x:66,y:76,size:210},
+      glare:{x:57,y:84,size:156},
+      clear:{x:69,y:59,size:254}
+    }
+  }
+};
+
 function sceneKeyFromVideoCode(code){
   const scenePrefix = String(code || '').split('-')[0];
   return scenePrefix === '2' ? 'night' : (scenePrefix === '3' ? 'dine' : 'day');
@@ -1731,11 +1784,18 @@ function effectNoFromVideoCode(code){
   return Number(String(code || '').split('-')[1]) || 2;
 }
 
-function pulsePointsForCode(code){
+function targetSetForPulse(mode, side, sceneKey){
+  if(mode === 'split'){
+    return ((GUIDE_PULSE_TARGETS_SPLIT[side] || GUIDE_PULSE_TARGETS_SPLIT.left)[sceneKey]) || GUIDE_PULSE_TARGETS_SPLIT.left.day;
+  }
+  return GUIDE_PULSE_TARGETS_DUAL[sceneKey] || GUIDE_PULSE_TARGETS_DUAL.day;
+}
+
+function pulsePointsForCode(code, mode='dual', side='left'){
   const sceneKey = sceneKeyFromVideoCode(code);
   const effectNo = effectNoFromVideoCode(code);
   const causes = GUIDE_EFFECT_CAUSES[effectNo] || [];
-  const targets = GUIDE_PULSE_TARGETS[sceneKey] || GUIDE_PULSE_TARGETS.day;
+  const targets = targetSetForPulse(mode, side, sceneKey);
 
   if(!causes.length) return [{...targets.clear}];
 
@@ -1771,13 +1831,13 @@ function setPulseStyle(el, p){
   el.style.setProperty('--pulse-size-mobile', Math.max(82, Math.round(p.size * 0.72)) + 'px');
 }
 
-function applyPulsePoint(el, code){
+function applyPulsePoint(el, code, mode='dual', side='left'){
   if(!el) return;
   const parent = el.parentElement;
   if(parent){
     parent.querySelectorAll('.scene-pulse-extra').forEach(node=>node.remove());
   }
-  const points = pulsePointsForCode(code);
+  const points = pulsePointsForCode(code, mode, side);
   const primary = points[0] || {x:50,y:55,size:150};
   setPulseStyle(el, primary);
   el.style.display = 'block';
@@ -1988,10 +2048,10 @@ function updateVideos(){
   dom.rightVideoLabel.innerHTML=guideText(rightCode);
   dom.splitLeftVideoLabel.innerHTML=guideText(leftCode);
   dom.splitRightVideoLabel.innerHTML=guideText(rightCode);
-  applyPulsePoint(dom.leftScenePulse,leftCode);
-  applyPulsePoint(dom.rightScenePulse,rightCode);
-  applyPulsePoint(dom.splitLeftScenePulse,leftCode);
-  applyPulsePoint(dom.splitRightScenePulse,rightCode);
+  applyPulsePoint(dom.leftScenePulse,leftCode,'dual','left');
+  applyPulsePoint(dom.rightScenePulse,rightCode,'dual','right');
+  applyPulsePoint(dom.splitLeftScenePulse,leftCode,'split','left');
+  applyPulsePoint(dom.splitRightScenePulse,rightCode,'split','right');
   restartBothVideos();
   updateViewMode();
   updatePlayButton();
