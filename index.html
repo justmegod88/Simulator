@@ -1124,6 +1124,36 @@ select.product-enhanced-native{display:none!important}
     padding:22px !important;
   }
 
+  /* Slide mode: let the single video use the white area more fully on iPad landscape */
+  .stage-wrap:not(.dual-mode) .video-card,
+  .stage-wrap:not(.dual-mode) .split-stage,
+  .viewer:not(.dual-layout) .video-card,
+  .viewer:not(.dual-layout) .split-stage{
+    height: clamp(430px, 42vw, 560px) !important;
+    min-height: clamp(430px, 42vw, 560px) !important;
+    max-height: none !important;
+  }
+
+  .stage-wrap:not(.dual-mode){
+    padding: 10px !important;
+  }
+
+  .stage-wrap:not(.dual-mode) .stage{
+    gap: 0 !important;
+  }
+
+  .stage-wrap:not(.dual-mode) .side-label{
+    left: 14px !important;
+    right: 14px !important;
+    top: 14px !important;
+  }
+
+  .stage-wrap:not(.dual-mode) .video-label{
+    max-width: 64% !important;
+    font-size: 12px !important;
+  }
+
+
   .shell,
   .shell:not(.sidebar-collapsed){
     display:grid !important;
