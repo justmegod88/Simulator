@@ -1407,6 +1407,230 @@ select.product-enhanced-native{display:none!important}
 }
 </style>
 
+
+<style id="ipad-force-desktop-layout-v3">
+/* iPad dedicated version: force real 2-column dashboard on tablet widths */
+@media only screen and (min-width: 768px) and (max-width: 1180px){
+  .app{
+    max-width: 1500px !important;
+    padding: 12px !important;
+  }
+
+  .shell,
+  .shell:not(.sidebar-collapsed){
+    display: grid !important;
+    grid-template-columns: 300px minmax(0, 1fr) !important;
+    gap: 12px !important;
+    align-items: start !important;
+  }
+
+  .panel.sidebar{
+    position: sticky !important;
+    top: 10px !important;
+    align-self: start !important;
+    height: fit-content !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 12px !important;
+    gap: 10px !important;
+    overflow: visible !important;
+  }
+
+  .panel.viewer{
+    align-self: start !important;
+    min-width: 0 !important;
+    padding: 12px !important;
+    gap: 6px !important;
+  }
+
+  .hero{
+    min-height: 88px !important;
+    padding: 12px 14px !important;
+    gap: 10px !important;
+    border-radius: 22px !important;
+  }
+  .hero-text{
+    width: 168px !important;
+    max-width: 168px !important;
+    flex: 0 0 168px !important;
+    gap: 4px !important;
+  }
+  .acuvue-logo-title{
+    width: 168px !important;
+    height: 28px !important;
+    max-height: 28px !important;
+  }
+  .hero-subtitle{
+    width: 168px !important;
+    font-size: 13.8px !important;
+    line-height: 1.04 !important;
+    white-space: nowrap !important;
+    transform: none !important;
+  }
+  .hero-pack{
+    width: 62px !important;
+    height: 36px !important;
+    flex: 0 0 62px !important;
+    margin-right: 0 !important;
+    transform: none !important;
+  }
+  .hero-pack img{transform: scale(1.25) !important;}
+
+  .section{
+    padding: 12px !important;
+    border-radius: 18px !important;
+  }
+  .section-head{
+    margin-bottom: 9px !important;
+    gap: 7px !important;
+  }
+  .section-num{
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 12px !important;
+  }
+  .section-title{font-size: 16px !important;}
+  .section-sub{font-size: 11px !important; line-height: 1.3 !important;}
+
+  .grid-chip{
+    gap: 8px !important;
+  }
+  .chip{
+    padding: 9px 12px !important;
+    font-size: 13px !important;
+  }
+
+  .scene-grid{
+    gap: 8px !important;
+  }
+  .scene-chip{
+    min-height: 36px !important;
+    padding: 7px !important;
+    border-radius: 14px !important;
+  }
+  .scene-chip strong{font-size: 11.5px !important;}
+
+  .field + .field{margin-top: 10px !important;}
+  .field label{font-size: 11px !important;}
+  select,
+  .product-select-btn{
+    height: 42px !important;
+    font-size: 12.5px !important;
+    border-radius: 14px !important;
+  }
+
+  .toolbar{
+    justify-content: space-between !important;
+    gap: 8px !important;
+    padding-bottom: 0 !important;
+  }
+  .toolbar-left,
+  .toolbar-right{
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .badge{
+    font-size: 12.5px !important;
+    padding: 8px 12px !important;
+  }
+  .outcome-inline{
+    padding: 7px 10px !important;
+    gap: 8px !important;
+  }
+  .outcome-inline-title,
+  .outcome-option{
+    font-size: 12.5px !important;
+  }
+  .outcome-info-btn{
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 13px !important;
+  }
+
+  .view-toggle{
+    padding: 4px !important;
+  }
+  .view-toggle button,
+  .ghost-btn{
+    height: 34px !important;
+    font-size: 12px !important;
+    padding: 0 12px !important;
+    border-radius: 12px !important;
+  }
+
+  .stage-wrap{
+    padding: 6px !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+  }
+  .stage{
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+    gap: 4px !important;
+    min-width: 0 !important;
+  }
+  .video-card,
+  .split-stage{
+    height: clamp(280px, 34vw, 360px) !important;
+    min-height: clamp(280px, 34vw, 360px) !important;
+    max-height: none !important;
+    border-radius: 16px !important;
+  }
+
+  .side-label{
+    top: 8px !important;
+    left: 8px !important;
+    right: 8px !important;
+    padding: 6px 7px !important;
+    gap: 5px !important;
+    border-radius: 14px !important;
+  }
+  .label-select{
+    height: 28px !important;
+    font-size: 9.5px !important;
+    padding: 0 26px 0 10px !important;
+    border-radius: 10px !important;
+  }
+  .info-btn{
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 12px !important;
+  }
+
+  .video-label{
+    font-size: 10.8px !important;
+    max-width: 78% !important;
+    padding: 7px 10px !important;
+  }
+  .video-label .guide-cause{font-size: 11.2px !important;}
+  .video-label .guide-target{font-size: 10.4px !important;}
+
+  .play-toggle{
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 18px !important;
+    right: 12px !important;
+    bottom: 12px !important;
+  }
+  .footer-note{
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  .references-footer{
+    margin-top: 12px !important;
+    padding: 18px 18px !important;
+    border-radius: 20px !important;
+  }
+
+  /* cancel tablet/mobile one-column behavior completely */
+  .shell.sidebar-collapsed{
+    grid-template-columns: 54px minmax(0,1fr) !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="app">
