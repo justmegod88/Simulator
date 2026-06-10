@@ -1115,41 +1115,344 @@ select.product-enhanced-native{display:none!important}
 }
 </style>
 
-<style id="ipad-landscape-safe-desktop-css">
+<style id="ipad-landscape-match-desktop-patch">
+/* iPad landscape: use desktop proportions and behavior as closely as possible */
 @media only screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape){
-  .app{max-width:1540px !important;margin:0 auto !important;padding:18px !important;}
-  .shell,.shell:not(.sidebar-collapsed){display:grid !important;grid-template-columns:380px minmax(0,1fr) !important;gap:18px !important;align-items:start !important;}
-  .panel.sidebar{position:sticky !important;top:14px !important;align-self:start !important;height:fit-content !important;min-height:0 !important;max-height:none !important;padding:16px !important;gap:12px !important;overflow:visible !important;}
-  .panel.viewer{min-width:0 !important;align-self:start !important;padding:16px !important;gap:8px !important;}
-  .hero{min-height:100px !important;padding:16px 18px !important;gap:12px !important;}
-  .section{padding:15px !important;}
+  .app{
+    max-width:1540px !important;
+    margin:0 auto !important;
+    padding:22px !important;
+  }
+
+  /* Slide mode: let the single video use the white area more fully on iPad landscape */
+  .stage-wrap:not(.dual-mode) .video-card,
+  .stage-wrap:not(.dual-mode) .split-stage,
+  .viewer:not(.dual-layout) .video-card,
+  .viewer:not(.dual-layout) .split-stage{
+    height: clamp(430px, 42vw, 560px) !important;
+    min-height: clamp(430px, 42vw, 560px) !important;
+    max-height: none !important;
+  }
+
+  .stage-wrap:not(.dual-mode){
+    padding: 10px !important;
+  }
+
+  .stage-wrap:not(.dual-mode) .stage{
+    gap: 0 !important;
+  }
+
+  .stage-wrap:not(.dual-mode) .side-label{
+    left: 14px !important;
+    right: 14px !important;
+    top: 14px !important;
+  }
+
+  .stage-wrap:not(.dual-mode) .video-label{
+    max-width: 64% !important;
+    font-size: 12px !important;
+  }
+
+
+  .shell,
+  .shell:not(.sidebar-collapsed){
+    display:grid !important;
+    grid-template-columns:390px minmax(0,1fr) !important;
+    gap:24px !important;
+    align-items:start !important;
+  }
+
+  .panel.sidebar{
+    position:sticky !important;
+    top:16px !important;
+    height:fit-content !important;
+    min-height:0 !important;
+    max-height:none !important;
+    padding:16px !important;
+    gap:14px !important;
+    border-radius:26px !important;
+    overflow:visible !important;
+    align-self:start !important;
+  }
+
+  .panel.viewer{
+    padding:16px !important;
+    gap:8px !important;
+    border-radius:26px !important;
+    min-width:0 !important;
+    align-self:start !important;
+  }
+
+  .hero{
+    min-height:104px !important;
+    padding:16px 20px !important;
+    gap:14px !important;
+    border-radius:26px !important;
+  }
+
+  .section{
+    padding:16px !important;
+    border-radius:22px !important;
+  }
+
+  .section-head{
+    margin-bottom:12px !important;
+    gap:10px !important;
+  }
+
   .section-title{font-size:18px !important;}
-  .section-sub{font-size:12px !important;line-height:1.4 !important;}
-  .chip{font-size:14px !important;padding:10px 16px !important;}
-  .scene-chip{min-height:40px !important;padding:8px 10px !important;}
+  .section-sub{font-size:12px !important; line-height:1.5 !important;}
+
+  .chip{
+    padding:11px 18px !important;
+    font-size:14px !important;
+    border-radius:999px !important;
+  }
+
+  .scene-chip{
+    min-height:40px !important;
+    padding:10px 10px !important;
+    border-radius:16px !important;
+  }
   .scene-chip strong{font-size:13px !important;}
+
+  .field + .field{margin-top:14px !important;}
   .field label{font-size:13px !important;}
-  select,.product-select-btn{height:48px !important;font-size:14px !important;}
-  .toolbar{display:flex !important;justify-content:space-between !important;align-items:center !important;gap:10px !important;flex-wrap:nowrap !important;}
-  .toolbar-left,.toolbar-right{display:flex !important;align-items:center !important;gap:8px !important;flex-wrap:nowrap !important;min-width:0 !important;}
-  .badge{padding:10px 14px !important;font-size:13px !important;white-space:nowrap !important;}
-  .outcome-inline{padding:8px 12px !important;gap:8px !important;flex-wrap:nowrap !important;white-space:nowrap !important;}
-  .outcome-inline-title,.outcome-option{font-size:13px !important;white-space:nowrap !important;}
-  .view-toggle{padding:4px !important;gap:4px !important;flex-wrap:nowrap !important;}
-  .view-toggle button,.ghost-btn{height:36px !important;font-size:12px !important;padding:0 14px !important;white-space:nowrap !important;}
-  .stage-wrap{padding:8px !important;overflow:hidden !important;}
-  .video-card,.split-stage{min-height:clamp(320px, 30vw, 420px) !important;height:auto !important;max-height:none !important;}
-  .side-label{top:12px !important;left:12px !important;right:12px !important;padding:7px 8px !important;}
-  .label-select{height:32px !important;font-size:11px !important;}
-  .info-btn{width:30px !important;height:30px !important;font-size:14px !important;}
-  .video-label{font-size:11px !important;max-width:72% !important;}
-  .video-label .guide-cause{font-size:11.6px !important;}
-  .video-label .guide-target{font-size:10.8px !important;}
-  .play-toggle{width:48px !important;height:48px !important;font-size:20px !important;}
-  .footer-note{font-size:12px !important;}
-  .sidebar-fold-btn{right:-18px !important;left:auto !important;top:50% !important;bottom:auto !important;transform:translateY(-50%) !important;width:40px !important;height:66px !important;border-radius:0 999px 999px 0 !important;}
+
+  select,
+  .product-select-btn{
+    height:50px !important;
+    font-size:14px !important;
+    border-radius:16px !important;
+  }
+
+  .toolbar{
+    justify-content:space-between !important;
+    gap:12px !important;
+    flex-wrap:wrap !important;
+  }
+  .toolbar-left,.toolbar-right{
+    gap:10px !important;
+    flex-wrap:wrap !important;
+  }
+
+  .badge{
+    padding:12px 16px !important;
+    font-size:14px !important;
+  }
+
+  .outcome-inline{
+    padding:10px 14px !important;
+    gap:10px !important;
+  }
+  .outcome-inline-title,
+  .outcome-option{
+    font-size:14px !important;
+  }
+
+  .view-toggle button{
+    height:36px !important;
+    padding:0 14px !important;
+    font-size:13px !important;
+    border-radius:999px !important;
+  }
+  .ghost-btn{
+    height:46px !important;
+    padding:0 20px !important;
+    font-size:14px !important;
+    border-radius:16px !important;
+  }
+
+  .stage-wrap{
+    padding:8px !important;
+    border-radius:24px !important;
+    overflow:hidden !important;
+  }
+  .stage{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    gap:4px !important;
+    min-width:0 !important;
+  }
+
+  .video-card,
+  .split-stage{
+    height:var(--stage-video-height) !important;
+    min-height:var(--stage-video-height) !important;
+    max-height:none !important;
+    border-radius:20px !important;
+  }
+
+  .side-label{
+    top:14px !important;
+    left:12px !important;
+    right:12px !important;
+    padding:8px 10px !important;
+    gap:8px !important;
+    border-radius:16px !important;
+  }
+
+  .label-select{
+    height:34px !important;
+    font-size:11px !important;
+    padding:0 30px 0 12px !important;
+    border-radius:12px !important;
+  }
+
+  .info-btn{
+    width:32px !important;
+    height:32px !important;
+    font-size:15px !important;
+  }
+
+  .video-label{
+    font-size:12px !important;
+    max-width:76% !important;
+  }
+  .video-label .guide-cause{font-size:12.6px !important;}
+  .video-label .guide-target{font-size:11.4px !important;}
+
+  .play-toggle{
+    width:52px !important;
+    height:52px !important;
+    font-size:22px !important;
+    right:16px !important;
+    bottom:16px !important;
+  }
+
+  .footer-note{
+    font-size:12px !important;
+    line-height:1.45 !important;
+  }
+
+  /* Fold button: same placement/behavior ratio as desktop */
+  .shell .sidebar-fold-btn{
+    display:flex !important;
+    right:-18px !important;
+    left:auto !important;
+    top:50% !important;
+    bottom:auto !important;
+    transform:translateY(-50%) !important;
+    width:42px !important;
+    height:68px !important;
+    border-radius:0 999px 999px 0 !important;
+  }
+
+  .shell.sidebar-collapsed{
+    grid-template-columns:54px minmax(0,1fr) !important;
+    align-items:start !important;
+  }
+
+  .shell.sidebar-collapsed .sidebar{
+    padding:0 !important;
+    min-height:0 !important;
+    height:var(--stage-video-height-collapsed) !important;
+    max-height:var(--stage-video-height-collapsed) !important;
+    align-self:start !important;
+    overflow:visible !important;
+  }
+
+  .shell.sidebar-collapsed .sidebar-fold-btn{
+    display:flex !important;
+    right:-18px !important;
+    left:auto !important;
+    top:50% !important;
+    bottom:auto !important;
+    transform:translateY(-50%) !important;
+    width:42px !important;
+    height:68px !important;
+    border-radius:0 999px 999px 0 !important;
+  }
+
+  .shell.sidebar-collapsed .sidebar-fold-btn::after{
+    content:'옵션 선택' !important;
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) rotate(-90deg) !important;
+    font-size:12px !important;
+    font-weight:950 !important;
+    color:#2359D8 !important;
+    white-space:nowrap !important;
+    opacity:.38 !important;
+  }
 }
 </style>
+
+
+<style id="ipad-landscape-slide-bigger-v3-fix">
+@media only screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape){
+  .viewer .stage-wrap:not(.dual-mode) .video-card,
+  .viewer .stage-wrap:not(.dual-mode) .split-stage,
+  .stage-wrap.single-mode .video-card,
+  .stage-wrap.single-mode .split-stage,
+  .viewer.slide-mode .video-card,
+  .viewer.slide-mode .split-stage{
+    height: clamp(500px, 46vw, 640px) !important;
+    min-height: clamp(500px, 46vw, 640px) !important;
+    max-height: none !important;
+  }
+
+  .viewer .stage-wrap:not(.dual-mode),
+  .stage-wrap.single-mode,
+  .viewer.slide-mode .stage-wrap{
+    padding: 10px !important;
+  }
+
+  .viewer .stage-wrap:not(.dual-mode) .stage,
+  .stage-wrap.single-mode .stage,
+  .viewer.slide-mode .stage{
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .viewer .stage-wrap:not(.dual-mode) .side-label,
+  .stage-wrap.single-mode .side-label,
+  .viewer.slide-mode .side-label{
+    left: 14px !important;
+    right: 14px !important;
+    top: 14px !important;
+  }
+
+  .viewer .stage-wrap:not(.dual-mode) .video-label,
+  .stage-wrap.single-mode .video-label,
+  .viewer.slide-mode .video-label{
+    max-width: 64% !important;
+    font-size: 12px !important;
+  }
+}
+</style>
+<script id="ipad-landscape-slide-bigger-v3-fix-js">
+(function(){
+  function isIpadLandscape(){
+    return window.matchMedia('(min-width: 1024px) and (max-width: 1366px) and (orientation: landscape)').matches;
+  }
+  function applySlideModeHooks(){
+    if(!isIpadLandscape()) return;
+    var viewer = document.querySelector('.panel.viewer') || document.querySelector('.viewer');
+    var stageWrap = document.querySelector('.stage-wrap');
+    var dualBtn = document.getElementById('dualViewBtn');
+    var splitBtn = document.getElementById('splitViewBtn');
+    if(!viewer || !stageWrap) return;
+
+    function sync(){
+      var isDualActive = !!(dualBtn && dualBtn.classList.contains('active'));
+      var isSplitActive = !!(splitBtn && splitBtn.classList.contains('active'));
+      var isSingle = (!isDualActive && isSplitActive) || stageWrap.classList.contains('split-mode');
+      viewer.classList.toggle('slide-mode', isSingle);
+      stageWrap.classList.toggle('single-mode', isSingle);
+      stageWrap.classList.toggle('dual-mode', !isSingle);
+    }
+
+    sync();
+    if(dualBtn) dualBtn.addEventListener('click', function(){ setTimeout(sync, 0); });
+    if(splitBtn) splitBtn.addEventListener('click', function(){ setTimeout(sync, 0); });
+    window.addEventListener('resize', sync);
+  }
+  window.addEventListener('load', applySlideModeHooks);
+  document.addEventListener('DOMContentLoaded', applySlideModeHooks);
+})();
+</script>
 
 </head>
 <body>
@@ -2477,6 +2780,41 @@ updatePlayButton();
   .hero-subtitle{font-size:15.3px !important;}
 }
 </style>
+
+<script id="ipad-landscape-match-desktop-js">
+(function(){
+  function isIpadLandscapeLike(){
+    return window.matchMedia('(min-width: 1024px) and (max-width: 1366px) and (orientation: landscape)').matches;
+  }
+
+  function normalizeIpadLandscapeLayout(){
+    if(!isIpadLandscapeLike()) return;
+    var shell = document.getElementById('appShell');
+    var btn = document.getElementById('sidebarFoldBtn');
+    if(!shell || !btn) return;
+
+    // If a weird prior state is saved, start in open desktop-like view once.
+    try{
+      if(localStorage.getItem('sidebarCollapsed') === 'true'){
+        localStorage.setItem('sidebarCollapsed', 'false');
+      }
+    }catch(e){}
+
+    if(shell.classList.contains('sidebar-collapsed')){
+      shell.classList.remove('sidebar-collapsed');
+      if(window.state){ window.state.sidebarCollapsed = false; }
+      btn.setAttribute('aria-label','옵션 선택 영역 접기');
+      btn.setAttribute('title','옵션 선택 영역 접기');
+      btn.textContent = '‹';
+    }
+  }
+
+  window.addEventListener('load', normalizeIpadLandscapeLayout);
+  window.addEventListener('resize', normalizeIpadLandscapeLayout);
+  document.addEventListener('DOMContentLoaded', normalizeIpadLandscapeLayout);
+})();
+</script>
+
 </body>
 </html>
 <!-- fold rail height alignment patch -->
