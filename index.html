@@ -1454,6 +1454,47 @@ select.product-enhanced-native{display:none!important}
 })();
 </script>
 
+
+
+
+
+<style id="ipad-landscape-slide-safe-fix-v5">
+@media only screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape){
+  .panel.viewer{gap:6px !important;}
+  .toolbar{display:flex !important;justify-content:space-between !important;align-items:center !important;gap:8px !important;flex-wrap:nowrap !important;}
+  .toolbar-left,.toolbar-right{display:flex !important;align-items:center !important;gap:8px !important;flex-wrap:nowrap !important;min-width:0 !important;}
+  .badge{padding:8px 12px !important;font-size:12px !important;white-space:nowrap !important;}
+  .outcome-inline{padding:7px 10px !important;gap:8px !important;flex-wrap:nowrap !important;white-space:nowrap !important;}
+  .outcome-inline-title,.outcome-option{font-size:12px !important;white-space:nowrap !important;}
+  .view-toggle{padding:4px !important;gap:4px !important;flex-wrap:nowrap !important;}
+  .view-toggle button,.ghost-btn{height:34px !important;padding:0 12px !important;font-size:12px !important;white-space:nowrap !important;}
+
+  .viewer.slide-mode .video-card,
+  .viewer.slide-mode .split-stage,
+  .stage-wrap.single-mode .video-card,
+  .stage-wrap.single-mode .split-stage{
+    height: clamp(390px, 34vw, 480px) !important;
+    min-height: clamp(390px, 34vw, 480px) !important;
+    max-height: 480px !important;
+  }
+
+  .viewer.slide-mode .stage-wrap,
+  .stage-wrap.single-mode{padding:8px !important;}
+
+  .viewer.slide-mode .side-label,
+  .stage-wrap.single-mode .side-label{left:12px !important;right:12px !important;top:12px !important;}
+
+  .viewer.slide-mode .label-select,
+  .stage-wrap.single-mode .label-select{height:32px !important;font-size:10.5px !important;padding:0 30px 0 10px !important;}
+
+  .viewer.slide-mode .info-btn,
+  .stage-wrap.single-mode .info-btn{width:30px !important;height:30px !important;font-size:14px !important;}
+
+  .viewer.slide-mode .video-label,
+  .stage-wrap.single-mode .video-label{max-width:66% !important;font-size:11px !important;}
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -2812,6 +2853,46 @@ updatePlayButton();
   window.addEventListener('load', normalizeIpadLandscapeLayout);
   window.addEventListener('resize', normalizeIpadLandscapeLayout);
   document.addEventListener('DOMContentLoaded', normalizeIpadLandscapeLayout);
+})();
+</script>
+
+
+<script id="ipad-landscape-slide-safe-fix-v5-js">
+(function(){
+  function isIpadLandscape(){
+    return window.matchMedia('(min-width: 1024px) and (max-width: 1366px) and (orientation: landscape)').matches;
+  }
+  function syncSlideModeState(){
+    if(!isIpadLandscape()) return;
+    var viewer = document.querySelector('.panel.viewer') || document.querySelector('.viewer');
+    var stageWrap = document.querySelector('.stage-wrap');
+    var dualBtn = document.getElementById('dualViewBtn');
+    var splitBtn = document.getElementById('splitViewBtn');
+    if(!viewer || !stageWrap || !dualBtn || !splitBtn) return;
+    var dualActive = dualBtn.classList.contains('active');
+    var splitActive = splitBtn.classList.contains('active');
+    if(splitActive && !dualActive){
+      viewer.classList.add('slide-mode');
+      stageWrap.classList.add('single-mode');
+      stageWrap.classList.remove('dual-mode');
+    }else{
+      viewer.classList.remove('slide-mode');
+      stageWrap.classList.remove('single-mode');
+      stageWrap.classList.add('dual-mode');
+    }
+  }
+  function bindOnce(){
+    if(window.__ipadSlideFixBound) return;
+    window.__ipadSlideFixBound = true;
+    var dualBtn = document.getElementById('dualViewBtn');
+    var splitBtn = document.getElementById('splitViewBtn');
+    if(dualBtn){ dualBtn.addEventListener('click', function(){ setTimeout(syncSlideModeState, 30); }); }
+    if(splitBtn){ splitBtn.addEventListener('click', function(){ setTimeout(syncSlideModeState, 30); }); }
+    window.addEventListener('resize', syncSlideModeState);
+    window.addEventListener('orientationchange', function(){ setTimeout(syncSlideModeState, 60); });
+  }
+  document.addEventListener('DOMContentLoaded', function(){ bindOnce(); setTimeout(syncSlideModeState, 60); });
+  window.addEventListener('load', function(){ bindOnce(); setTimeout(syncSlideModeState, 120); });
 })();
 </script>
 
