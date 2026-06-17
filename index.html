@@ -2119,17 +2119,16 @@ function pulsePointsForCode(code, mode='dual'){
     return [nearPoint, bluePoint];
   }
 
-  // 4 난시+노안+블루라이트: 전체 시야 + 근거리 중심으로 표시
+  // 4 난시+노안+블루라이트: 난시 화면에서는 블루라이트 원을 빼고 난시/노안만 표시
   if(effectNo === 4){
-    if(sceneKey === 'day') return [astigPoint, nearPoint];
-    return [astigPoint, nearPoint, bluePoint];
+    return [astigPoint, nearPoint];
   }
 
   // 5 난시만
   if(effectNo === 5) return [astigPoint];
 
-  // 6 난시+블루라이트
-  if(effectNo === 6) return [astigPoint, bluePoint];
+  // 6 난시+블루라이트: 난시 미교정 화면에서는 블루라이트 원을 아예 표시하지 않음
+  if(effectNo === 6) return [astigPoint];
 
   // 7 노안만
   if(effectNo === 7) return [nearPoint];
@@ -2388,7 +2387,8 @@ function applyVideoAdjust(video,code){
   const isMarketScene = String(code || '').startsWith('1-');
   const isSplitVideo = video && video.id && video.id.toLowerCase().includes('split');
   if(isMarketScene && !isSplitVideo){
-    video.style.setProperty('--video-x','8%');
+    // 마트 듀얼화면: 핸드폰만 중앙에 잡히지 않도록 가격표가 보이는 방향으로 기준점 재조정
+    video.style.setProperty('--video-x','14%');
   }
 }
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
