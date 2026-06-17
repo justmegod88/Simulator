@@ -2112,10 +2112,9 @@ function pulsePointsForCode(code, mode='dual'){
   // 1 블루라이트만: 핸드폰/자동차 라이트/촛불 위치에 표시
   if(effectNo === 1) return [bluePoint];
 
-  // 3 노안+블루라이트
+  // 3 노안+블루라이트: 노안만/근원시+노안 조합에서는 블루라이트 원 유지
+  // 블루라이트 미차단 원은 pulseLabelForPoint()에서 텍스트 없이 원만 표시됨
   if(effectNo === 3){
-    // 마트는 근거리 대상과 블루라이트 대상이 거의 같아서 문구가 겹치지 않게 근거리만 표시
-    if(sceneKey === 'day') return [nearPoint];
     return [nearPoint, bluePoint];
   }
 
@@ -2383,16 +2382,17 @@ function applyVideoAdjust(video,code){
   video.style.objectFit = 'cover';
   video.style.objectPosition = 'center center';
 
-  // 마트(day) 듀얼화면은 세로로 좁은 카드 안에서 cover crop이 걸리면
-  // 핸드폰만 크게 잡히고 왼쪽 가격표가 잘려 보임.
-  // 그래서 마트 듀얼화면에서만 crop을 풀어 contain으로 표시하여
-  // LEMONS / APPLES 가격표와 핸드폰이 함께 보이도록 함.
-  // 슬라이드화면(split)은 기존 크롭/비율을 그대로 유지.
+  // 마트(day) 듀얼화면만 보정:
+  // contain으로 풀면 원래 구도처럼 과하게 돌아가서 핸드폰이 사라질 수 있어,
+  // cover는 유지하고 영상 자체를 살짝 오른쪽으로 이동시켜
+  // 왼쪽 가격표(LEMONS / APPLES)와 핸드폰이 함께 보이게 함.
+  // 슬라이드화면(split)은 기존 크롭/비율 유지.
   const isMarketScene = String(code || '').startsWith('1-');
   const isSplitVideo = video && video.id && video.id.toLowerCase().includes('split');
   if(isMarketScene && !isSplitVideo){
-    video.style.objectFit = 'contain';
+    video.style.objectFit = 'cover';
     video.style.objectPosition = 'center center';
+    video.style.setProperty('--video-x','8%');
   }
 }
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
