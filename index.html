@@ -1037,6 +1037,28 @@ select.product-enhanced-native{display:none!important}
   left:var(--pulse-x-left,var(--pulse-x,50%));
   top:var(--pulse-y-left,var(--pulse-y,55%));
 }
+
+.scene-pulse .pulse-label{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  white-space:pre-line;
+  word-break:keep-all;
+  line-height:1.22;
+  padding:12px;
+  border-radius:999px;
+  color:#fff;
+  font-size:clamp(13px,1.08vw,18px);
+  font-weight:950;
+  letter-spacing:-.04em;
+  text-shadow:0 2px 8px rgba(0,0,0,.42), 0 0 14px rgba(0,0,0,.22);
+  background:rgba(10,47,120,.18);
+  pointer-events:none;
+}
 .video-label{
   display:flex;
   align-items:center;
@@ -2069,34 +2091,68 @@ function pulsePointsForCode(code, mode='dual'){
   const targetSet = guidePulseTargetsForMode(mode);
   const targets = targetSet[sceneKey] || targetSet.day;
 
-  // 교정된 시야는 문구만 표시하고 원형 펄스는 표시하지 않음
-  if(!causes.length) return [];
+  const bluePoint = {...(targets.glareOnly || targets.glare), guideType:'blue'};
+  const astigPoint = {...targets.astig, guideType:'astig'};
+  const nearPoint = {...targets.near, guideType:'near'};
 
-  // 요청 반영 2026-05
-  // 5 난시만: 원 삭제
-  // 8 난시+노안: 원 삭제
-  // 4 난시+노안+블루라이트: 원 삭제
-  if(effectNo === 5 || effectNo === 8 || effectNo === 4) return [];
-
-  // 3 노안+블루라이트: 블루라이트 미차단 기준 좌표와 동일하게 적용
-  // - 마트/핸드폰은 근거리 대상과 블루라이트 대상이 같으므로 1개
-  // - 야간/레스토랑은 근거리 대상 + 블루라이트 광원 2개
-  if(effectNo === 3){
-    const bluePoint = {...(targets.glareOnly || targets.glare)};
-    if(sceneKey === 'day') return [bluePoint];
-    return [{...targets.near}, bluePoint];
+  // 교정된 MAX 계열 효과는 블루라이트 차단 효과 확인 위치만 보여줌
+  if(!causes.length){
+    if(effectNo === 2) return [bluePoint];
+    return [];
   }
 
-  // 6 난시+블루라이트: 블루라이트 미차단 기준 좌표와 동일하게 적용
-  if(effectNo === 6) return [{...(targets.glareOnly || targets.glare)}];
+  // 1 블루라이트만: 핸드폰/자동차 라이트/촛불 위치에 표시
+  if(effectNo === 1) return [bluePoint];
 
-  // 1 블루라이트만: 블루라이트 광원만 1개 표시
-  if(effectNo === 1) return [{...(targets.glareOnly || targets.glare)}];
+  // 3 노안+블루라이트
+  if(effectNo === 3){
+    // 마트는 근거리 대상과 블루라이트 대상이 거의 같아서 문구가 겹치지 않게 근거리만 표시
+    if(sceneKey === 'day') return [nearPoint];
+    return [nearPoint, bluePoint];
+  }
 
-  // 7 노안만: 기존처럼 근거리 대상 1개 표시
-  if(effectNo === 7) return [{...targets.near}];
+  // 4 난시+노안+블루라이트: 전체 시야 + 근거리 중심으로 표시
+  if(effectNo === 4){
+    if(sceneKey === 'day') return [astigPoint, nearPoint];
+    return [astigPoint, nearPoint, bluePoint];
+  }
+
+  // 5 난시만
+  if(effectNo === 5) return [astigPoint];
+
+  // 6 난시+블루라이트
+  if(effectNo === 6) return [astigPoint, bluePoint];
+
+  // 7 노안만
+  if(effectNo === 7) return [nearPoint];
+
+  // 8 난시+노안
+  if(effectNo === 8) return [astigPoint, nearPoint];
 
   return [];
+}
+
+function pulseLabelForPoint(p){
+  if(!p) return '';
+  if(p.guideType === 'astig') return '겹쳐보이는\n시야';
+  if(p.guideType === 'near') return '근거리\n흐림';
+  if(p.guideType === 'blue') return '눈부심,\n빛번짐 감소';
+  return '';
+}
+
+function setPulseLabel(el, label){
+  if(!el) return;
+  let labelEl = el.querySelector('.pulse-label');
+  if(!label){
+    if(labelEl) labelEl.remove();
+    return;
+  }
+  if(!labelEl){
+    labelEl = document.createElement('div');
+    labelEl.className = 'pulse-label';
+    el.appendChild(labelEl);
+  }
+  labelEl.textContent = label;
 }
 
 function setPulseStyle(el, p){
@@ -2106,7 +2162,7 @@ function setPulseStyle(el, p){
   el.style.setProperty('--pulse-size-mobile', Math.max(82, Math.round(p.size * 0.72)) + 'px');
 }
 
-const MARKET_PULSE_DELAY_MS = 1800; // 마트 장면에서 핸드폰 주시 원형 가이드만 1.6초 늦게 표시
+const MARKET_PULSE_DELAY_MS = 1800; // 마트 장면에서 핸드폰 주시 원형 가이드만 1.8초 늦게 표시
 
 function applyPulsePoint(el, code){
   if(!el) return;
@@ -2121,10 +2177,12 @@ function applyPulsePoint(el, code){
   }
   const points = pulsePointsForCode(code, mode);
   if(!points.length){
+    setPulseLabel(el, '');
     el.style.display = 'none';
     return;
   }
   setPulseStyle(el, points[0]);
+  setPulseLabel(el, pulseLabelForPoint(points[0]));
 
   const showPulse = () => {
     el.style.display = 'block';
@@ -2136,6 +2194,7 @@ function applyPulsePoint(el, code){
         extra.className = el.className + ' scene-pulse-extra';
         extra.setAttribute('aria-hidden','true');
         setPulseStyle(extra, p);
+        setPulseLabel(extra, pulseLabelForPoint(p));
         extra.style.display = 'block';
         parent.appendChild(extra);
       });
