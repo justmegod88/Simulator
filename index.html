@@ -2036,17 +2036,17 @@ function guideText(code){
 const GUIDE_PULSE_TARGETS_DUAL = {
   day:{
     /* 난시 겹침효과: 마트는 왼쪽 가격표 쪽 */
-    astig:{x:22,y:48,size:188},
+    astig:{x:19,y:48,size:188},
     /* 마트 듀얼화면: 영상 크롭 이동에 맞춰 핸드폰 위치로 원을 오른쪽 이동 */
-    near:{x:68,y:57,size:188},
-    glare:{x:68,y:57,size:188},
+    near:{x:71,y:57,size:188},
+    glare:{x:71,y:57,size:188},
     /* 블루라이트 미차단만: 핸드폰 위치로 오른쪽 이동 */
-    glareOnly:{x:64,y:57,size:188},
+    glareOnly:{x:67,y:57,size:188},
     clear:{x:50,y:56,size:188}
   },
   night:{
     /* 야간운전 난시 원 위치는 기존 위치 유지 */
-    astig:{x:50,y:56,size:188},
+    astig:{x:50,y:53,size:188},
     near:{x:43,y:74,size:188},
     glare:{x:74,y:38,size:188},
     /* 블루라이트 미차단만: 야간은 자동차 라이트 쪽으로 많이 좌측 */
@@ -2068,16 +2068,16 @@ const GUIDE_PULSE_TARGETS_DUAL = {
 const GUIDE_PULSE_TARGETS_SPLIT = {
   day:{
     /* 난시 겹침효과: 마트는 왼쪽 가격표 쪽 */
-    astig:{x:24,y:48,size:188},
-    near:{x:57,y:58,size:188},
-    glare:{x:57,y:58,size:188},
+    astig:{x:21,y:48,size:188},
+    near:{x:60,y:58,size:188},
+    glare:{x:60,y:58,size:188},
     /* 블루라이트 미차단만: 마트는 아주 살짝 좌측 */
-    glareOnly:{x:53,y:58,size:188},
+    glareOnly:{x:56,y:58,size:188},
     clear:{x:50,y:56,size:188}
   },
   night:{
     /* 야간운전 난시 원 위치는 기존 위치 유지 */
-    astig:{x:50,y:57,size:188},
+    astig:{x:50,y:54,size:188},
     near:{x:42,y:75,size:188},
     glare:{x:73,y:40,size:188},
     /* 블루라이트 미차단만: 야간은 자동차 라이트 쪽으로 많이 좌측 */
@@ -2223,7 +2223,7 @@ function setPulseStyle(el, p){
   el.style.setProperty('--pulse-size-mobile', '98px');
 }
 
-const MARKET_PULSE_DELAY_MS = 1800; // 마트 장면에서 핸드폰 주시 원형 가이드만 1.8초 늦게 표시
+const MARKET_PULSE_DELAY_MS = 2000; // 마트 장면에서 핸드폰 주시 원형 가이드만 2초 늦게 표시
 
 function applyPulsePoint(el, code, productId=''){
   if(!el) return;
@@ -2440,7 +2440,7 @@ function applyVideoAdjust(video,code){
   const isSplitVideo = video && video.id && video.id.toLowerCase().includes('split');
   if(isMarketScene && !isSplitVideo){
     video.style.setProperty('object-fit','cover','important');
-    video.style.setProperty('object-position','18% center','important');
+    video.style.setProperty('object-position','21% center','important');
     video.style.setProperty('--video-x','0px');
     video.style.setProperty('--video-y','0px');
     video.style.setProperty('--video-scale','1');
