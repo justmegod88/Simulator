@@ -2020,56 +2020,62 @@ function guideText(code){
 
 const GUIDE_PULSE_TARGETS_DUAL = {
   day:{
-    astig:{x:47,y:55,size:282},
+    /* 난시 겹침효과: 마트는 왼쪽 가격표 쪽 */
+    astig:{x:22,y:48,size:188},
     near:{x:58,y:57,size:188},
     glare:{x:58,y:57,size:188},
     /* 블루라이트 미차단만: 마트는 아주 살짝 좌측 */
     glareOnly:{x:54,y:57,size:188},
-    clear:{x:50,y:56,size:278}
+    clear:{x:50,y:56,size:188}
   },
   night:{
-    astig:{x:50,y:56,size:292},
-    near:{x:43,y:74,size:176},
+    /* 야간운전 난시 원 위치는 기존 위치 유지 */
+    astig:{x:50,y:56,size:188},
+    near:{x:43,y:74,size:188},
     glare:{x:74,y:38,size:188},
     /* 블루라이트 미차단만: 야간은 자동차 라이트 쪽으로 많이 좌측 */
     glareOnly:{x:53,y:39,size:188},
-    clear:{x:50,y:56,size:286}
+    clear:{x:50,y:56,size:188}
   },
   dine:{
-    astig:{x:50,y:58,size:292},
-    near:{x:47,y:74,size:186},
-    glare:{x:86,y:78,size:148},
+    /* 난시 겹침효과: 레스토랑은 뒤쪽 우측 액자 쪽 */
+    astig:{x:76,y:32,size:188},
+    near:{x:47,y:74,size:188},
+    glare:{x:86,y:78,size:188},
     /* 블루라이트 미차단만 + 듀얼화면: 촛불 위치 기준 우측 아래 */
-    glareOnly:{x:88,y:84,size:148},
-    clear:{x:50,y:58,size:286}
+    glareOnly:{x:88,y:84,size:188},
+    clear:{x:50,y:58,size:188}
   }
 };
 
 /* 듀얼화면과 슬라이드화면은 영상 크롭/표시 영역이 달라 보여 좌표만 분리함. */
 const GUIDE_PULSE_TARGETS_SPLIT = {
   day:{
-    astig:{x:46,y:55,size:272},
-    near:{x:57,y:58,size:180},
-    glare:{x:57,y:58,size:180},
+    /* 난시 겹침효과: 마트는 왼쪽 가격표 쪽 */
+    astig:{x:24,y:48,size:188},
+    near:{x:57,y:58,size:188},
+    glare:{x:57,y:58,size:188},
     /* 블루라이트 미차단만: 마트는 아주 살짝 좌측 */
-    glareOnly:{x:53,y:58,size:180},
-    clear:{x:50,y:56,size:268}
+    glareOnly:{x:53,y:58,size:188},
+    clear:{x:50,y:56,size:188}
   },
   night:{
-    astig:{x:50,y:57,size:280},
-    near:{x:42,y:75,size:170},
-    glare:{x:73,y:40,size:180},
+    /* 야간운전 난시 원 위치는 기존 위치 유지 */
+    astig:{x:50,y:57,size:188},
+    near:{x:42,y:75,size:188},
+    glare:{x:73,y:40,size:188},
     /* 블루라이트 미차단만: 야간은 자동차 라이트 쪽으로 많이 좌측 */
-    glareOnly:{x:52,y:41,size:180},
-    clear:{x:50,y:57,size:274}
+    glareOnly:{x:52,y:41,size:188},
+    clear:{x:50,y:57,size:188}
   },
   dine:{
-    astig:{x:50,y:59,size:280},
-    near:{x:47,y:76,size:178},
-    glare:{x:84,y:79,size:142},
+    /* 난시 겹침효과: 레스토랑은 뒤쪽 우측 액자 쪽 */
+    astig:{x:74,y:32,size:188},
+    near:{x:47,y:76,size:188},
+    glare:{x:84,y:79,size:188},
     /* 블루라이트 미차단만 + 슬라이드화면: 촛불 쪽으로 어느 정도 좌측 */
-    glareOnly:{x:72,y:80,size:142},
-    clear:{x:50,y:59,size:274}
+    glareOnly:{x:72,y:80,size:188},
+    clear:{x:50,y:59,size:188}
   }
 };
 
@@ -2163,11 +2169,13 @@ function setPulseLabel(el, label){
 }
 
 function setPulseStyle(el, p){
-  const size = Math.max(96, Math.round(p.size * 0.72));
+  // 노안/난시/블루라이트 원 크기를 모두 동일하게 유지
+  // 현재 블루라이트 원 사이즈 수준으로 작게 통일
+  const size = 135;
   el.style.setProperty('--pulse-x', p.x + '%');
   el.style.setProperty('--pulse-y', p.y + '%');
   el.style.setProperty('--pulse-size', size + 'px');
-  el.style.setProperty('--pulse-size-mobile', Math.max(72, Math.round(size * 0.72)) + 'px');
+  el.style.setProperty('--pulse-size-mobile', '98px');
 }
 
 const MARKET_PULSE_DELAY_MS = 1800; // 마트 장면에서 핸드폰 주시 원형 가이드만 1.8초 늦게 표시
@@ -2369,7 +2377,20 @@ function renderProducts(){
   refreshProductCustomDropdowns();
 }
 
-function applyVideoAdjust(video,code){video.style.setProperty('--video-x','0px');video.style.setProperty('--video-y','0px');video.style.setProperty('--video-scale','1')}
+function applyVideoAdjust(video,code){
+  video.style.setProperty('--video-x','0px');
+  video.style.setProperty('--video-y','0px');
+  video.style.setProperty('--video-scale','1');
+
+  // 마트(day) 영상은 듀얼화면에서 중앙 크롭으로 핸드폰만 보이지 않도록
+  // 영상을 살짝 오른쪽으로 이동시켜, 원본의 좌측 가격표와 핸드폰이 함께 보이게 함.
+  // 슬라이드화면(split)은 기존 비율/크롭을 유지.
+  const isMarketScene = String(code || '').startsWith('1-');
+  const isSplitVideo = video && video.id && video.id.toLowerCase().includes('split');
+  if(isMarketScene && !isSplitVideo){
+    video.style.setProperty('--video-x','8%');
+  }
+}
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
 function allVideoEls(){
   return [dom.leftVideo,dom.rightVideo,dom.splitLeftVideo,dom.splitRightVideo].filter(Boolean);
