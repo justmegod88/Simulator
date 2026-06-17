@@ -2406,16 +2406,16 @@ function applyVideoAdjust(video,code){
   video.style.objectPosition = 'center center';
 
   // 마트(day) 듀얼화면만 보정:
-  // transform으로 영상을 밀면 이미 중앙 기준으로 crop된 뒤 이동하는 느낌이 생겨
-  // 가격표가 계속 잘릴 수 있으므로, crop 기준점 자체(object-position)를 좌측으로 조정한다.
-  // cover는 유지하되, LEMONS / APPLES 가격표와 핸드폰이 함께 보이도록 32% 지점 기준으로 crop.
+  // 다른 영상은 그대로 유지하고, 마트(1-계열) 듀얼 화면에서만 왼쪽 가격표 영역이 더 보이도록 crop 기준을 왼쪽으로 이동.
   // 슬라이드화면(split)은 기존 크롭/비율 유지.
   const isMarketScene = String(code || '').startsWith('1-');
   const isSplitVideo = video && video.id && video.id.toLowerCase().includes('split');
   if(isMarketScene && !isSplitVideo){
     video.style.objectFit = 'cover';
-    video.style.objectPosition = '32% center';
+    video.style.objectPosition = '12% center';
     video.style.setProperty('--video-x','0px');
+    video.style.setProperty('--video-y','0px');
+    video.style.setProperty('--video-scale','1');
   }
 }
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
