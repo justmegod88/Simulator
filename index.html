@@ -1015,15 +1015,15 @@ select.product-enhanced-native{display:none!important}
   position:absolute;
   inset:0;
   border-radius:999px;
-  border:4px solid rgba(255,255,255,.84);
+  border:3px solid rgba(255,255,255,.84);
   background:transparent;
   box-shadow:
     0 0 0 3px rgba(0,0,0,.10),
-    0 0 34px rgba(255,255,255,.34);
+    0 0 22px rgba(255,255,255,.30);
   animation:softScenePulse 2.45s ease-out infinite;
 }
 .scene-pulse::after{
-  inset:-18px;
+  inset:-10px;
   border-width:2px;
   border-color:rgba(255,255,255,.42);
   background:transparent;
@@ -1040,23 +1040,25 @@ select.product-enhanced-native{display:none!important}
 
 .scene-pulse .pulse-label{
   position:absolute;
-  inset:0;
+  left:50%;
+  bottom:calc(100% + 8px);
+  transform:translateX(-50%);
   z-index:2;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:block;
   text-align:center;
-  white-space:pre-line;
+  white-space:nowrap;
   word-break:keep-all;
-  line-height:1.22;
-  padding:12px;
-  border-radius:999px;
+  line-height:1.15;
+  padding:6px 10px;
+  border-radius:8px;
   color:#fff;
-  font-size:clamp(13px,1.08vw,18px);
-  font-weight:950;
-  letter-spacing:-.04em;
-  text-shadow:0 2px 8px rgba(0,0,0,.42), 0 0 14px rgba(0,0,0,.22);
-  background:rgba(10,47,120,.18);
+  font-size:clamp(10px,.78vw,13px);
+  font-weight:850;
+  letter-spacing:-.035em;
+  text-shadow:0 1px 4px rgba(0,0,0,.35);
+  background:rgba(10,22,41,.68);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:0 6px 14px rgba(0,0,0,.16);
   pointer-events:none;
 }
 .video-label{
@@ -2132,11 +2134,16 @@ function pulsePointsForCode(code, mode='dual'){
   return [];
 }
 
-function pulseLabelForPoint(p){
+function pulseLabelForPoint(p, code){
   if(!p) return '';
-  if(p.guideType === 'astig') return '겹쳐보이는\n시야';
-  if(p.guideType === 'near') return '근거리\n흐림';
-  if(p.guideType === 'blue') return '눈부심,\n빛번짐 감소';
+  if(p.guideType === 'astig') return '겹쳐보이는 시야';
+  if(p.guideType === 'near') return '근거리 흐림';
+
+  // 블루라이트 가이드는 MAX 계열(교정/차단 효과)일 때만 문구 표시
+  // 블루라이트 미차단 원은 비교 영역을 가리지 않도록 원만 표시
+  if(p.guideType === 'blue'){
+    return effectNoFromVideoCode(code) === 2 ? '눈부심 & 빛번짐 감소' : '';
+  }
   return '';
 }
 
@@ -2156,10 +2163,11 @@ function setPulseLabel(el, label){
 }
 
 function setPulseStyle(el, p){
+  const size = Math.max(96, Math.round(p.size * 0.72));
   el.style.setProperty('--pulse-x', p.x + '%');
   el.style.setProperty('--pulse-y', p.y + '%');
-  el.style.setProperty('--pulse-size', p.size + 'px');
-  el.style.setProperty('--pulse-size-mobile', Math.max(82, Math.round(p.size * 0.72)) + 'px');
+  el.style.setProperty('--pulse-size', size + 'px');
+  el.style.setProperty('--pulse-size-mobile', Math.max(72, Math.round(size * 0.72)) + 'px');
 }
 
 const MARKET_PULSE_DELAY_MS = 1800; // 마트 장면에서 핸드폰 주시 원형 가이드만 1.8초 늦게 표시
@@ -2182,7 +2190,7 @@ function applyPulsePoint(el, code){
     return;
   }
   setPulseStyle(el, points[0]);
-  setPulseLabel(el, pulseLabelForPoint(points[0]));
+  setPulseLabel(el, pulseLabelForPoint(points[0], code));
 
   const showPulse = () => {
     el.style.display = 'block';
@@ -2194,7 +2202,7 @@ function applyPulsePoint(el, code){
         extra.className = el.className + ' scene-pulse-extra';
         extra.setAttribute('aria-hidden','true');
         setPulseStyle(extra, p);
-        setPulseLabel(extra, pulseLabelForPoint(p));
+        setPulseLabel(extra, pulseLabelForPoint(p, code));
         extra.style.display = 'block';
         parent.appendChild(extra);
       });
