@@ -2402,17 +2402,21 @@ function applyVideoAdjust(video,code){
   video.style.setProperty('--video-x','0px');
   video.style.setProperty('--video-y','0px');
   video.style.setProperty('--video-scale','1');
-  video.style.objectFit = 'cover';
-  video.style.objectPosition = 'center center';
+
+  // CSS에 object-position:center center !important가 있어 일반 inline style이 덮어쓰기 안 됨.
+  // 그래서 JS에서도 important로 지정해야 실제 화면에 반영됨.
+  video.style.setProperty('object-fit','cover','important');
+  video.style.setProperty('object-position','center center','important');
 
   // 마트(day) 듀얼화면만 보정:
-  // 다른 영상은 그대로 유지하고, 마트(1-계열) 듀얼 화면에서만 왼쪽 가격표 영역이 더 보이도록 crop 기준을 왼쪽으로 이동.
+  // 다른 영상은 그대로 유지하고, 마트(1-계열) 듀얼 화면에서만
+  // 중앙 크롭이 아니라 원본 영상의 가장 왼쪽 기준으로 크롭되게 처리.
   // 슬라이드화면(split)은 기존 크롭/비율 유지.
   const isMarketScene = String(code || '').startsWith('1-');
   const isSplitVideo = video && video.id && video.id.toLowerCase().includes('split');
   if(isMarketScene && !isSplitVideo){
-    video.style.objectFit = 'cover';
-    video.style.objectPosition = '12% center';
+    video.style.setProperty('object-fit','cover','important');
+    video.style.setProperty('object-position','0% center','important');
     video.style.setProperty('--video-x','0px');
     video.style.setProperty('--video-y','0px');
     video.style.setProperty('--video-scale','1');
