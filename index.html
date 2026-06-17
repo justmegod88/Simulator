@@ -1062,13 +1062,20 @@ select.product-enhanced-native{display:none!important}
   pointer-events:none;
 }
 .scene-pulse .pulse-label.label-astig{
-  bottom:auto;
-  top:calc(100% + 8px);
+  bottom:calc(100% + 8px);
+  top:auto;
   background:linear-gradient(180deg,rgba(20,60,140,.94),rgba(8,38,96,.94));
   border-color:rgba(180,210,255,.78);
   box-shadow:0 7px 15px rgba(10,39,120,.22);
 }
+
+.scene-pulse .pulse-label.label-astig-mart{
+  bottom:auto;
+  top:calc(100% + 8px);
+}
+
 .scene-pulse .pulse-label.label-near{
+
   background:linear-gradient(180deg,rgba(115,76,170,.94),rgba(84,48,135,.94));
   border-color:rgba(222,205,255,.78);
   box-shadow:0 7px 15px rgba(92,52,145,.22);
@@ -2057,7 +2064,7 @@ const GUIDE_PULSE_TARGETS_DUAL = {
   },
   dine:{
     /* 난시 겹침효과: 레스토랑은 액자가 아니라 할아버지 얼굴 위치 */
-    astig:{x:44,y:46,size:188},
+    astig:{x:44,y:34,size:220},
     near:{x:47,y:74,size:188},
     glare:{x:86,y:78,size:188},
     /* 블루라이트 미차단만 + 듀얼화면: 촛불 위치 기준 우측 아래 */
@@ -2088,7 +2095,7 @@ const GUIDE_PULSE_TARGETS_SPLIT = {
   },
   dine:{
     /* 난시 겹침효과: 레스토랑은 액자가 아니라 할아버지 얼굴 위치 */
-    astig:{x:44,y:46,size:188},
+    astig:{x:44,y:34,size:220},
     near:{x:47,y:76,size:188},
     glare:{x:84,y:79,size:188},
     /* 블루라이트 미차단만 + 슬라이드화면: 촛불 쪽으로 어느 정도 좌측 */
@@ -2192,9 +2199,12 @@ function pulseLabelForPoint(p, code, productId=''){
   return '';
 }
 
-function pulseLabelClassForPoint(p){
+function pulseLabelClassForPoint(p, code=''){
   if(!p) return '';
-  if(p.guideType === 'astig') return 'label-astig';
+  if(p.guideType === 'astig'){
+    const sceneKey = sceneKeyFromVideoCode(code);
+    return sceneKey === 'day' ? 'label-astig label-astig-mart' : 'label-astig';
+  }
   if(p.guideType === 'near') return 'label-near';
   if(p.guideType === 'blue') return 'label-blue';
   return '';
@@ -2245,7 +2255,7 @@ function applyPulsePoint(el, code, productId=''){
     return;
   }
   setPulseStyle(el, points[0]);
-  setPulseLabel(el, pulseLabelForPoint(points[0], code, productId), pulseLabelClassForPoint(points[0]));
+  setPulseLabel(el, pulseLabelForPoint(points[0], code, productId), pulseLabelClassForPoint(points[0], code));
 
   const showPulse = () => {
     el.style.display = 'block';
