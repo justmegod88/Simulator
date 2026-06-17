@@ -2106,10 +2106,16 @@ function setPulseStyle(el, p){
   el.style.setProperty('--pulse-size-mobile', Math.max(82, Math.round(p.size * 0.72)) + 'px');
 }
 
+const MARKET_PULSE_DELAY_MS = 1600; // 마트 장면에서 핸드폰 주시 원형 가이드만 1.6초 늦게 표시
+
 function applyPulsePoint(el, code){
   if(!el) return;
   const mode = (el.id && el.id.toLowerCase().includes('split')) ? 'split' : 'dual';
   const parent = el.parentElement;
+  if(el._pulseDelayTimer){
+    clearTimeout(el._pulseDelayTimer);
+    el._pulseDelayTimer = null;
+  }
   if(parent){
     parent.querySelectorAll('.scene-pulse-extra').forEach(node=>node.remove());
   }
@@ -2119,19 +2125,32 @@ function applyPulsePoint(el, code){
     return;
   }
   setPulseStyle(el, points[0]);
-  el.style.display = 'block';
 
-  // 노안+블루라이트 조합처럼 원이 2개 필요한 경우 추가 원 생성
-  if(parent && points.length > 1){
-    points.slice(1).forEach(p=>{
-      const extra = document.createElement('div');
-      extra.className = el.className + ' scene-pulse-extra';
-      extra.setAttribute('aria-hidden','true');
-      setPulseStyle(extra, p);
-      extra.style.display = 'block';
-      parent.appendChild(extra);
-    });
+  const showPulse = () => {
+    el.style.display = 'block';
+
+    // 노안+블루라이트 조합처럼 원이 2개 필요한 경우 추가 원 생성
+    if(parent && points.length > 1){
+      points.slice(1).forEach(p=>{
+        const extra = document.createElement('div');
+        extra.className = el.className + ' scene-pulse-extra';
+        extra.setAttribute('aria-hidden','true');
+        setPulseStyle(extra, p);
+        extra.style.display = 'block';
+        parent.appendChild(extra);
+      });
+    }
+    syncPulseTiming();
+  };
+
+  // 마트(day) 장면은 핸드폰 주시 타이밍에 맞춰 원형 가이드를 1~2초 늦게 표시
+  if(sceneKeyFromVideoCode(code) === 'day'){
+    el.style.display = 'none';
+    el._pulseDelayTimer = setTimeout(showPulse, MARKET_PULSE_DELAY_MS);
+    return;
   }
+
+  showPulse();
 }
 
 
