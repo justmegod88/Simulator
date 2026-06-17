@@ -2119,42 +2119,48 @@ function pulsePointsForCode(code, mode='dual', productId=''){
   const astigPoint = {...targets.astig, guideType:'astig'};
   const nearPoint = {...targets.near, guideType:'near'};
   const f = flags();
-  const hasAstigOrPresby = f.astigmatism || f.presbyopia;
-  const isAstigPresby = f.astigmatism && f.presbyopia;
-  const allowBlueException = isAstigPresby && (productId === 'moistMulti' || productId === 'maxMulti');
-  const blueHiddenByCondition = hasAstigOrPresby && !allowBlueException;
 
-  const maybeBlue = () => blueHiddenByCondition ? [] : [bluePoint];
+  // 최종 원형 가이드 로직
+  // 1) 결과적으로 난시 미교정만 보이는 경우: 겹쳐보이는 시야만 표시, 블루라이트 원/텍스트 제거
+  // 2) 결과적으로 노안 미교정만 보이는 경우: 근거리 흐림만 표시, 블루라이트 원/텍스트 제거
+  // 3) 굴절이상 선택이 노안+난시(+근/원시)인 경우: 제품별 비교 포인트 적용
+  const isAstigPresbySelection = f.astigmatism && f.presbyopia;
 
-  // 교정된 MAX 계열 효과는 블루라이트 차단 효과 확인 위치만 보여줌
-  // 단, 난시/노안/난시+노안 상태에서는 블루라이트 원/텍스트를 숨김
+  if(isAstigPresbySelection){
+    if(productId === 'maxMultiToric'){
+      // MAX 멀티포컬 난시: 블루라이트 차단 원 + 텍스트만 표시
+      return [bluePoint];
+    }
+    if(productId === 'moistMulti'){
+      // 모이스트 멀티포컬: 겹쳐보이는 시야 + 블루라이트 미차단 원 + 빛번짐 텍스트
+      return [astigPoint, bluePoint];
+    }
+    if(productId === 'maxMulti'){
+      // MAX 멀티포컬: 겹쳐보이는 시야 + 블루라이트 차단 원 + 눈부심/빛번짐 감소 텍스트
+      return [astigPoint, bluePoint];
+    }
+  }
+
+  // 교정된 MAX 계열 효과는 근/원시 단독 비교에서만 블루라이트 차단 효과 확인 위치를 보여줌
   if(!causes.length){
-    if(effectNo === 2) return maybeBlue();
+    if(effectNo === 2) return [bluePoint];
     return [];
   }
 
   // 1 블루라이트만: 근/원시 단독일 때만 표시
-  if(effectNo === 1) return maybeBlue();
+  if(effectNo === 1) return [bluePoint];
 
-  // 3 노안+블루라이트: 노안 가이드는 유지, 블루라이트 원은 조건에 따라 숨김
-  if(effectNo === 3){
-    return [nearPoint, ...maybeBlue()];
-  }
+  // 3 노안+블루라이트: 결과적으로 노안 미교정이면 근거리 흐림만 표시
+  if(effectNo === 3) return [nearPoint];
 
-  // 4 난시+노안+블루라이트: 난시/노안 원만 표시하고 블루라이트 원은 숨김
-  if(effectNo === 4){
-    return [astigPoint, nearPoint];
-  }
+  // 4 난시+노안+블루라이트: 결과적으로 미교정 증상만 표시하고 블루라이트 원은 숨김
+  if(effectNo === 4) return [astigPoint, nearPoint];
 
-  // 5 난시만: 기본은 난시 원만. 단, 난시+노안에서 MAX 멀티포컬은 블루라이트 위치 원만 추가
-  if(effectNo === 5){
-    return allowBlueException && productId === 'maxMulti' ? [astigPoint, bluePoint] : [astigPoint];
-  }
+  // 5 난시만
+  if(effectNo === 5) return [astigPoint];
 
-  // 6 난시+블루라이트: 기본은 난시 원만. 단, 난시+노안에서 모이스트 멀티포컬은 빛번짐 원/문구 추가
-  if(effectNo === 6){
-    return allowBlueException && productId === 'moistMulti' ? [astigPoint, bluePoint] : [astigPoint];
-  }
+  // 6 난시+블루라이트: 결과적으로 난시 미교정이면 겹쳐보이는 시야만 표시
+  if(effectNo === 6) return [astigPoint];
 
   // 7 노안만
   if(effectNo === 7) return [nearPoint];
@@ -2170,13 +2176,15 @@ function pulseLabelForPoint(p, code, productId=''){
   if(p.guideType === 'astig') return '겹쳐보이는 시야';
   if(p.guideType === 'near') return '근거리 흐림';
 
-  // 블루라이트 가이드: 난시/노안 상태에서는 기본적으로 숨기고,
-  // 난시+노안에서 모이스트 멀티포컬만 '빛번짐' 문구를 추가함.
-  // MAX 멀티포컬은 비교 영역을 가리지 않도록 원형만 표시.
   if(p.guideType === 'blue'){
     const f = flags();
-    if(f.astigmatism && f.presbyopia && productId === 'moistMulti') return '빛번짐';
-    if(f.astigmatism && f.presbyopia && productId === 'maxMulti') return '';
+    const isAstigPresbySelection = f.astigmatism && f.presbyopia;
+
+    if(isAstigPresbySelection){
+      if(productId === 'moistMulti') return '빛번짐';
+      if(productId === 'maxMulti' || productId === 'maxMultiToric') return '눈부심 & 빛번짐 감소';
+    }
+
     return effectNoFromVideoCode(code) === 2 ? '눈부심 & 빛번짐 감소' : '';
   }
   return '';
