@@ -1062,6 +1062,8 @@ select.product-enhanced-native{display:none!important}
   pointer-events:none;
 }
 .scene-pulse .pulse-label.label-astig{
+  bottom:auto;
+  top:calc(100% + 8px);
   background:linear-gradient(180deg,rgba(20,60,140,.94),rgba(8,38,96,.94));
   border-color:rgba(180,210,255,.78);
   box-shadow:0 7px 15px rgba(10,39,120,.22);
@@ -2035,8 +2037,8 @@ function guideText(code){
 
 const GUIDE_PULSE_TARGETS_DUAL = {
   day:{
-    /* 난시 겹침효과: 마트는 왼쪽 가격표 쪽 */
-    astig:{x:19,y:48,size:188},
+    /* 난시 겹침효과: 마트는 레몬 위치 */
+    astig:{x:38,y:58,size:188},
     /* 마트 듀얼화면: 영상 크롭 이동에 맞춰 핸드폰 위치로 원을 오른쪽 이동 */
     near:{x:71,y:57,size:188},
     glare:{x:71,y:57,size:188},
@@ -2067,8 +2069,8 @@ const GUIDE_PULSE_TARGETS_DUAL = {
 /* 듀얼화면과 슬라이드화면은 영상 크롭/표시 영역이 달라 보여 좌표만 분리함. */
 const GUIDE_PULSE_TARGETS_SPLIT = {
   day:{
-    /* 난시 겹침효과: 마트는 왼쪽 가격표 쪽 */
-    astig:{x:21,y:48,size:188},
+    /* 난시 겹침효과: 마트는 레몬 위치 */
+    astig:{x:36,y:58,size:188},
     near:{x:60,y:58,size:188},
     glare:{x:60,y:58,size:188},
     /* 블루라이트 미차단만: 마트는 아주 살짝 좌측 */
@@ -2708,7 +2710,7 @@ function updateBadges(){
 }
 function renderAll(){ renderConditions(); renderSceneGrid(); renderProducts(); bindOutcomeControls(); updateInlineLabelText(); updateVideos(); updateBadges(); updateViewMode(); }
 function setSplit(percent){
-  state.split=Math.max(15,Math.min(85,percent));
+  state.split=Math.max(3,Math.min(97,percent));
   if(dom.stage) dom.stage.style.setProperty('--split',state.split+'%');
   const splitStage = document.getElementById('splitStage');
   if(splitStage) splitStage.style.setProperty('--split',state.split+'%');
