@@ -1061,6 +1061,21 @@ select.product-enhanced-native{display:none!important}
   box-shadow:0 6px 14px rgba(0,0,0,.16);
   pointer-events:none;
 }
+.scene-pulse .pulse-label.label-astig{
+  background:linear-gradient(180deg,rgba(20,60,140,.94),rgba(8,38,96,.94));
+  border-color:rgba(180,210,255,.78);
+  box-shadow:0 7px 15px rgba(10,39,120,.22);
+}
+.scene-pulse .pulse-label.label-near{
+  background:linear-gradient(180deg,rgba(115,76,170,.94),rgba(84,48,135,.94));
+  border-color:rgba(222,205,255,.78);
+  box-shadow:0 7px 15px rgba(92,52,145,.22);
+}
+.scene-pulse .pulse-label.label-blue{
+  background:linear-gradient(180deg,rgba(10,132,160,.94),rgba(6,96,130,.94));
+  border-color:rgba(190,244,255,.78);
+  box-shadow:0 7px 15px rgba(0,110,150,.22);
+}
 .video-label{
   display:flex;
   align-items:center;
@@ -2151,7 +2166,15 @@ function pulseLabelForPoint(p, code){
   return '';
 }
 
-function setPulseLabel(el, label){
+function pulseLabelClassForPoint(p){
+  if(!p) return '';
+  if(p.guideType === 'astig') return 'label-astig';
+  if(p.guideType === 'near') return 'label-near';
+  if(p.guideType === 'blue') return 'label-blue';
+  return '';
+}
+
+function setPulseLabel(el, label, labelClass=''){
   if(!el) return;
   let labelEl = el.querySelector('.pulse-label');
   if(!label){
@@ -2160,9 +2183,9 @@ function setPulseLabel(el, label){
   }
   if(!labelEl){
     labelEl = document.createElement('div');
-    labelEl.className = 'pulse-label';
     el.appendChild(labelEl);
   }
+  labelEl.className = ('pulse-label ' + (labelClass || '')).trim();
   labelEl.textContent = label;
 }
 
@@ -2196,7 +2219,7 @@ function applyPulsePoint(el, code){
     return;
   }
   setPulseStyle(el, points[0]);
-  setPulseLabel(el, pulseLabelForPoint(points[0], code));
+  setPulseLabel(el, pulseLabelForPoint(points[0], code), pulseLabelClassForPoint(points[0]));
 
   const showPulse = () => {
     el.style.display = 'block';
@@ -2208,7 +2231,7 @@ function applyPulsePoint(el, code){
         extra.className = el.className + ' scene-pulse-extra';
         extra.setAttribute('aria-hidden','true');
         setPulseStyle(extra, p);
-        setPulseLabel(extra, pulseLabelForPoint(p, code));
+        setPulseLabel(extra, pulseLabelForPoint(p, code), pulseLabelClassForPoint(p));
         extra.style.display = 'block';
         parent.appendChild(extra);
       });
