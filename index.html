@@ -2107,7 +2107,7 @@ function effectNoFromVideoCode(code){
   return Number(String(code || '').split('-')[1]) || 2;
 }
 
-function pulsePointsForCode(code, mode='dual'){
+function pulsePointsForCode(code, mode='dual', productId=''){
   const sceneKey = sceneKeyFromVideoCode(code);
   const effectNo = effectNoFromVideoCode(code);
   const causes = GUIDE_EFFECT_CAUSES[effectNo] || [];
@@ -2117,32 +2117,43 @@ function pulsePointsForCode(code, mode='dual'){
   const bluePoint = {...(targets.glareOnly || targets.glare), guideType:'blue'};
   const astigPoint = {...targets.astig, guideType:'astig'};
   const nearPoint = {...targets.near, guideType:'near'};
+  const f = flags();
+  const hasAstigOrPresby = f.astigmatism || f.presbyopia;
+  const isAstigPresby = f.astigmatism && f.presbyopia;
+  const allowBlueException = isAstigPresby && (productId === 'moistMulti' || productId === 'maxMulti');
+  const blueHiddenByCondition = hasAstigOrPresby && !allowBlueException;
+
+  const maybeBlue = () => blueHiddenByCondition ? [] : [bluePoint];
 
   // 교정된 MAX 계열 효과는 블루라이트 차단 효과 확인 위치만 보여줌
+  // 단, 난시/노안/난시+노안 상태에서는 블루라이트 원/텍스트를 숨김
   if(!causes.length){
-    if(effectNo === 2) return [bluePoint];
+    if(effectNo === 2) return maybeBlue();
     return [];
   }
 
-  // 1 블루라이트만: 핸드폰/자동차 라이트/촛불 위치에 표시
-  if(effectNo === 1) return [bluePoint];
+  // 1 블루라이트만: 근/원시 단독일 때만 표시
+  if(effectNo === 1) return maybeBlue();
 
-  // 3 노안+블루라이트: 노안만/근원시+노안 조합에서는 블루라이트 원 유지
-  // 블루라이트 미차단 원은 pulseLabelForPoint()에서 텍스트 없이 원만 표시됨
+  // 3 노안+블루라이트: 노안 가이드는 유지, 블루라이트 원은 조건에 따라 숨김
   if(effectNo === 3){
-    return [nearPoint, bluePoint];
+    return [nearPoint, ...maybeBlue()];
   }
 
-  // 4 난시+노안+블루라이트: 난시 화면에서는 블루라이트 원을 빼고 난시/노안만 표시
+  // 4 난시+노안+블루라이트: 난시/노안 원만 표시하고 블루라이트 원은 숨김
   if(effectNo === 4){
     return [astigPoint, nearPoint];
   }
 
-  // 5 난시만
-  if(effectNo === 5) return [astigPoint];
+  // 5 난시만: 기본은 난시 원만. 단, 난시+노안에서 MAX 멀티포컬은 블루라이트 위치 원만 추가
+  if(effectNo === 5){
+    return allowBlueException && productId === 'maxMulti' ? [astigPoint, bluePoint] : [astigPoint];
+  }
 
-  // 6 난시+블루라이트: 난시 미교정 화면에서는 블루라이트 원을 아예 표시하지 않음
-  if(effectNo === 6) return [astigPoint];
+  // 6 난시+블루라이트: 기본은 난시 원만. 단, 난시+노안에서 모이스트 멀티포컬은 빛번짐 원/문구 추가
+  if(effectNo === 6){
+    return allowBlueException && productId === 'moistMulti' ? [astigPoint, bluePoint] : [astigPoint];
+  }
 
   // 7 노안만
   if(effectNo === 7) return [nearPoint];
@@ -2153,14 +2164,18 @@ function pulsePointsForCode(code, mode='dual'){
   return [];
 }
 
-function pulseLabelForPoint(p, code){
+function pulseLabelForPoint(p, code, productId=''){
   if(!p) return '';
   if(p.guideType === 'astig') return '겹쳐보이는 시야';
   if(p.guideType === 'near') return '근거리 흐림';
 
-  // 블루라이트 가이드는 MAX 계열(교정/차단 효과)일 때만 문구 표시
-  // 블루라이트 미차단 원은 비교 영역을 가리지 않도록 원만 표시
+  // 블루라이트 가이드: 난시/노안 상태에서는 기본적으로 숨기고,
+  // 난시+노안에서 모이스트 멀티포컬만 '빛번짐' 문구를 추가함.
+  // MAX 멀티포컬은 비교 영역을 가리지 않도록 원형만 표시.
   if(p.guideType === 'blue'){
+    const f = flags();
+    if(f.astigmatism && f.presbyopia && productId === 'moistMulti') return '빛번짐';
+    if(f.astigmatism && f.presbyopia && productId === 'maxMulti') return '';
     return effectNoFromVideoCode(code) === 2 ? '눈부심 & 빛번짐 감소' : '';
   }
   return '';
@@ -2201,7 +2216,7 @@ function setPulseStyle(el, p){
 
 const MARKET_PULSE_DELAY_MS = 1800; // 마트 장면에서 핸드폰 주시 원형 가이드만 1.8초 늦게 표시
 
-function applyPulsePoint(el, code){
+function applyPulsePoint(el, code, productId=''){
   if(!el) return;
   const mode = (el.id && el.id.toLowerCase().includes('split')) ? 'split' : 'dual';
   const parent = el.parentElement;
@@ -2212,14 +2227,14 @@ function applyPulsePoint(el, code){
   if(parent){
     parent.querySelectorAll('.scene-pulse-extra').forEach(node=>node.remove());
   }
-  const points = pulsePointsForCode(code, mode);
+  const points = pulsePointsForCode(code, mode, productId);
   if(!points.length){
     setPulseLabel(el, '');
     el.style.display = 'none';
     return;
   }
   setPulseStyle(el, points[0]);
-  setPulseLabel(el, pulseLabelForPoint(points[0], code), pulseLabelClassForPoint(points[0]));
+  setPulseLabel(el, pulseLabelForPoint(points[0], code, productId), pulseLabelClassForPoint(points[0]));
 
   const showPulse = () => {
     el.style.display = 'block';
@@ -2231,7 +2246,7 @@ function applyPulsePoint(el, code){
         extra.className = el.className + ' scene-pulse-extra';
         extra.setAttribute('aria-hidden','true');
         setPulseStyle(extra, p);
-        setPulseLabel(extra, pulseLabelForPoint(p, code), pulseLabelClassForPoint(p));
+        setPulseLabel(extra, pulseLabelForPoint(p, code, productId), pulseLabelClassForPoint(p));
         extra.style.display = 'block';
         parent.appendChild(extra);
       });
@@ -2410,13 +2425,13 @@ function applyVideoAdjust(video,code){
 
   // 마트(day) 듀얼화면만 보정:
   // 다른 영상은 그대로 유지하고, 마트(1-계열) 듀얼 화면에서만
-  // 중앙 크롭이 아니라 원본 영상의 가장 왼쪽 기준으로 크롭되게 처리.
+  // 왼쪽 가격표는 유지하되 핸드폰도 보이도록, 완전 좌측이 아닌 약간 오른쪽 기준으로 크롭.
   // 슬라이드화면(split)은 기존 크롭/비율 유지.
   const isMarketScene = String(code || '').startsWith('1-');
   const isSplitVideo = video && video.id && video.id.toLowerCase().includes('split');
   if(isMarketScene && !isSplitVideo){
     video.style.setProperty('object-fit','cover','important');
-    video.style.setProperty('object-position','0% center','important');
+    video.style.setProperty('object-position','18% center','important');
     video.style.setProperty('--video-x','0px');
     video.style.setProperty('--video-y','0px');
     video.style.setProperty('--video-scale','1');
@@ -2480,10 +2495,10 @@ function updateVideos(){
   dom.rightVideoLabel.innerHTML=guideText(rightCode);
   dom.splitLeftVideoLabel.innerHTML=guideText(leftCode);
   dom.splitRightVideoLabel.innerHTML=guideText(rightCode);
-  applyPulsePoint(dom.leftScenePulse,leftCode);
-  applyPulsePoint(dom.rightScenePulse,rightCode);
-  applyPulsePoint(dom.splitLeftScenePulse,leftCode);
-  applyPulsePoint(dom.splitRightScenePulse,rightCode);
+  applyPulsePoint(dom.leftScenePulse,leftCode,state.leftProduct);
+  applyPulsePoint(dom.rightScenePulse,rightCode,state.rightProduct);
+  applyPulsePoint(dom.splitLeftScenePulse,leftCode,state.leftProduct);
+  applyPulsePoint(dom.splitRightScenePulse,rightCode,state.rightProduct);
   syncPulseTiming();
   restartBothVideos();
   updateViewMode();
