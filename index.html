@@ -2380,15 +2380,19 @@ function applyVideoAdjust(video,code){
   video.style.setProperty('--video-x','0px');
   video.style.setProperty('--video-y','0px');
   video.style.setProperty('--video-scale','1');
+  video.style.objectFit = 'cover';
+  video.style.objectPosition = 'center center';
 
-  // 마트(day) 영상은 듀얼화면에서 중앙 크롭으로 핸드폰만 보이지 않도록
-  // 영상을 살짝 오른쪽으로 이동시켜, 원본의 좌측 가격표와 핸드폰이 함께 보이게 함.
-  // 슬라이드화면(split)은 기존 비율/크롭을 유지.
+  // 마트(day) 듀얼화면은 세로로 좁은 카드 안에서 cover crop이 걸리면
+  // 핸드폰만 크게 잡히고 왼쪽 가격표가 잘려 보임.
+  // 그래서 마트 듀얼화면에서만 crop을 풀어 contain으로 표시하여
+  // LEMONS / APPLES 가격표와 핸드폰이 함께 보이도록 함.
+  // 슬라이드화면(split)은 기존 크롭/비율을 그대로 유지.
   const isMarketScene = String(code || '').startsWith('1-');
   const isSplitVideo = video && video.id && video.id.toLowerCase().includes('split');
   if(isMarketScene && !isSplitVideo){
-    // 마트 듀얼화면: 핸드폰만 중앙에 잡히지 않도록 가격표가 보이는 방향으로 기준점 재조정
-    video.style.setProperty('--video-x','14%');
+    video.style.objectFit = 'contain';
+    video.style.objectPosition = 'center center';
   }
 }
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
