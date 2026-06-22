@@ -1434,6 +1434,58 @@ select.product-enhanced-native{display:none!important}
 }
 </style>
 
+
+<style id="restaurant-light-glare-patch">
+/* 161 update: 레스토랑 3-1 / 3-3 / 3-4 / 3-6 영상에만 왼쪽 조명 빛번짐 효과 추가 */
+.restaurant-light-glare{
+  position:absolute;
+  left:var(--restaurant-glare-x,17%);
+  top:var(--restaurant-glare-y,48%);
+  width:var(--restaurant-glare-size,150px);
+  height:var(--restaurant-glare-size,150px);
+  transform:translate(-50%,-50%);
+  border-radius:999px;
+  pointer-events:none;
+  z-index:2;
+  opacity:.92;
+  background:
+    radial-gradient(circle,
+      rgba(255,255,255,.95) 0%,
+      rgba(255,250,224,.80) 16%,
+      rgba(255,232,160,.45) 34%,
+      rgba(255,230,140,.24) 52%,
+      rgba(255,255,255,.10) 68%,
+      transparent 100%);
+  filter:blur(18px);
+  mix-blend-mode:screen;
+}
+.restaurant-light-glare::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:58%;
+  height:58%;
+  transform:translate(-50%,-50%);
+  border-radius:999px;
+  background:radial-gradient(circle,
+    rgba(255,255,255,.78) 0%,
+    rgba(255,245,200,.34) 44%,
+    transparent 72%);
+  filter:blur(8px);
+}
+.split-stage .restaurant-light-glare,
+.compare-pane .restaurant-light-glare{
+  --restaurant-glare-size:142px;
+}
+@media (max-width:760px){
+  .restaurant-light-glare{
+    --restaurant-glare-size:108px;
+    filter:blur(14px);
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -2526,6 +2578,41 @@ function syncVideoTiming(){
     });
   }catch(e){}
 }
+
+const RESTAURANT_LIGHT_GLARE_CODES = new Set(['3-1','3-3','3-4','3-6']);
+
+function updateRestaurantLightGlare(container, code, mode='dual'){
+  if(!container) return;
+  container.querySelectorAll(':scope > .restaurant-light-glare').forEach(node=>node.remove());
+
+  const codeKey = String(code || '').trim();
+  if(!RESTAURANT_LIGHT_GLARE_CODES.has(codeKey)) return;
+
+  const glare = document.createElement('div');
+  glare.className = 'restaurant-light-glare';
+  glare.setAttribute('aria-hidden','true');
+
+  // 사진 기준: 레스토랑 왼쪽 조명 위치. 듀얼/슬라이드 크롭 차이를 약간 분리.
+  if(mode === 'split'){
+    glare.style.setProperty('--restaurant-glare-x','17%');
+    glare.style.setProperty('--restaurant-glare-y','48%');
+    glare.style.setProperty('--restaurant-glare-size','158px');
+  }else{
+    glare.style.setProperty('--restaurant-glare-x','18%');
+    glare.style.setProperty('--restaurant-glare-y','48%');
+    glare.style.setProperty('--restaurant-glare-size','146px');
+  }
+
+  container.appendChild(glare);
+}
+
+function updateRestaurantLightGlareAll(leftCode, rightCode){
+  updateRestaurantLightGlare(dom.leftVideo ? dom.leftVideo.parentElement : null, leftCode, 'dual');
+  updateRestaurantLightGlare(dom.rightVideo ? dom.rightVideo.parentElement : null, rightCode, 'dual');
+  updateRestaurantLightGlare(dom.splitLeftVideo ? dom.splitLeftVideo.parentElement : null, leftCode, 'split');
+  updateRestaurantLightGlare(dom.splitRightVideo ? dom.splitRightVideo.parentElement : null, rightCode, 'split');
+}
+
 function updateVideos(){
   const leftCode=videoCode(state.leftProduct), rightCode=videoCode(state.rightProduct);
   const leftSrc=videoSrc(state.leftProduct), rightSrc=videoSrc(state.rightProduct);
@@ -2539,6 +2626,7 @@ function updateVideos(){
   applyPulsePoint(dom.rightScenePulse,rightCode,state.rightProduct);
   applyPulsePoint(dom.splitLeftScenePulse,leftCode,state.leftProduct);
   applyPulsePoint(dom.splitRightScenePulse,rightCode,state.rightProduct);
+  updateRestaurantLightGlareAll(leftCode, rightCode);
   syncPulseTiming();
   restartBothVideos();
   updateViewMode();
