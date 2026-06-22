@@ -1436,7 +1436,7 @@ select.product-enhanced-native{display:none!important}
 
 
 <style id="restaurant-light-glare-patch">
-/* 161 update: 레스토랑 3-1 / 3-3 / 3-4 / 3-6 영상에만 왼쪽 조명 빛번짐 효과 추가 */
+/* 162 update: 레스토랑 3-1 / 3-3 / 3-4 / 3-6 영상에만 왼쪽 조명 빛번짐 효과 추가 - 강도 약화/위치 보정 */
 .restaurant-light-glare{
   position:absolute;
   left:var(--restaurant-glare-x,17%);
@@ -1447,16 +1447,16 @@ select.product-enhanced-native{display:none!important}
   border-radius:999px;
   pointer-events:none;
   z-index:2;
-  opacity:.92;
+  opacity:.66;
   background:
     radial-gradient(circle,
-      rgba(255,255,255,.95) 0%,
-      rgba(255,250,224,.80) 16%,
-      rgba(255,232,160,.45) 34%,
-      rgba(255,230,140,.24) 52%,
-      rgba(255,255,255,.10) 68%,
+      rgba(255,255,255,.78) 0%,
+      rgba(255,250,224,.56) 16%,
+      rgba(255,232,160,.30) 34%,
+      rgba(255,230,140,.15) 52%,
+      rgba(255,255,255,.06) 68%,
       transparent 100%);
-  filter:blur(18px);
+  filter:blur(20px);
   mix-blend-mode:screen;
 }
 .restaurant-light-glare::after{
@@ -1469,8 +1469,8 @@ select.product-enhanced-native{display:none!important}
   transform:translate(-50%,-50%);
   border-radius:999px;
   background:radial-gradient(circle,
-    rgba(255,255,255,.78) 0%,
-    rgba(255,245,200,.34) 44%,
+    rgba(255,255,255,.48) 0%,
+    rgba(255,245,200,.18) 44%,
     transparent 72%);
   filter:blur(8px);
 }
@@ -2122,12 +2122,12 @@ const GUIDE_PULSE_TARGETS_DUAL = {
     clear:{x:50,y:56,size:188}
   },
   dine:{
-    /* 난시 겹침효과: 레스토랑은 액자가 아니라 할아버지 얼굴 위치 */
-    astig:{x:23,y:36,size:188},
-    near:{x:47,y:74,size:188},
-    glare:{x:86,y:78,size:188},
-    /* 블루라이트 미차단만 + 듀얼화면: 촛불 위치 기준 우측 아래 */
-    glareOnly:{x:88,y:84,size:188},
+    /* 레스토랑 듀얼: 왼쪽 조명이 보이도록 영상 크롭 보정에 맞춰 원 위치 조정 */
+    astig:{x:30,y:36,size:188},
+    near:{x:51,y:74,size:188},
+    glare:{x:18,y:48,size:188},
+    /* 블루라이트 미차단만 + 듀얼화면: 촛불이 아니라 왼쪽 조명 위치 */
+    glareOnly:{x:18,y:48,size:188},
     clear:{x:50,y:58,size:188}
   }
 };
@@ -2154,12 +2154,12 @@ const GUIDE_PULSE_TARGETS_SPLIT = {
     clear:{x:50,y:57,size:188}
   },
   dine:{
-    /* 난시 겹침효과: 레스토랑 슬라이드화면은 할아버지 얼굴 쪽으로 더 오른쪽 이동 */
-    astig:{x:36,y:36,size:188},
-    near:{x:47,y:76,size:188},
-    glare:{x:84,y:79,size:188},
-    /* 블루라이트 미차단만 + 슬라이드화면: 촛불 쪽으로 어느 정도 좌측 */
-    glareOnly:{x:72,y:80,size:188},
+    /* 레스토랑 슬라이드: 왼쪽 조명이 보이도록 영상 크롭 보정에 맞춰 원 위치 조정 */
+    astig:{x:40,y:36,size:188},
+    near:{x:51,y:76,size:188},
+    glare:{x:13,y:48,size:188},
+    /* 블루라이트 미차단만 + 슬라이드화면: 촛불이 아니라 왼쪽 조명 위치 */
+    glareOnly:{x:13,y:48,size:188},
     clear:{x:50,y:59,size:188}
   }
 };
@@ -2528,6 +2528,17 @@ function applyVideoAdjust(video,code){
     video.style.setProperty('--video-y','0px');
     video.style.setProperty('--video-scale','1');
   }
+
+  // 레스토랑(3-계열): 왼쪽 조명이 보이도록 영상 크롭을 살짝 좌측 기준으로 보정.
+  // 듀얼/슬라이드 모두 적용하되, 슬라이드는 더 왼쪽 조명 중심으로 보이게 함.
+  const isRestaurantScene = String(code || '').startsWith('3-');
+  if(isRestaurantScene){
+    video.style.setProperty('object-fit','cover','important');
+    video.style.setProperty('object-position', isSplitVideo ? '18% center' : '22% center','important');
+    video.style.setProperty('--video-x','0px');
+    video.style.setProperty('--video-y','0px');
+    video.style.setProperty('--video-scale','1');
+  }
 }
 function safePlay(video){try{const p=video.play(); if(p&&typeof p.catch==='function') p.catch(()=>{});}catch(e){}}
 function allVideoEls(){
@@ -2594,13 +2605,13 @@ function updateRestaurantLightGlare(container, code, mode='dual'){
 
   // 사진 기준: 레스토랑 왼쪽 조명 위치. 듀얼/슬라이드 크롭 차이를 약간 분리.
   if(mode === 'split'){
-    glare.style.setProperty('--restaurant-glare-x','17%');
+    glare.style.setProperty('--restaurant-glare-x','13%');
     glare.style.setProperty('--restaurant-glare-y','48%');
-    glare.style.setProperty('--restaurant-glare-size','158px');
+    glare.style.setProperty('--restaurant-glare-size','148px');
   }else{
     glare.style.setProperty('--restaurant-glare-x','18%');
     glare.style.setProperty('--restaurant-glare-y','48%');
-    glare.style.setProperty('--restaurant-glare-size','146px');
+    glare.style.setProperty('--restaurant-glare-size','132px');
   }
 
   container.appendChild(glare);
