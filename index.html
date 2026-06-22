@@ -1436,7 +1436,7 @@ select.product-enhanced-native{display:none!important}
 
 
 <style id="restaurant-light-glare-patch">
-/* 163 update: 듀얼 레스토랑 영상 좌측 이동 + 근거리/겹침 원 우측 이동 */
+/* 164 update: 듀얼 레스토랑 영상은 왼쪽 화면이 더 보이게 재보정 + 겹침 원은 할아버지 얼굴 위치 */
 .restaurant-light-glare{
   position:absolute;
   left:var(--restaurant-glare-x,17%);
@@ -2122,8 +2122,8 @@ const GUIDE_PULSE_TARGETS_DUAL = {
     clear:{x:50,y:56,size:188}
   },
   dine:{
-    /* 레스토랑 듀얼: 왼쪽 조명이 보이도록 영상 크롭 보정에 맞춰 원 위치 조정 */
-    astig:{x:36,y:36,size:188},
+    /* 레스토랑 듀얼: 왼쪽 화면이 더 보이는 크롭에 맞춰 겹침 원은 할아버지 얼굴 위치 */
+    astig:{x:43,y:35,size:188},
     near:{x:57,y:74,size:188},
     glare:{x:18,y:48,size:188},
     /* 블루라이트 미차단만 + 듀얼화면: 촛불이 아니라 왼쪽 조명 위치 */
@@ -2534,7 +2534,7 @@ function applyVideoAdjust(video,code){
   const isRestaurantScene = String(code || '').startsWith('3-');
   if(isRestaurantScene){
     video.style.setProperty('object-fit','cover','important');
-    video.style.setProperty('object-position', isSplitVideo ? '18% center' : '26% center','important');
+    video.style.setProperty('object-position', isSplitVideo ? '18% center' : '14% center','important');
     video.style.setProperty('--video-x','0px');
     video.style.setProperty('--video-y','0px');
     video.style.setProperty('--video-scale','1');
@@ -2609,7 +2609,7 @@ function updateRestaurantLightGlare(container, code, mode='dual'){
     glare.style.setProperty('--restaurant-glare-y','48%');
     glare.style.setProperty('--restaurant-glare-size','148px');
   }else{
-    glare.style.setProperty('--restaurant-glare-x','14%');
+    glare.style.setProperty('--restaurant-glare-x','12%');
     glare.style.setProperty('--restaurant-glare-y','48%');
     glare.style.setProperty('--restaurant-glare-size','132px');
   }
