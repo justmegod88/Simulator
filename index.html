@@ -2052,7 +2052,7 @@ function videoCode(productId){
   // Final default
   return ({day:'1-1', night:'2-1', dine:'3-1'})[state.scene] || '1-1';
 }
-function videoSrc(productId){return `./${videoCode(productId)}.mp4`}
+function videoSrc(productId){return `https://d13mgx9baq2vuj.cloudfront.net/videos/${videoCode(productId)}.mp4`}
 
 const GUIDE_TEXT_BY_CODE = {
   "1-1": "핸드폰 화면의 밝기를 확인해 보세요",
@@ -2766,18 +2766,22 @@ function fillProductPop(side,productId){
   if(popBody){
     popBody.querySelectorAll('.pop-section h4, .pop-overview, .pop-features').forEach(el=>{ el.style.display='none'; });
   }
-  const quickDetail = isLeft ? dom.leftQuickDetail : dom.rightQuickDetail;
+ 
+const quickDetail = isLeft ? dom.leftQuickDetail : dom.rightQuickDetail;
   if(quickDetail){
     quickDetail.className='pop-quick-detail';
     quickDetail.innerHTML='';
   }
+
   overview.textContent='';
   features.innerHTML='';
   note.innerHTML = info.references ? `<div class="pop-refs"><div class="pop-refs-title">References</div>${info.references.map((r,i)=>`<div>${i+1}. ${r}</div>`).join('')}</div>` : '';
   const packBase=`./${info.pack}`;
   preparePackshotDisplay(pack);
+  
   pack.onerror=function(){ if(this.dataset.try==='jpg'){this.dataset.try='jpeg'; this.src=packBase+'.jpeg';} else {this.onerror=null; this.removeAttribute('src'); this.alt='팩샷 이미지를 찾을 수 없습니다';} };
   pack.dataset.try='jpg'; pack.src=packBase+'.jpg';
+
 }
 function toggleProductPop(side){ if(side==='left'){fillProductPop('left',state.leftProduct); dom.leftProductPop.classList.toggle('open');} else {fillProductPop('right',state.rightProduct); dom.rightProductPop.classList.toggle('open');}}
 function closeProductPop(side){ if(side==='left') dom.leftProductPop.classList.remove('open'); if(side==='right') dom.rightProductPop.classList.remove('open'); }
