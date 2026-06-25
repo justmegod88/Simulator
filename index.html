@@ -1486,6 +1486,53 @@ select.product-enhanced-native{display:none!important}
 }
 </style>
 
+
+<style id="product-popup-image-width-clean-patch">
+/* 163 기준: 제품 상세 팝업만 수정 - 이미지 확대, 이미지 박스 제거, References 위 구분선만 유지 */
+.product-pop .pop-head{
+  border-bottom:0 !important;
+}
+.product-pop .pop-body{
+  padding:18px 22px 22px !important;
+}
+.product-pop .pop-pack{
+  width:100% !important;
+  height:auto !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  display:block !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  padding:0 !important;
+  margin:14px 0 20px !important;
+  box-shadow:none !important;
+}
+.product-pop .pop-quick-detail,
+.product-pop .quick-body,
+.product-pop .quick-line,
+.product-pop .quick-benefit{
+  border:0 !important;
+  box-shadow:none !important;
+}
+.product-pop .pop-section{
+  border-top:0 !important;
+  padding-top:0 !important;
+  margin-top:0 !important;
+}
+.product-pop .pop-note{
+  border-top:0 !important;
+  padding-top:0 !important;
+  margin:0 !important;
+}
+.product-pop .pop-refs{
+  border-top:1px solid #EEF3F8 !important;
+  padding-top:14px !important;
+  margin-top:12px !important;
+}
+</style>
+
 </head>
 <body>
 <div class="app">
