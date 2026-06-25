@@ -2853,7 +2853,7 @@ const quickDetail = isLeft ? dom.leftQuickDetail : dom.rightQuickDetail;
 
   overview.textContent='';
   features.innerHTML='';
-  note.innerHTML = info.references ? `<div class="pop-refs"><div class="pop-refs-title">References</div>${info.references.map((r,i)=>`<div>${i+1}. ${r}</div>`).join('')}</div>` : '';
+  note.innerHTML = info.references ? `<div class="pop-refs"><div class="pop-refs-title">References</div>${info.references.map(r=>`<div>${r}</div>`).join('')}</div>` : '';
   const packBase=`./${info.pack}`;
   preparePackshotDisplay(pack);
   
