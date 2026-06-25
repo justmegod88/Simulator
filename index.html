@@ -1533,6 +1533,26 @@ select.product-enhanced-native{display:none!important}
 }
 </style>
 
+
+<style id="popup-reset-dropdown-layer-patch">
+/* 164 추가 수정: 제품 팝업 위로 제품명 드롭다운 리스트가 보이도록 레이어만 조정 */
+.side-label{
+  overflow:visible !important;
+}
+.side-label.dropdown-open{
+  z-index:220 !important;
+}
+.product-select-ui.open{
+  z-index:230 !important;
+}
+.product-select-ui.open .product-select-menu{
+  z-index:240 !important;
+}
+.product-pop{
+  z-index:80;
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -2539,9 +2559,23 @@ function buildProductCustomDropdown(sel,key){
   });
   menu.innerHTML=html;
   const btn=ui.querySelector('.product-select-btn');
-  btn.onclick=(e)=>{e.stopPropagation();document.querySelectorAll('.product-select-ui.open').forEach(x=>{if(x!==ui)x.classList.remove('open')});ui.classList.toggle('open');};
+  btn.onclick=(e)=>{
+    e.stopPropagation();
+    document.querySelectorAll('.product-select-ui.open').forEach(x=>{if(x!==ui)x.classList.remove('open')});
+    document.querySelectorAll('.side-label.dropdown-open').forEach(x=>{if(x!==ui.closest('.side-label'))x.classList.remove('dropdown-open')});
+    ui.classList.toggle('open');
+    const sideLabel=ui.closest('.side-label');
+    if(sideLabel) sideLabel.classList.toggle('dropdown-open', ui.classList.contains('open'));
+  };
   menu.querySelectorAll('.product-select-option').forEach(op=>{
-    op.onclick=(e)=>{e.stopPropagation();sel.value=op.dataset.value;sel.dispatchEvent(new Event('change',{bubbles:true}));ui.classList.remove('open');};
+    op.onclick=(e)=>{
+      e.stopPropagation();
+      sel.value=op.dataset.value;
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+      ui.classList.remove('open');
+      const sideLabel=ui.closest('.side-label');
+      if(sideLabel) sideLabel.classList.remove('dropdown-open');
+    };
   });
 }
 function refreshProductCustomDropdowns(){
@@ -2552,7 +2586,11 @@ function refreshProductCustomDropdowns(){
   buildProductCustomDropdown(dom.splitLeftInline,'leftProduct');
   buildProductCustomDropdown(dom.splitRightInline,'rightProduct');
 }
-if(!window.__productDropdownCloseBound){window.__productDropdownCloseBound=true;document.addEventListener('click',()=>document.querySelectorAll('.product-select-ui.open').forEach(x=>x.classList.remove('open')));}
+function closeAllProductDropdowns(){
+  document.querySelectorAll('.product-select-ui.open').forEach(x=>x.classList.remove('open'));
+  document.querySelectorAll('.side-label.dropdown-open').forEach(x=>x.classList.remove('dropdown-open'));
+}
+if(!window.__productDropdownCloseBound){window.__productDropdownCloseBound=true;document.addEventListener('click',()=>closeAllProductDropdowns());}
 
 function renderProducts(){
   keepProductsValid();
@@ -2963,7 +3001,13 @@ if(splitStageEl){
   });
 }
 dom.sceneSelect.onchange=e=>{state.scene=e.target.value; renderSceneGrid(); updateVideos(); updateBadges();};
-dom.resetBtn.onclick=()=>{state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; state.view='dual'; state.sidebarCollapsed=false; setSplit(50); renderAll();};
+dom.resetBtn.onclick=()=>{
+  closeProductPop('left');
+  closeProductPop('right');
+  if(dom.outcomePop) dom.outcomePop.classList.remove('open');
+  if(typeof closeAllProductDropdowns==='function') closeAllProductDropdowns();
+  state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; state.view='dual'; state.sidebarCollapsed=false; setSplit(50); renderAll();
+};
 dom.dualViewBtn.onclick=()=>{state.view='dual'; updateViewMode(); updateVideos();};
 dom.splitViewBtn.onclick=()=>{state.view='split'; updateViewMode(); updateVideos();};
 if(dom.sidebarFoldBtn){dom.sidebarFoldBtn.onclick=()=>{state.sidebarCollapsed=!state.sidebarCollapsed; updateViewMode(); setTimeout(()=>{try{updateVideos();}catch(e){}},320);};}
