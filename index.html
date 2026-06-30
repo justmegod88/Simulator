@@ -1592,8 +1592,9 @@ select.product-enhanced-native{display:none!important}
 </style>
 
 
-<style id="split-card-move-with-slide-patch">
-/* 슬라이드화면: 영상뿐 아니라 제품명/정보 버튼/하단 상태 문구까지 각 화면과 같이 슬라이드되도록 구성 */
+<style id="split-card-mask-hide-patch">
+/* 171 update: 슬라이드화면은 제품명/정보/하단 문구가 옆으로 따라 밀리지 않고,
+   영상과 함께 마스크 안에서 겹쳐지며 자연스럽게 숨겨지는 방식으로 조정 */
 .split-stage .compare-pane{
   overflow:hidden !important;
 }
@@ -1601,34 +1602,34 @@ select.product-enhanced-native{display:none!important}
 .split-stage .compare-pane .video-label{
   z-index:8 !important;
 }
-/* 좌측 카드 요소는 좌측 클립 안에서만, 우측 카드 요소는 우측 클립 안에서만 보이게 유지 */
+/* 좌/우 제품 카드 요소는 각자의 원래 위치에 고정하고, split clip-path가 지나가며 숨기도록 함 */
 #splitLeftPane .side-label.left{
   left:12px !important;
   right:auto !important;
-  width:calc(var(--split) - 18px) !important;
-  max-width:calc(var(--split) - 18px) !important;
+  width:calc(50% - 18px) !important;
+  max-width:calc(50% - 18px) !important;
 }
 #splitRightPane .side-label.right{
-  left:calc(var(--split) + 12px) !important;
+  left:auto !important;
   right:12px !important;
-  width:auto !important;
-  max-width:calc(100% - var(--split) - 24px) !important;
+  width:calc(50% - 18px) !important;
+  max-width:calc(50% - 18px) !important;
 }
 #splitLeftPane .video-label.left{
   left:16px !important;
   right:auto !important;
-  max-width:calc(var(--split) - 36px) !important;
+  max-width:calc(50% - 36px) !important;
 }
 #splitRightPane .video-label.right{
-  left:calc(var(--split) + 16px) !important;
+  left:auto !important;
   right:78px !important;
-  max-width:calc(100% - var(--split) - 110px) !important;
+  max-width:calc(50% - 110px) !important;
 }
 @media (max-width:760px){
-  #splitLeftPane .side-label.left{width:calc(var(--split) - 14px) !important;max-width:calc(var(--split) - 14px) !important;}
-  #splitRightPane .side-label.right{left:calc(var(--split) + 10px) !important;max-width:calc(100% - var(--split) - 20px) !important;}
-  #splitLeftPane .video-label.left{max-width:calc(var(--split) - 28px) !important;}
-  #splitRightPane .video-label.right{left:calc(var(--split) + 12px) !important;right:64px !important;max-width:calc(100% - var(--split) - 86px) !important;}
+  #splitLeftPane .side-label.left{width:calc(50% - 14px) !important;max-width:calc(50% - 14px) !important;}
+  #splitRightPane .side-label.right{width:calc(50% - 14px) !important;max-width:calc(50% - 14px) !important;}
+  #splitLeftPane .video-label.left{max-width:calc(50% - 28px) !important;}
+  #splitRightPane .video-label.right{right:64px !important;max-width:calc(50% - 86px) !important;}
 }
 </style>
 </head>
