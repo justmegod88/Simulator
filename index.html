@@ -1591,6 +1591,46 @@ select.product-enhanced-native{display:none!important}
 }
 </style>
 
+
+<style id="split-card-move-with-slide-patch">
+/* 슬라이드화면: 영상뿐 아니라 제품명/정보 버튼/하단 상태 문구까지 각 화면과 같이 슬라이드되도록 구성 */
+.split-stage .compare-pane{
+  overflow:hidden !important;
+}
+.split-stage .compare-pane .side-label,
+.split-stage .compare-pane .video-label{
+  z-index:8 !important;
+}
+/* 좌측 카드 요소는 좌측 클립 안에서만, 우측 카드 요소는 우측 클립 안에서만 보이게 유지 */
+#splitLeftPane .side-label.left{
+  left:12px !important;
+  right:auto !important;
+  width:calc(var(--split) - 18px) !important;
+  max-width:calc(var(--split) - 18px) !important;
+}
+#splitRightPane .side-label.right{
+  left:calc(var(--split) + 12px) !important;
+  right:12px !important;
+  width:auto !important;
+  max-width:calc(100% - var(--split) - 24px) !important;
+}
+#splitLeftPane .video-label.left{
+  left:16px !important;
+  right:auto !important;
+  max-width:calc(var(--split) - 36px) !important;
+}
+#splitRightPane .video-label.right{
+  left:calc(var(--split) + 16px) !important;
+  right:78px !important;
+  max-width:calc(100% - var(--split) - 110px) !important;
+}
+@media (max-width:760px){
+  #splitLeftPane .side-label.left{width:calc(var(--split) - 14px) !important;max-width:calc(var(--split) - 14px) !important;}
+  #splitRightPane .side-label.right{left:calc(var(--split) + 10px) !important;max-width:calc(100% - var(--split) - 20px) !important;}
+  #splitLeftPane .video-label.left{max-width:calc(var(--split) - 28px) !important;}
+  #splitRightPane .video-label.right{left:calc(var(--split) + 12px) !important;right:64px !important;max-width:calc(100% - var(--split) - 86px) !important;}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -1732,29 +1772,34 @@ select.product-enhanced-native{display:none!important}
           </div>
 
           <div class="split-stage" id="splitStage">
-            <div class="compare-pane" id="splitLeftPane"><video id="splitLeftVideo" autoplay muted loop playsinline preload="auto"></video><div class="scene-pulse left-pulse" id="splitLeftScenePulse" aria-hidden="true"></div></div>
-            <div class="compare-pane" id="splitRightPane"><video id="splitRightVideo" autoplay muted loop playsinline preload="auto"></video><div class="scene-pulse right-pulse" id="splitRightScenePulse" aria-hidden="true"></div></div>
-
-            <div class="side-label left">
-              <select class="label-select" id="splitLeftInline"></select>
-              <span class="blue-tag" id="splitLeftBlueTag">블루라이트 차단</span>
-              <button class="info-btn" id="splitLeftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
+            <div class="compare-pane" id="splitLeftPane">
+              <video id="splitLeftVideo" autoplay muted loop playsinline preload="auto"></video>
+              <div class="scene-pulse left-pulse" id="splitLeftScenePulse" aria-hidden="true"></div>
+              <div class="side-label left">
+                <select class="label-select" id="splitLeftInline"></select>
+                <span class="blue-tag" id="splitLeftBlueTag">블루라이트 차단</span>
+                <button class="info-btn" id="splitLeftInfoBtn" type="button" aria-label="좌측 제품 정보">i</button>
+              </div>
+              <div class="video-label left" id="splitLeftVideoLabel"></div>
             </div>
-            <div class="side-label right">
-              <select class="label-select" id="splitRightInline"></select>
-              <span class="blue-tag" id="splitRightBlueTag">블루라이트 차단</span>
-              <button class="info-btn" id="splitRightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
+            <div class="compare-pane" id="splitRightPane">
+              <video id="splitRightVideo" autoplay muted loop playsinline preload="auto"></video>
+              <div class="scene-pulse right-pulse" id="splitRightScenePulse" aria-hidden="true"></div>
+              <div class="side-label right">
+                <select class="label-select" id="splitRightInline"></select>
+                <span class="blue-tag" id="splitRightBlueTag">블루라이트 차단</span>
+                <button class="info-btn" id="splitRightInfoBtn" type="button" aria-label="우측 제품 정보">i</button>
+              </div>
+              <div class="video-label right" id="splitRightVideoLabel"></div>
             </div>
 
-            <div class="video-label left" id="splitLeftVideoLabel"></div>
-            <div class="video-label right" id="splitRightVideoLabel"></div>
             <button class="play-toggle" id="splitPlayToggle" type="button" aria-label="일시중지">❚❚</button>
             <div class="divider"></div>
             <div class="handle" id="handle">‹›</div>
           </div>
         </div>
       </div>
-      <div class="footer-note">해당 제품은 시뮬레이션을 돕는 프로그램이며 의료기기가 아닙니다. 영상은 이해를 돕기 위해 제작되었으며, 실제 시야와 차이가 있을 수 있습니다. KR_2026_457 </div>
+      <div class="footer-note">해당 제품은 시뮬레이션을 돕는 프로그램이며 의료기기가 아닙니다. 영상은 이해를 돕기 위해 제작되었으며, 실제 시야와 차이가 있을 수 있습니다. KR_2026_456 </div>
 
       
     </section>
