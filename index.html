@@ -2672,6 +2672,9 @@ function formatPulseLabelWithRefs(label){
   if(label === '겹쳐보이는 시야' || label === '근거리 흐림'){
     return `${label}<sup class="tag-ref">1,2</sup>`;
   }
+  if(label === '눈부심 & 빛번짐 감소' || label === '눈부심&빛번짐 감소'){
+    return `${label}<sup class="tag-ref">3,4</sup>`;
+  }
   return label;
 }
 
