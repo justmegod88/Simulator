@@ -1788,6 +1788,21 @@ select.product-enhanced-native{display:none!important}
 }
 </style>
 
+
+<style id="tag-superscript-refs-patch">
+/* 186 update: 상태 태그 위첨자 1,2 추가 */
+.scene-pulse .pulse-label .tag-ref{
+  font-size:.62em;
+  line-height:0;
+  vertical-align:super;
+  position:relative;
+  top:-.34em;
+  margin-left:1px;
+  opacity:.95;
+  font-weight:850;
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -2653,6 +2668,13 @@ function pulseLabelClassForPoint(p, code=''){
   return '';
 }
 
+function formatPulseLabelWithRefs(label){
+  if(label === '겹쳐보이는 시야' || label === '근거리 흐림'){
+    return `${label}<sup class="tag-ref">1,2</sup>`;
+  }
+  return label;
+}
+
 function setPulseLabel(el, label, labelClass=''){
   if(!el) return;
   let labelEl = el.querySelector('.pulse-label');
@@ -2665,7 +2687,9 @@ function setPulseLabel(el, label, labelClass=''){
     el.appendChild(labelEl);
   }
   labelEl.className = ('pulse-label ' + (labelClass || '')).trim();
-  labelEl.textContent = label;
+  const formattedLabel = formatPulseLabelWithRefs(label);
+  if(formattedLabel !== label) labelEl.innerHTML = formattedLabel;
+  else labelEl.textContent = label;
 }
 
 function setPulseStyle(el, p){
