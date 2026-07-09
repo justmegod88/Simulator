@@ -1803,6 +1803,20 @@ select.product-enhanced-native{display:none!important}
 }
 </style>
 
+
+<style id="hero-packshot-down-188-final">
+/* 188 update: 타이틀 영역 팩샷만 살짝 아래로 이동 */
+.hero-pack{
+  transform:translate(-4px, 12px) !important;
+}
+@media (max-width:1280px){
+  .hero-pack{transform:translate(-3px, 10px) !important;}
+}
+@media (max-width:760px){
+  .hero-pack{transform:translate(-2px, 8px) !important;}
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -2313,7 +2327,7 @@ const PRODUCT_INFO={
     ]
   }
 };
-const state={selected:['myohyperopia'],scene:'day',leftProduct:'max1day',rightProduct:'oasys',split:50,outcome:'high',view:'dual',sidebarCollapsed:false};
+const state={selected:['myohyperopia'],scene:'night',leftProduct:'max1day',rightProduct:'oasys',split:50,outcome:'high',view:'dual',sidebarCollapsed:false};
 const OUTCOME_SHARPNESS={high:1.0, medium:0.95, low:0.90};
 const dom={
   appShell:document.getElementById('appShell'),
@@ -3307,7 +3321,7 @@ dom.resetBtn.onclick=()=>{
   closeProductPop('right');
   if(dom.outcomePop) dom.outcomePop.classList.remove('open');
   if(typeof closeAllProductDropdowns==='function') closeAllProductDropdowns();
-  state.selected=['myohyperopia']; state.scene='day'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; state.view='dual'; state.sidebarCollapsed=false; setSplit(50); renderAll();
+  state.selected=['myohyperopia']; state.scene='night'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; state.view='dual'; state.sidebarCollapsed=false; setSplit(50); renderAll();
 };
 dom.dualViewBtn.onclick=()=>{state.view='dual'; updateViewMode(); updateVideos();};
 dom.splitViewBtn.onclick=()=>{state.view='split'; updateViewMode(); updateVideos();};
