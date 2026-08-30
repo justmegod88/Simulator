@@ -1819,28 +1819,158 @@ select.product-enhanced-native{display:none!important}
 
 
 <style id="blue-light-info-panel-style">
-/* Premium blue-light info panel — visual quality aligned to initial concept */
-.blue-info-btn{height:46px;padding:0 18px;border-radius:16px;border:1px solid #BFD4F4;background:#F5F9FF;color:#0A4EA3;font-size:13px;font-weight:950;cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 6px 16px rgba(35,89,216,.08);white-space:nowrap}
-.blue-info-btn:hover{background:#EAF3FF;border-color:#8DB7EF}.blue-info-btn.active{background:linear-gradient(180deg,#2E68F0,#2359D8);border-color:#2359D8;color:#fff;box-shadow:0 8px 20px rgba(35,89,216,.18)}
-.blue-info-panel{display:none;position:sticky;top:16px;align-self:start;background:#fff;border:1px solid rgba(194,211,234,.95);border-radius:28px;box-shadow:0 18px 44px rgba(5,28,76,.18);overflow:hidden;min-width:0}
-.shell.blue-info-open{grid-template-columns:54px minmax(0,1fr) 470px !important}
-.shell.blue-info-open .blue-info-panel{display:block}.shell.blue-info-open .sidebar{padding:0;min-height:0;height:var(--stage-video-height-collapsed)!important;max-height:var(--stage-video-height-collapsed)!important;align-self:start;background:rgba(255,255,255,.96)}
-.shell.blue-info-open .sidebar>:not(.sidebar-fold-btn){opacity:0;pointer-events:none;visibility:hidden}.shell.blue-info-open .sidebar-fold-btn{right:-18px;left:auto;border-radius:0 999px 999px 0}.shell.blue-info-open .sidebar-fold-btn::after{content:'옵션 선택';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-90deg);font-size:12px;font-weight:950;color:#2359D8;white-space:nowrap;opacity:.5}
+/* 218 update, 개편: 블루라이트/난시/멀티포컬 알아보기 우측 정보 패널 (공통 구조 + 테마 컬러) */
+.edu-info-btn{
+  height:46px;padding:0 16px;border-radius:16px;border:1px solid #BFD4F4;background:#F5F9FF;
+  color:#0A4EA3;font-size:13px;font-weight:950;cursor:pointer;display:inline-flex;align-items:center;gap:7px;
+  box-shadow:0 6px 16px rgba(35,89,216,.08);white-space:nowrap;
+}
+.edu-info-btn:hover{background:#EAF3FF;border-color:#8DB7EF}
+.edu-info-btn.active{background:linear-gradient(180deg,#2E68F0,#2359D8);border-color:#2359D8;color:#fff;box-shadow:0 8px 20px rgba(35,89,216,.18)}
+.edu-info-btn.theme-toric{border-color:#D9CBF5;background:#F8F5FF;color:#5B2FB0}
+.edu-info-btn.theme-toric:hover{background:#F0E9FF;border-color:#C4AEF2}
+.edu-info-btn.theme-toric.active{background:linear-gradient(180deg,#8A5CE0,#6B34C9);border-color:#6B34C9;color:#fff;box-shadow:0 8px 20px rgba(107,52,201,.18)}
+.edu-info-btn.theme-multi{border-color:#BFE6D9;background:#F1FBF7;color:#0E7A56}
+.edu-info-btn.theme-multi:hover{background:#E4F7EF;border-color:#9AD9C1}
+.edu-info-btn.theme-multi.active{background:linear-gradient(180deg,#1FAE7C,#0E8A61);border-color:#0E8A61;color:#fff;box-shadow:0 8px 20px rgba(14,138,97,.18)}
+.edu-info-panel{
+  display:none;position:sticky;top:16px;align-self:start;background:#fff;border:1px solid rgba(220,227,238,.95);
+  border-radius:26px;box-shadow:0 12px 28px rgba(8,24,68,.12);overflow:hidden;min-width:0;max-height:calc(100vh - 32px);overflow-y:auto;
+}
+.shell.info-panel-open{
+  grid-template-columns:54px minmax(0,1fr) 390px !important;
+}
+.shell.info-panel-open .edu-info-panel.is-active{display:block}
+.shell.info-panel-open .sidebar{padding:0;min-height:0;height:var(--stage-video-height-collapsed) !important;max-height:var(--stage-video-height-collapsed) !important;align-self:start;background:rgba(255,255,255,.96)}
+.shell.info-panel-open .sidebar > :not(.sidebar-fold-btn){opacity:0;pointer-events:none;visibility:hidden}
+.shell.info-panel-open .sidebar-fold-btn{right:-18px;left:auto;border-radius:0 999px 999px 0}
+.shell.info-panel-open .sidebar-fold-btn::after{content:'옵션 선택';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-90deg);font-size:12px;font-weight:950;color:#2359D8;white-space:nowrap;opacity:.5}
+.edu-info-head{position:relative;padding:20px 22px 16px;background:linear-gradient(180deg,#0A2F78,#08265F);color:#fff}
+.edu-info-panel.theme-toric .edu-info-head{background:linear-gradient(180deg,#4B2695,#341A6B)}
+.edu-info-panel.theme-multi .edu-info-head{background:linear-gradient(180deg,#0A6B4B,#06452F)}
+.edu-info-kicker{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);font-size:11px;font-weight:900;letter-spacing:.04em;margin-bottom:10px}
+.edu-info-title{margin:0;font-size:24px;line-height:1.2;font-weight:950;letter-spacing:-.04em}
+.edu-info-sub{margin:7px 38px 0 0;font-size:12px;line-height:1.5;color:rgba(255,255,255,.78)}
+.edu-info-close{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.96);color:#1E365D;font-size:23px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.edu-info-body{padding:16px;display:grid;gap:12px}
+.edu-info-card{border:1px solid #DFE8F5;border-radius:20px;background:#FBFDFF;padding:16px}
+.edu-info-panel.theme-toric .edu-info-card{border-color:#E6DEF9;background:#FBFAFE}
+.edu-info-panel.theme-multi .edu-info-card{border-color:#DCF0E7;background:#F9FDFB}
+.edu-info-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.edu-info-num{width:28px;height:28px;border-radius:50%;background:#0A4EA3;color:#fff;display:grid;place-items:center;font-size:13px;font-weight:950;flex:0 0 auto}
+.edu-info-panel.theme-toric .edu-info-num{background:#6B34C9}
+.edu-info-panel.theme-multi .edu-info-num{background:#0E8A61}
+.edu-info-card-title{font-size:17px;font-weight:950;color:#123665;letter-spacing:-.03em}
+.edu-info-panel.theme-toric .edu-info-card-title{color:#3B1D72}
+.edu-info-panel.theme-multi .edu-info-card-title{color:#0B4A34}
+.edu-info-copy{margin:0;color:#3E536F;font-size:13px;line-height:1.58;word-break:keep-all}
+.edu-info-asset{display:block;width:100%;height:auto;margin-top:12px;border-radius:12px}
+.blue-spectrum{margin-top:12px}
+.blue-spectrum-zone-labels{display:flex;font-size:11px;font-weight:900;color:#3B5C8F;margin-bottom:6px}
+.blue-spectrum-zone-labels span{flex:1}
+.blue-spectrum-zone-labels .sub{display:block;font-size:9px;font-weight:800;color:#8DA0BC;letter-spacing:.02em;margin-top:1px}
+.blue-spectrum-bar{height:18px;border-radius:999px;background:linear-gradient(90deg,#885AC6 0%,#4E68D8 28%,#2B91D1 53%,#56B96E 70%,#F5D84C 84%,#F28D3A 100%);position:relative;overflow:visible}
+.blue-spectrum-zone{position:absolute;left:8%;width:36%;top:-5px;height:28px;border:2px solid #0A4EA3;border-radius:999px;box-shadow:0 0 0 3px rgba(10,78,163,.10)}
+.blue-spectrum-labels{display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;font-weight:800;color:#71829B}
+.blue-spectrum-note{margin-top:9px;font-size:11px;line-height:1.45;color:#6B7D96}
+.blue-source-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.blue-source-item{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:10px 4px;border-radius:14px;background:#F2F7FF;border:1px solid #DDEAFF}
+.blue-source-icon{width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid #D8E6FA;display:grid;place-items:center;color:#2359D8}
+.blue-source-icon svg{width:18px;height:18px}
+.blue-source-label{font-size:10.5px;font-weight:900;color:#173E74;line-height:1.3}
+.edu-recommend-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.edu-info-panel.theme-toric .edu-recommend-item{background:#F5F1FE;border-color:#E3D8FA}
+.edu-info-panel.theme-multi .edu-recommend-item{background:#EEFAF4;border-color:#D4F0E3}
+.edu-recommend-item{display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:center;padding:10px 11px;border-radius:14px;background:#F2F7FF;border:1px solid #DDEAFF}
+.edu-recommend-icon{width:38px;height:38px;border-radius:12px;background:#fff;display:grid;place-items:center;font-size:20px;border:1px solid #D8E6FA}
+.edu-recommend-title{font-size:13px;font-weight:950;color:#173E74;line-height:1.3}
+.edu-info-panel.theme-toric .edu-recommend-title{color:#3B1D72}
+.edu-info-panel.theme-multi .edu-recommend-title{color:#0B4A34}
+.edu-recommend-text{font-size:11.5px;color:#617590;line-height:1.4;margin-top:2px}
 
-.blue-info-head{position:relative;padding:18px 22px 16px;background:#FFFFFF;color:#0B376F;border-bottom:1px solid #E4ECF7;text-align:center}
-.blue-info-head::after{display:none!important}.blue-info-eyebrow{display:none!important}
-.blue-info-title{margin:0;font-size:21px;line-height:1.18;font-weight:950;letter-spacing:-.045em;color:#0B376F}.blue-info-sub{display:none!important}
-.blue-info-close{position:absolute;right:14px;top:12px;width:34px;height:34px;border-radius:50%;border:0;background:#fff;color:#1E365D;font-size:25px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:none}
-.blue-info-body{padding:12px;display:grid;gap:10px;background:#F8FAFD}
-.blue-info-card{position:relative;border:1px solid #D9E5F4;border-radius:18px;background:#FFFFFF;padding:13px 14px 14px;box-shadow:0 5px 14px rgba(20,54,104,.055);overflow:hidden}
-.blue-info-card::before{display:none!important}.blue-info-card-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}.blue-info-num{width:28px;height:28px;border-radius:50%;background:#0B5AB5;color:#fff;display:grid;place-items:center;font-size:13px;font-weight:950;flex:0 0 auto;box-shadow:none}.blue-info-card-title{font-size:16px;font-weight:950;color:#0B376F;letter-spacing:-.04em}.blue-info-copy{margin:0;color:#334A68;font-size:11.5px;line-height:1.52;word-break:keep-all}
-.blue-spectrum{margin-top:10px}.blue-spectrum-visual{position:relative;padding-top:21px}.blue-spectrum-bar{height:22px;border-radius:2px;background:linear-gradient(90deg,#A175D2 0%,#645DE5 14%,#2D62D9 30%,#1698CA 47%,#32B778 59%,#9DCD4F 70%,#EBD548 82%,#F2A338 92%,#E96633 100%);position:relative;box-shadow:none}.blue-spectrum-zone{position:absolute;left:18%;width:40%;top:-3px;height:29px;border:0;border-left:1px dashed #1E56A4;border-right:1px dashed #1E56A4;border-radius:0;box-shadow:none}.blue-spectrum-zone::before{content:'블루라이트\A(BLUE–VIOLET LIGHT)';white-space:pre;position:absolute;left:50%;bottom:calc(100% + 5px);transform:translateX(-50%);font-size:8.5px;line-height:1.1;font-weight:950;letter-spacing:-.01em;color:#0B4B99;text-align:center}.blue-spectrum-zone::after{display:none}.blue-spectrum-labels{display:grid;grid-template-columns:18% 40% 42%;margin-top:5px;font-size:8.9px;font-weight:900;color:#3B4B63}.blue-spectrum-labels span:first-child{text-align:center}.blue-spectrum-labels span:nth-child(2){text-align:center}.blue-spectrum-labels span:last-child{text-align:center}.blue-spectrum-source-row{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:10px}.blue-source{display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 4px;border-radius:10px;background:#F7FAFE;border:1px solid #E5ECF6;color:#274B78;font-size:8.7px;font-weight:850;white-space:nowrap}.blue-source svg{width:16px;height:16px;flex:0 0 16px;color:#175DB7}.blue-spectrum-note{display:none}
-.blue-benefit-wrap{display:grid;grid-template-columns:100px 1fr;gap:12px;align-items:center}.blue-lens-scene{position:relative;height:116px;display:grid;place-items:center}.blue-lens-scene::before,.blue-lens-scene::after{content:'';position:absolute;left:0;width:47px;height:2px;border-radius:999px;background:#4E89E8}.blue-lens-scene::before{top:42px}.blue-lens-scene::after{top:72px}.blue-lens-scene .ray3{position:absolute;left:0;top:57px;width:47px;height:2px;border-radius:999px;background:#4E89E8}.blue-lens-scene .ray-stop{display:none}.blue-lens-illustration{position:relative;z-index:2;width:54px;height:94px;border-radius:50%;border:1.5px solid #86BEEA;background:radial-gradient(ellipse at 32% 26%,rgba(255,255,255,.96),rgba(213,239,255,.78) 42%,rgba(108,190,237,.32) 76%,rgba(89,168,225,.18));box-shadow:inset 0 0 14px rgba(40,140,210,.18);transform:none}.blue-lens-illustration::after{content:'';position:absolute;inset:10px 16px;border-radius:50%;background:linear-gradient(90deg,rgba(255,255,255,.74),rgba(255,255,255,0))}
-.blue-benefit-list{display:grid;gap:8px}.blue-benefit-row{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center}.blue-benefit-icon{width:34px;height:34px;border-radius:10px;background:#F0F5FD;display:grid;place-items:center;color:#175DB7}.blue-benefit-icon svg{width:19px;height:19px}.blue-benefit-copy b{display:block;color:#123E77;font-size:10.7px;line-height:1.2;margin-bottom:2px}.blue-benefit-copy span{display:block;color:#60728A;font-size:8.8px;line-height:1.28;word-break:keep-all}.blue-tech-main,.blue-tech-sub,.blue-benefit-tags{display:none!important}
-.blue-recommend-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.blue-recommend-item{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 4px 4px;border:0;background:transparent;min-width:0}.blue-recommend-item+.blue-recommend-item{border-left:1px solid #E7EDF6}.blue-recommend-art{width:66px;height:58px;margin-bottom:5px;display:grid;place-items:center}.blue-recommend-art svg{width:100%;height:100%}.blue-recommend-title{font-size:9.8px;font-weight:950;color:#123E77;line-height:1.28;word-break:keep-all}.blue-recommend-text{font-size:8.3px;color:#697B92;line-height:1.28;margin-top:3px;word-break:keep-all}.blue-max-banner{margin-top:8px;padding:8px 10px;border-radius:10px;background:#0B3E8D;color:#fff;text-align:center;font-size:9px;line-height:1.3;font-weight:900;box-shadow:none}.blue-max-banner b{font-size:11px}.blue-info-footnote{padding:0 14px 12px;background:#F8FAFD;font-size:8.3px;line-height:1.4;color:#78889D;word-break:keep-all}
-@media (max-width:1450px) and (min-width:1281px){.shell.blue-info-open{grid-template-columns:54px minmax(0,1fr) 470px!important}.blue-info-panel{zoom:1}}
-@media (max-width:1280px){.shell.blue-info-open{grid-template-columns:1fr!important}.shell.blue-info-open .sidebar{display:none!important}.shell.blue-info-open .blue-info-panel{position:static;order:3;margin-top:0}.blue-info-panel{width:100%;zoom:1}.blue-recommend-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:760px){.blue-info-btn{height:42px;padding:0 14px;font-size:12px}.blue-info-head{padding:16px 18px 14px}.blue-info-title{font-size:20px}.blue-info-body{padding:9px;gap:8px}.blue-info-card{padding:11px 10px 12px;border-radius:16px}.blue-info-card-head{gap:7px;margin-bottom:8px}.blue-info-num{width:25px;height:25px;font-size:12px}.blue-info-card-title{font-size:14px}.blue-info-copy{font-size:10.2px}.blue-spectrum-source-row{grid-template-columns:repeat(4,1fr);gap:3px}.blue-source{font-size:7.4px;padding:5px 2px;gap:2px}.blue-source svg{width:13px;height:13px;flex-basis:13px}.blue-benefit-wrap{grid-template-columns:82px 1fr;gap:8px}.blue-lens-scene{height:96px;transform:scale(.9)}.blue-benefit-list{gap:6px}.blue-benefit-row{grid-template-columns:29px 1fr;gap:6px}.blue-benefit-icon{width:29px;height:29px}.blue-benefit-icon svg{width:16px;height:16px}.blue-benefit-copy b{font-size:9.2px}.blue-benefit-copy span{font-size:7.5px}.blue-recommend-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}.blue-recommend-item{display:flex!important;grid-template-columns:none!important;text-align:center!important;padding:4px 2px!important}.blue-recommend-art{width:54px;height:48px;margin:0 0 4px!important}.blue-recommend-title{font-size:8.5px}.blue-recommend-text{font-size:7.1px}.blue-max-banner{font-size:8px;padding:7px 8px}.blue-max-banner b{font-size:9.5px}.blue-info-footnote{font-size:7.5px;padding:0 10px 10px}}
+/* 렌즈 통과 일러스트 (블루라이트 차단 베네핏) */
+.blue-lens-diagram{width:100%;padding:6px 0 4px;display:flex;justify-content:center}
+.blue-lens-diagram svg{width:100%;max-width:280px;height:auto}
+.blue-benefit-list{display:grid;gap:10px;margin-top:6px}
+.blue-benefit-item{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:flex-start}
+.blue-benefit-icon{width:34px;height:34px;border-radius:50%;background:#EAF3FF;border:1px solid #D8E6FA;display:grid;place-items:center;color:#2359D8;flex:0 0 auto}
+.blue-benefit-icon svg{width:17px;height:17px}
+.blue-benefit-title{font-size:13px;font-weight:950;color:#123D78;line-height:1.4}
+.blue-benefit-text{margin-top:2px;font-size:11.5px;color:#617590;line-height:1.45}
+
+/* 난시/멀티포컬 패널에서 계속 사용하는 단순 베네핏 블록 */
+.blue-tech{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center}
+.blue-lens-illustration{width:62px;height:82px;border-radius:50%;border:2px solid #8EC8F5;background:radial-gradient(ellipse at 35% 35%,rgba(255,255,255,.95),rgba(187,228,251,.58) 48%,rgba(110,190,235,.28));box-shadow:inset 0 0 14px rgba(40,140,210,.18);transform:rotate(8deg)}
+.blue-tech-main{font-size:14px;font-weight:950;color:#123D78;line-height:1.45;word-break:keep-all}
+.blue-tech-sub{margin-top:4px;font-size:11.5px;color:#617590;line-height:1.45}
+
+/* 추천 대상: 일러스트 캐릭터 + 연결 마크 */
+.blue-persona-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:end;gap:2px;margin-top:6px}
+.blue-persona{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.blue-persona-avatar{width:78px;height:78px;display:grid;place-items:center}
+.blue-persona-avatar svg{width:100%;height:100%}
+.blue-persona-title{font-size:11px;font-weight:950;color:#173E74;line-height:1.35}
+.blue-persona-text{font-size:9.5px;color:#7688A0;line-height:1.35}
+.blue-persona-sep{display:flex;align-items:center;justify-content:center;padding-bottom:34px}
+.blue-persona-sep svg{width:14px;height:14px}
+
+/* 하단 제품 배너 */
+.edu-product-banner{
+  margin:2px 16px 12px;border-radius:18px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:linear-gradient(90deg,#0A2F78,#153C8C);color:#fff;
+}
+.edu-banner-left{display:flex;align-items:center;gap:10px;min-width:0}
+.edu-banner-check{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:0 0 auto}
+.edu-banner-check svg{width:14px;height:14px}
+.edu-banner-text{font-size:11.5px;font-weight:900;line-height:1.35;word-break:keep-all}
+.edu-banner-logo{font-size:11px;font-weight:950;text-align:right;line-height:1.2;letter-spacing:-.01em;flex:0 0 auto}
+.edu-banner-logo .l2{display:block;font-size:12.5px;letter-spacing:.01em}
+@media (max-width:400px){
+  .blue-source-row{grid-template-columns:repeat(2,1fr)}
+  .blue-persona-text{display:none}
+}
+.edu-info-footnote{padding:0 16px 16px;font-size:10px;line-height:1.5;color:#8592A5;word-break:keep-all}
+
+/* 난시 비교 비주얼 (겹쳐보이는 시야) */
+.toric-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.toric-compare-cell{border-radius:14px;overflow:hidden;border:1px solid #E3D8FA;background:#12081F}
+.toric-compare-label{font-size:10.5px;font-weight:900;color:#fff;padding:6px 8px;background:rgba(0,0,0,.35)}
+.toric-compare-visual{height:86px;display:grid;place-items:center;position:relative;background:radial-gradient(circle,#2A1650,#0F0824)}
+.toric-compare-visual .dot{width:22px;height:22px;border-radius:50%;background:#FFD54A}
+.toric-compare-visual.blurred .dot{filter:blur(3px);box-shadow:0 0 0 10px rgba(255,213,74,.25), 6px 0 8px rgba(255,213,74,.35), -6px 0 8px rgba(255,213,74,.2)}
+
+/* 멀티포컬 거리별 초점 비주얼 */
+.multi-distance-visual{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.multi-distance-cell{border-radius:14px;padding:12px 8px;text-align:center;background:#F1FBF7;border:1px solid #DCF0E7}
+.multi-distance-icon{font-size:22px}
+.multi-distance-name{font-size:11px;font-weight:900;color:#0B4A34;margin-top:4px}
+.multi-distance-state{font-size:10px;color:#4C8B72;margin-top:2px;line-height:1.4}
+
+/* QR 체험 카드 (공통) */
+.edu-qr-card{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center}
+.edu-qr-box{width:96px;height:96px;border-radius:14px;background:#fff;border:1px solid #E1E8F2;padding:6px;display:grid;place-items:center;box-shadow:0 4px 12px rgba(8,24,68,.08)}
+.edu-qr-box img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.edu-qr-title{font-size:13.5px;font-weight:950;color:#123665;line-height:1.35}
+.edu-info-panel.theme-toric .edu-qr-title{color:#3B1D72}
+.edu-info-panel.theme-multi .edu-qr-title{color:#0B4A34}
+.edu-qr-text{font-size:11.5px;color:#617590;line-height:1.45;margin-top:4px}
+.edu-qr-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:900;color:#2359D8;text-decoration:none;word-break:break-all}
+.edu-info-panel.theme-toric .edu-qr-link{color:#6B34C9}
+.edu-info-panel.theme-multi .edu-qr-link{color:#0E8A61}
+
+@media (max-width:1280px){
+  .shell.info-panel-open{grid-template-columns:1fr !important}
+  .shell.info-panel-open .sidebar{display:none !important}
+  .shell.info-panel-open .edu-info-panel.is-active{position:static;order:3;margin-top:0}
+  .edu-info-panel{width:100%}
+}
+@media (max-width:760px){
+  .edu-info-btn{height:42px;padding:0 12px;font-size:12px}
+  .edu-info-title{font-size:21px}
+  .edu-info-body{padding:12px;gap:10px}
+  .edu-info-card{padding:14px}
+  .edu-qr-card{grid-template-columns:1fr;justify-items:center;text-align:center}
+}
 </style>
 
 </head>
@@ -1926,7 +2056,9 @@ select.product-enhanced-native{display:none!important}
           </div>
         </div>
         <div class="toolbar-right">
-          <button class="blue-info-btn" id="blueInfoBtn" type="button" aria-expanded="false" aria-controls="blueInfoPanel">블루라이트 알아보기 ⓘ</button>
+          <button class="edu-info-btn theme-blue" id="blueInfoBtn" type="button" aria-expanded="false" aria-controls="blueInfoPanel">블루라이트 알아보기 ⓘ</button>
+          <button class="edu-info-btn theme-toric" id="toricInfoBtn" type="button" aria-expanded="false" aria-controls="toricInfoPanel">난시 알아보기 ⓘ</button>
+          <button class="edu-info-btn theme-multi" id="multiInfoBtn" type="button" aria-expanded="false" aria-controls="multiInfoPanel">멀티포컬 알아보기 ⓘ</button>
           <div class="view-toggle" id="viewToggle">
             <button type="button" id="dualViewBtn" class="active">듀얼화면</button>
             <button type="button" id="splitViewBtn">슬라이드화면</button>
@@ -2018,62 +2150,144 @@ select.product-enhanced-native{display:none!important}
       
     </section>
 
-    <aside class="blue-info-panel" id="blueInfoPanel" aria-hidden="true">
-      <div class="blue-info-head">
-        <button class="blue-info-close" id="blueInfoClose" type="button" aria-label="블루라이트 알아보기 닫기">×</button>
-        <div class="blue-info-eyebrow">BLUE LIGHT GUIDE</div>
-        <h2 class="blue-info-title">블루라이트 알아보기 ⓘ</h2>
-        <p class="blue-info-sub">블루라이트가 무엇인지부터 차단 베네핏, 그리고 어떤 라이프스타일에 MAX를 추천할 수 있는지 한눈에 확인해 보세요.</p>
+    <aside class="edu-info-panel theme-blue" id="blueInfoPanel" aria-hidden="true">
+      <div class="edu-info-head">
+        <button class="edu-info-close" id="blueInfoClose" type="button" aria-label="블루라이트 알아보기 닫기">×</button>
+        <span class="edu-info-kicker">💡 OPTIBLUE™ LIGHT FILTER</span>
+        <h2 class="edu-info-title">블루라이트 알아보기 ⓘ</h2>
+        <p class="edu-info-sub">블루라이트가 무엇인지, 차단했을 때의 베네핏과 어떤 분께 MAX를 추천할 수 있는지 한눈에 확인해 보세요.</p>
       </div>
-      <div class="blue-info-body">
-        <div class="blue-info-card">
-          <div class="blue-info-card-head"><span class="blue-info-num">1</span><div class="blue-info-card-title">블루라이트란?</div></div>
-          <p class="blue-info-copy">가시광선 중 짧은 파장대의 빛으로, 태양광뿐 아니라 디지털 기기와 LED 조명 등 다양한 빛 환경에 존재합니다.</p>
-          <div class="blue-spectrum">
-            <div class="blue-spectrum-visual"><div class="blue-spectrum-bar"><span class="blue-spectrum-zone"></span></div></div>
-            <div class="blue-spectrum-labels"><span>UV</span><span>BLUE-VIOLET</span><span>VISIBLE LIGHT</span></div>
-            <div class="blue-spectrum-source-row">
-              <div class="blue-source"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>태양광</span></div>
-              <div class="blue-source"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 17h6M8 7h8"/></svg><span>디지털 기기</span></div>
-              <div class="blue-source"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 22h4M8 14c-1.3-1.1-2-2.7-2-4.5A6 6 0 0 1 18 9.5c0 1.8-.7 3.4-2 4.5-.8.7-1 1.3-1 2H9c0-.7-.2-1.3-1-2Z"/></svg><span>LED 조명</span></div>
-              <div class="blue-source"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h16M7 8h10M8 16h8"/></svg><span>다양한 빛 환경</span></div>
+      <div class="edu-info-body">
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">1</span><div class="edu-info-card-title">블루라이트란?</div></div>
+          <p class="edu-info-copy">가시광선 중 짧은 파장대의 빛으로, 태양광뿐 아니라 디지털 기기와 LED 조명 등 다양한 빛 환경에 존재합니다.</p>
+          <img class="edu-info-asset" src="03_blue_violet_spectrum.png" alt="블루라이트 파장대 스펙트럼: 자외선(UV), 블루라이트(380-450nm), 가시광선" />
+        </div>
+
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">2</span><div class="edu-info-card-title">블루라이트 차단 베네핏</div></div>
+          <img class="edu-info-asset" src="02_blue_light_filtering_benefit.png" alt="렌즈를 통과하며 블루라이트가 차단되는 원리와 눈부심 감소, 선명한 시야, 눈 피로 완화 효과" />
+        </div>
+
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">3</span><div class="edu-info-card-title">이런 분께 아큐브® 오아시스® MAX를 추천해요</div></div>
+          <img class="edu-info-asset" src="01_recommended_for_max.png" alt="디지털 기기를 오래 보는 분, 콘택트렌즈를 장시간 착용하는 분, 야간에도 활동이 많은 분" />
+        </div>
+      </div>
+
+      <div class="edu-product-banner">
+        <div class="edu-banner-left">
+          <div class="edu-banner-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div class="edu-banner-text">옵티블루™ 기술로 블루라이트의 약 55%를 차단*</div>
+        </div>
+        <div class="edu-banner-logo">ACUVUE®<span class="l2">OASYS MAX</span></div>
+      </div>
+      <div class="edu-info-footnote">* 제품 정보 기준. HEV/블루라이트 필터링이 안구 또는 전신 건강상의 이점을 제공하는 것으로 입증된 것은 아닙니다. 자세한 내용은 하단 references를 참고하세요.</div>
+    </aside>
+
+    <aside class="edu-info-panel theme-toric" id="toricInfoPanel" aria-hidden="true">
+      <div class="edu-info-head">
+        <button class="edu-info-close" id="toricInfoClose" type="button" aria-label="난시 알아보기 닫기">×</button>
+        <span class="edu-info-kicker">👁️ FOR ASTIGMATISM</span>
+        <h2 class="edu-info-title">난시 알아보기 ⓘ</h2>
+        <p class="edu-info-sub">난시가 있을 때 시야가 어떻게 보이는지, 토릭 렌즈가 어떻게 교정을 돕는지 확인해 보세요.</p>
+      </div>
+      <div class="edu-info-body">
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">1</span><div class="edu-info-card-title">난시란?</div></div>
+          <p class="edu-info-copy">각막이나 수정체의 곡률이 균일하지 않아 빛이 한 점에 초점을 맺지 못하는 굴절이상입니다. 미교정 시 사물이 겹쳐 보이거나 빛 번짐, 흐림이 나타날 수 있습니다.</p>
+          <div class="toric-compare">
+            <div class="toric-compare-cell">
+              <div class="toric-compare-label">난시 미교정</div>
+              <div class="toric-compare-visual blurred"><div class="dot"></div></div>
             </div>
-            <div class="blue-spectrum-note">Blue-violet light 영역을 시각적으로 단순화한 예시입니다.</div>
+            <div class="toric-compare-cell">
+              <div class="toric-compare-label">토릭 렌즈 교정</div>
+              <div class="toric-compare-visual"><div class="dot"></div></div>
+            </div>
           </div>
         </div>
 
-        <div class="blue-info-card">
-          <div class="blue-info-card-head"><span class="blue-info-num">2</span><div class="blue-info-card-title">블루라이트 차단 베네핏</div></div>
-          <div class="blue-benefit-wrap">
-            <div class="blue-lens-scene" aria-hidden="true"><span class="ray3"></span><span class="ray-stop"></span><div class="blue-lens-illustration"></div></div>
-            <div class="blue-benefit-list">
-              <div class="blue-benefit-row"><div class="blue-benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></div><div class="blue-benefit-copy"><b>눈부심과 빛번짐 감소</b><span>밝은 빛 환경에서도 보다 편안한 시야 경험</span></div></div>
-              <div class="blue-benefit-row"><div class="blue-benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg></div><div class="blue-benefit-copy"><b>선명하고 편안한 시야</b><span>디지털 기기 사용 시 다양한 빛 환경을 고려</span></div></div>
-              <div class="blue-benefit-row"><div class="blue-benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 22h4M8 14c-1.3-1.1-2-2.7-2-4.5A6 6 0 0 1 18 9.5c0 1.8-.7 3.4-2 4.5-.8.7-1 1.3-1 2H9c0-.7-.2-1.3-1-2Z"/></svg></div><div class="blue-benefit-copy"><b>일상 속 다양한 빛 환경</b><span>태양광·디지털 기기·LED 조명 등</span></div></div>
-            </div>
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">2</span><div class="edu-info-card-title">토릭 렌즈 교정 베네핏</div></div>
+          <div class="blue-tech">
+            <div class="blue-lens-illustration" aria-hidden="true"></div>
+            <div><div class="blue-tech-main">축(axis)에 맞춘 안정적인 시축 고정 디자인</div><div class="blue-tech-sub">렌즈가 눈 안에서 잘 회전하지 않도록 설계되어, 착용 중에도 선명한 시야를 유지하는 데 도움을 줍니다.</div></div>
           </div>
         </div>
 
-        <div class="blue-info-card">
-          <div class="blue-info-card-head"><span class="blue-info-num">3</span><div class="blue-info-card-title">이런 분께 MAX를 추천해요</div></div>
-          <div class="blue-recommend-grid">
-            <div class="blue-recommend-item">
-              <div class="blue-recommend-art" aria-hidden="true"><svg viewBox="0 0 90 80"><rect x="0" y="0" width="90" height="80" rx="18" fill="#EFF5FF"/><circle cx="42" cy="27" r="11" fill="#F5B48F"/><path d="M31 27c0-12 8-18 16-18 6 0 12 3 15 9-8-1-10 8-20 8-5 0-8 1-11 1Z" fill="#173D75"/><path d="M24 72c2-20 9-30 20-30 14 0 22 12 23 30" fill="#DF6D80"/><rect x="59" y="35" width="17" height="27" rx="3" fill="#203B67"/><rect x="62" y="39" width="11" height="18" rx="1" fill="#A9D6FF"/><path d="M52 52c4-3 7-4 10-3" stroke="#F5B48F" stroke-width="5" stroke-linecap="round"/></svg></div>
-              <div><div class="blue-recommend-title">디지털 기기를 오래 보는 분</div><div class="blue-recommend-text">스마트폰·태블릿·PC 사용이 많은 라이프스타일</div></div>
-            </div>
-            <div class="blue-recommend-item">
-              <div class="blue-recommend-art" aria-hidden="true"><svg viewBox="0 0 90 80"><rect width="90" height="80" rx="18" fill="#F4F0FF"/><circle cx="45" cy="27" r="11" fill="#F2B28D"/><path d="M34 26c0-11 7-17 16-17 10 0 17 8 16 19-5-4-9-8-13-12-3 6-10 10-19 10Z" fill="#2F466E"/><path d="M25 72c2-20 10-31 21-31 13 0 21 12 22 31" fill="#8B78C9"/><ellipse cx="45" cy="28" rx="14" ry="8" fill="none" stroke="#4E77C6" stroke-width="2"/><circle cx="41" cy="28" r="1.2" fill="#183560"/><circle cx="49" cy="28" r="1.2" fill="#183560"/></svg></div>
-              <div><div class="blue-recommend-title">콘택트렌즈를 장시간 착용하는 분</div><div class="blue-recommend-text">하루 동안 렌즈를 오래 착용하는 경우</div></div>
-            </div>
-            <div class="blue-recommend-item">
-              <div class="blue-recommend-art" aria-hidden="true"><svg viewBox="0 0 90 80"><rect width="90" height="80" rx="18" fill="#EAF1FF"/><path d="M68 11a16 16 0 1 0 8 29 18 18 0 0 1-8-29Z" fill="#FFDB70"/><circle cx="18" cy="16" r="1.5" fill="#fff"/><circle cx="73" cy="52" r="1.4" fill="#fff"/><circle cx="32" cy="18" r="1.2" fill="#fff"/><path d="M12 63h66" stroke="#24436F" stroke-width="4" stroke-linecap="round"/><path d="M24 63c3-12 11-20 21-20s18 8 21 20" fill="#284B7E"/><circle cx="45" cy="38" r="8" fill="#F1AD87"/><path d="M37 37c0-9 6-13 12-13 7 0 12 6 12 13-5-4-9-7-14-9-2 5-5 8-10 9Z" fill="#1F385E"/></svg></div>
-              <div><div class="blue-recommend-title">야간에도 활동이 많은 분</div><div class="blue-recommend-text">야간 운전·실내 조명 등 다양한 빛 환경을 자주 경험하는 경우</div></div>
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">3</span><div class="edu-info-card-title">이런 분께 토릭을 추천해요</div></div>
+          <div class="edu-recommend-grid">
+            <div class="edu-recommend-item"><div class="edu-recommend-icon">🌃</div><div><div class="edu-recommend-title">야간에 빛 번짐이 심한 분</div><div class="edu-recommend-text">가로등·헤드라이트가 겹쳐 보이거나 번져 보이는 경우</div></div></div>
+            <div class="edu-recommend-item"><div class="edu-recommend-icon">📄</div><div><div class="edu-recommend-title">작은 글씨가 흐릿하게 겹쳐 보이는 분</div><div class="edu-recommend-text">문서·간판의 글자가 이중으로 보이거나 뭉개져 보이는 경우</div></div></div>
+            <div class="edu-recommend-item"><div class="edu-recommend-icon">🩺</div><div><div class="edu-recommend-title">검진에서 난시 진단을 받은 분</div><div class="edu-recommend-text">안경 처방에 원주(CYL) 수치가 포함되어 있는 경우</div></div></div>
+          </div>
+        </div>
+
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">4</span><div class="edu-info-card-title">모바일로 난시 시야 체험하기</div></div>
+          <div class="edu-qr-card">
+            <div class="edu-qr-box"><img id="toricQrImg" alt="난시 체험 QR 코드" /></div>
+            <div>
+              <div class="edu-qr-title">내 카메라로 보는 난시 시뮬레이션</div>
+              <div class="edu-qr-text">휴대폰으로 QR을 스캔하면, 카메라 화면으로 난시 미교정/교정 시야 차이를 직접 체험할 수 있는 페이지가 열립니다.</div>
+              <a class="edu-qr-link" id="toricQrLink" href="#" target="_blank" rel="noopener"></a>
             </div>
           </div>
-          <div class="blue-max-banner">옵티블루™ 기술로 블루라이트의 약 55%를 차단* &nbsp; <b>ACUVUE® OASYS MAX</b></div>
         </div>
       </div>
-      <div class="blue-info-footnote">* 제품 정보 기준. HEV/블루라이트 필터링이 안구 또는 전신 건강상의 이점을 제공하는 것으로 입증된 것은 아닙니다. 자세한 내용은 하단 references를 참고하세요.</div>
+      <div class="edu-info-footnote">* 본 콘텐츠는 이해를 돕기 위한 시각적 예시이며, 실제 난시 증상 및 교정 효과는 개인차가 있습니다. 정확한 진단은 안과 전문의와 상담하세요.</div>
+    </aside>
+
+    <aside class="edu-info-panel theme-multi" id="multiInfoPanel" aria-hidden="true">
+      <div class="edu-info-head">
+        <button class="edu-info-close" id="multiInfoClose" type="button" aria-label="멀티포컬 알아보기 닫기">×</button>
+        <span class="edu-info-kicker">🔎 FOR PRESBYOPIA</span>
+        <h2 class="edu-info-title">멀티포컬 알아보기 ⓘ</h2>
+        <p class="edu-info-sub">노안으로 인해 거리별 시야가 어떻게 달라지는지, 멀티포컬 렌즈가 어떻게 도움을 주는지 확인해 보세요.</p>
+      </div>
+      <div class="edu-info-body">
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">1</span><div class="edu-info-card-title">노안과 멀티포컬이란?</div></div>
+          <p class="edu-info-copy">나이가 들며 수정체의 조절력이 떨어져 근거리 초점 맞추기가 어려워지는 현상이 노안입니다. 멀티포컬 렌즈는 한 렌즈 안에 여러 도수 영역을 배치해 근거리·중간거리·원거리를 함께 보완합니다.</p>
+          <div class="multi-distance-visual">
+            <div class="multi-distance-cell"><div class="multi-distance-icon">📱</div><div class="multi-distance-name">근거리</div><div class="multi-distance-state">미교정 시 흐릿함</div></div>
+            <div class="multi-distance-cell"><div class="multi-distance-icon">💻</div><div class="multi-distance-name">중간거리</div><div class="multi-distance-state">미교정 시 다소 흐림</div></div>
+            <div class="multi-distance-cell"><div class="multi-distance-icon">🏞️</div><div class="multi-distance-name">원거리</div><div class="multi-distance-state">비교적 잘 보임</div></div>
+          </div>
+        </div>
+
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">2</span><div class="edu-info-card-title">멀티포컬 렌즈 베네핏</div></div>
+          <div class="blue-tech">
+            <div class="blue-lens-illustration" aria-hidden="true"></div>
+            <div><div class="blue-tech-main">거리에 따라 자연스럽게 전환되는 다중 초점 설계</div><div class="blue-tech-sub">스마트폰을 볼 때도, 모니터를 볼 때도, 먼 곳을 볼 때도 하나의 렌즈로 편안한 시야를 이어갈 수 있도록 돕습니다.</div></div>
+          </div>
+        </div>
+
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">3</span><div class="edu-info-card-title">이런 분께 멀티포컬을 추천해요</div></div>
+          <div class="edu-recommend-grid">
+            <div class="edu-recommend-item"><div class="edu-recommend-icon">📵</div><div><div class="edu-recommend-title">스마트폰 글씨가 점점 흐릿한 분</div><div class="edu-recommend-text">가까운 거리에서 초점을 맞추는 데 시간이 걸리는 경우</div></div></div>
+            <div class="edu-recommend-item"><div class="edu-recommend-icon">👓</div><div><div class="edu-recommend-title">돋보기 착용이 번거로운 분</div><div class="edu-recommend-text">근거리 작업마다 안경을 바꿔 쓰는 것이 불편한 경우</div></div></div>
+            <div class="edu-recommend-item"><div class="edu-recommend-icon">🖥️</div><div><div class="edu-recommend-title">거리를 자주 오가며 생활하는 분</div><div class="edu-recommend-text">모니터·서류·먼 곳을 번갈아 보는 업무 환경인 경우</div></div></div>
+          </div>
+        </div>
+
+        <div class="edu-info-card">
+          <div class="edu-info-card-head"><span class="edu-info-num">4</span><div class="edu-info-card-title">모바일로 거리별 시야 체험하기</div></div>
+          <div class="edu-qr-card">
+            <div class="edu-qr-box"><img id="multiQrImg" alt="멀티포컬 체험 QR 코드" /></div>
+            <div>
+              <div class="edu-qr-title">내 카메라로 보는 거리별 초점 시뮬레이션</div>
+              <div class="edu-qr-text">휴대폰으로 QR을 스캔하면, 전면 카메라로 눈-화면 거리를 측정하며 조절력 검사·적록검사를 거쳐 참고용 노안 자가 체크 결과를 보여주는 페이지가 열립니다.</div>
+              <a class="edu-qr-link" id="multiQrLink" href="#" target="_blank" rel="noopener"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="edu-info-footnote">* 본 콘텐츠는 이해를 돕기 위한 시각적 예시이며, 실제 노안 증상 및 교정 효과는 개인차가 있습니다. 정확한 진단은 안과 전문의와 상담하세요.</div>
     </aside>
   </div>
 <div class="references-footer">
@@ -2407,14 +2621,27 @@ const PRODUCT_INFO={
     ]
   }
 };
-const state={selected:['myohyperopia'],scene:'night',leftProduct:'max1day',rightProduct:'oasys',split:50,outcome:'high',view:'dual',sidebarCollapsed:false,blueInfoOpen:false};
+const state={selected:['myohyperopia'],scene:'night',leftProduct:'max1day',rightProduct:'oasys',split:50,outcome:'high',view:'dual',sidebarCollapsed:false,infoPanel:null};
 const OUTCOME_SHARPNESS={high:1.0, medium:0.95, low:0.90};
+/* 모바일 체험(QR) 페이지의 배포 주소. 실제 서비스 도메인으로 교체해 주세요. */
+const SITE_BASE_URL = (function(){
+  try{
+    if(location.protocol==='http:'||location.protocol==='https:') return location.href.replace(/index\.html?$/,'');
+  }catch(e){}
+  return 'https://example.com/acuvue-simulator/';
+})();
 const dom={
   appShell:document.getElementById('appShell'),
   sidebarFoldBtn:document.getElementById('sidebarFoldBtn'),
   blueInfoBtn:document.getElementById('blueInfoBtn'),
   blueInfoPanel:document.getElementById('blueInfoPanel'),
   blueInfoClose:document.getElementById('blueInfoClose'),
+  toricInfoBtn:document.getElementById('toricInfoBtn'),
+  toricInfoPanel:document.getElementById('toricInfoPanel'),
+  toricInfoClose:document.getElementById('toricInfoClose'),
+  multiInfoBtn:document.getElementById('multiInfoBtn'),
+  multiInfoPanel:document.getElementById('multiInfoPanel'),
+  multiInfoClose:document.getElementById('multiInfoClose'),
   conditionGrid:document.getElementById('conditionGrid'),
   sceneGrid:document.getElementById('sceneGrid'),
   leftProduct:document.getElementById('leftProduct'),rightProduct:document.getElementById('rightProduct'),
@@ -3344,15 +3571,24 @@ function updateViewMode(){
     dom.appShell.classList.toggle('dual-mode', !isSplit);
     dom.appShell.classList.toggle('split-view-mode', isSplit);
     dom.appShell.classList.toggle('sidebar-collapsed', state.sidebarCollapsed);
-    dom.appShell.classList.toggle('blue-info-open', state.blueInfoOpen);
+    dom.appShell.classList.toggle('info-panel-open', !!state.infoPanel);
   }
-  if(dom.blueInfoPanel){
-    dom.blueInfoPanel.setAttribute('aria-hidden', state.blueInfoOpen ? 'false' : 'true');
-  }
-  if(dom.blueInfoBtn){
-    dom.blueInfoBtn.classList.toggle('active', state.blueInfoOpen);
-    dom.blueInfoBtn.setAttribute('aria-expanded', state.blueInfoOpen ? 'true' : 'false');
-  }
+  const infoPanels=[
+    {key:'blue', btn:dom.blueInfoBtn, panel:dom.blueInfoPanel},
+    {key:'toric', btn:dom.toricInfoBtn, panel:dom.toricInfoPanel},
+    {key:'multi', btn:dom.multiInfoBtn, panel:dom.multiInfoPanel},
+  ];
+  infoPanels.forEach(({key,btn,panel})=>{
+    const active = state.infoPanel===key;
+    if(panel){
+      panel.classList.toggle('is-active', active);
+      panel.setAttribute('aria-hidden', active ? 'false' : 'true');
+    }
+    if(btn){
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-expanded', active ? 'true' : 'false');
+    }
+  });
   if(dom.sidebarFoldBtn){
     dom.sidebarFoldBtn.textContent = state.sidebarCollapsed ? '›' : '‹';
     dom.sidebarFoldBtn.setAttribute('aria-label', state.sidebarCollapsed ? '옵션 선택 영역 펼치기' : '옵션 선택 영역 접기');
@@ -3412,23 +3648,43 @@ dom.resetBtn.onclick=()=>{
   closeProductPop('right');
   if(dom.outcomePop) dom.outcomePop.classList.remove('open');
   if(typeof closeAllProductDropdowns==='function') closeAllProductDropdowns();
-  state.selected=['myohyperopia']; state.scene='night'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; state.view='dual'; state.sidebarCollapsed=false; state.blueInfoOpen=false; setSplit(50); renderAll();
+  state.selected=['myohyperopia']; state.scene='night'; state.leftProduct='max1day'; state.rightProduct='oasys'; state.outcome='high'; state.view='dual'; state.sidebarCollapsed=false; state.infoPanel=null; setSplit(50); renderAll();
 };
 dom.dualViewBtn.onclick=()=>{state.view='dual'; updateViewMode(); updateVideos();};
 dom.splitViewBtn.onclick=()=>{state.view='split'; updateViewMode(); updateVideos();};
-if(dom.sidebarFoldBtn){dom.sidebarFoldBtn.onclick=()=>{ if(state.blueInfoOpen){state.blueInfoOpen=false; state.sidebarCollapsed=false;} else {state.sidebarCollapsed=!state.sidebarCollapsed;} updateViewMode(); setTimeout(()=>{try{updateVideos();}catch(e){}},320);};}
-if(dom.blueInfoBtn){dom.blueInfoBtn.onclick=()=>{
-  const next=!state.blueInfoOpen;
-  state.blueInfoOpen=next;
-  if(next) state.sidebarCollapsed=true;
+if(dom.sidebarFoldBtn){dom.sidebarFoldBtn.onclick=()=>{ if(state.infoPanel){state.infoPanel=null; state.sidebarCollapsed=false;} else {state.sidebarCollapsed=!state.sidebarCollapsed;} updateViewMode(); setTimeout(()=>{try{updateVideos();}catch(e){}},320);};}
+function toggleInfoPanel(key){
+  state.infoPanel = state.infoPanel===key ? null : key;
+  if(state.infoPanel) state.sidebarCollapsed=true;
   updateViewMode();
   setTimeout(()=>{try{updateVideos();}catch(e){}},320);
-};}
-if(dom.blueInfoClose){dom.blueInfoClose.onclick=()=>{
-  state.blueInfoOpen=false;
+}
+function closeInfoPanel(){
+  state.infoPanel=null;
   updateViewMode();
   setTimeout(()=>{try{updateVideos();}catch(e){}},320);
-};}
+}
+if(dom.blueInfoBtn) dom.blueInfoBtn.onclick=()=>toggleInfoPanel('blue');
+if(dom.blueInfoClose) dom.blueInfoClose.onclick=closeInfoPanel;
+if(dom.toricInfoBtn) dom.toricInfoBtn.onclick=()=>toggleInfoPanel('toric');
+if(dom.toricInfoClose) dom.toricInfoClose.onclick=closeInfoPanel;
+if(dom.multiInfoBtn) dom.multiInfoBtn.onclick=()=>toggleInfoPanel('multi');
+if(dom.multiInfoClose) dom.multiInfoClose.onclick=closeInfoPanel;
+
+/* QR 코드 세팅: 난시/멀티포컬 모바일 체험 페이지 */
+(function setupExperienceQr(){
+  const targets=[
+    {img:document.getElementById('toricQrImg'), link:document.getElementById('toricQrLink'), path:'astigmatism-experience.html'},
+    {img:document.getElementById('multiQrImg'), link:document.getElementById('multiQrLink'), path:'multifocal-experience.html'},
+  ];
+  targets.forEach(({img,link,path})=>{
+    if(!img || !link) return;
+    const url = SITE_BASE_URL + path;
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=4&data=' + encodeURIComponent(url);
+    link.href = url;
+    link.textContent = url;
+  });
+})();
 
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){playBothVideos();}});
 document.addEventListener('click',()=>{playBothVideos();},{once:true});
@@ -3443,7 +3699,7 @@ dom.splitRightInfoBtn && (dom.splitRightInfoBtn.onclick=()=>toggleProductPop('ri
 dom.leftPopClose.onclick=()=>closeProductPop('left'); dom.rightPopClose.onclick=()=>closeProductPop('right');
 dom.outcomeInfoBtn.onclick=(e)=>{e.stopPropagation(); toggleOutcomePop();};
 document.addEventListener('click',e=>{ if(dom.outcomePop.classList.contains('open') && !dom.outcomePop.contains(e.target) && e.target !== dom.outcomeInfoBtn){ dom.outcomePop.classList.remove('open'); }});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left'); closeProductPop('right'); dom.outcomePop.classList.remove('open'); if(state.blueInfoOpen){state.blueInfoOpen=false; updateViewMode();}}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProductPop('left'); closeProductPop('right'); dom.outcomePop.classList.remove('open'); if(state.infoPanel){state.infoPanel=null; updateViewMode();}}});
 dom.playToggle.onclick=()=>{ if(allVideoEls().some(v=>v.paused)) playBothVideos(); else pauseBothVideos(); };
 dom.splitPlayToggle && (dom.splitPlayToggle.onclick=()=>{ if(allVideoEls().some(v=>v.paused)) playBothVideos(); else pauseBothVideos(); });
 

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>난시 시야 체험 | ACUVUE</title>
+<style>
+  :root{ --acuvue:#0A2F78; --acuvue-2:#6B34C9; --white:#fff; }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:linear-gradient(180deg,#150A2C,#08040F);
+    color:#fff;
+    display:flex;flex-direction:column;
+    min-height:100dvh;
+  }
+  header{padding:16px 18px 10px;text-align:center}
+  header h1{margin:0;font-size:18px;font-weight:950;letter-spacing:-.02em}
+  header p{margin:6px 0 0;font-size:12px;line-height:1.5;color:rgba(255,255,255,.65)}
+  .stage{
+    position:relative;flex:1;margin:8px 14px;border-radius:24px;overflow:hidden;
+    background:#000;min-height:280px;
+    box-shadow:0 12px 30px rgba(0,0,0,.4);
+  }
+  video{width:100%;height:100%;object-fit:cover;display:block}
+  .ghost-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;pointer-events:none;opacity:0;transition:opacity .25s ease, filter .25s ease}
+  .placeholder{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;padding:24px;text-align:center;background:radial-gradient(circle at 50% 30%,#241245,#0B0518);
+  }
+  .placeholder .icn{font-size:40px}
+  .placeholder p{margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.72)}
+  .placeholder button{
+    margin-top:6px;padding:12px 22px;border-radius:14px;border:none;background:linear-gradient(180deg,#8A5CE0,#6B34C9);
+    color:#fff;font-weight:950;font-size:14px;cursor:pointer;
+  }
+  .tag{
+    position:absolute;top:12px;left:12px;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:950;
+    background:rgba(0,0,0,.45);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);
+    transition:background .2s ease, color .2s ease;
+  }
+  .tag.corrected{background:linear-gradient(180deg,#8A5CE0,#6B34C9);border-color:transparent}
+  .controls{padding:14px 18px 20px;display:flex;flex-direction:column;gap:12px}
+  .toggle-row{
+    display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.06);border-radius:16px;padding:4px;gap:4px;
+  }
+  .toggle-row button{
+    padding:12px 8px;border-radius:12px;border:none;background:transparent;color:rgba(255,255,255,.6);
+    font-size:13px;font-weight:900;cursor:pointer;
+  }
+  .toggle-row button.active{background:linear-gradient(180deg,#8A5CE0,#6B34C9);color:#fff}
+  .hint{font-size:11.5px;line-height:1.55;color:rgba(255,255,255,.55);text-align:center;padding:0 6px}
+  .disclaimer{font-size:10px;line-height:1.5;color:rgba(255,255,255,.4);text-align:center;padding:0 10px 14px}
+  a.back{position:fixed;top:14px;right:14px;color:rgba(255,255,255,.7);font-size:12px;text-decoration:none;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:999px}
+</style>
+</head>
+<body>
+  <header>
+    <h1>난시 시야 체험 👁️</h1>
+    <p>카메라를 실제 사물(간판, 조명 등)에 비춰보며<br/>난시 미교정 시야와 토릭 렌즈 교정 시야의 차이를 느껴보세요.</p>
+  </header>
+
+  <div class="stage" id="stage">
+    <div class="placeholder" id="placeholder">
+      <div class="icn">📷</div>
+      <p>카메라를 켜고 체험을 시작해 보세요.<br/>야간 조명이나 글씨가 있는 사물을 비추면 차이를 더 잘 느낄 수 있어요.</p>
+      <button id="startBtn">카메라로 체험 시작</button>
+    </div>
+    <video id="cam" autoplay playsinline muted></video>
+    <video id="camGhost" class="ghost-video" autoplay playsinline muted></video>
+    <div class="tag" id="modeTag">난시 미교정</div>
+  </div>
+
+  <div class="controls">
+    <div class="toggle-row">
+      <button id="uncorrectedBtn" class="active" type="button">난시 미교정 시야</button>
+      <button id="correctedBtn" type="button">토릭 렌즈 교정 시야</button>
+    </div>
+    <div class="hint">이 체험은 카메라 화면에 실시간 시각 효과를 적용한 시뮬레이션이며, 실제 난시로 인한 시야와는 차이가 있을 수 있습니다.</div>
+  </div>
+  <div class="disclaimer">본 콘텐츠는 이해를 돕기 위한 프로그램이며 의료기기가 아닙니다. 정확한 진단은 안과 전문의와 상담하세요.</div>
+
+  <script>
+    const cam = document.getElementById('cam');
+    const camGhost = document.getElementById('camGhost');
+    const placeholder = document.getElementById('placeholder');
+    const startBtn = document.getElementById('startBtn');
+    const modeTag = document.getElementById('modeTag');
+    const uncorrectedBtn = document.getElementById('uncorrectedBtn');
+    const correctedBtn = document.getElementById('correctedBtn');
+    let corrected = false;
+
+    function applyMode(){
+      if(corrected){
+        cam.style.filter = 'none';
+        camGhost.style.opacity = '0';
+        modeTag.textContent = '토릭 렌즈 교정 시야';
+        modeTag.classList.add('corrected');
+      } else {
+        // 난시 미교정 시뮬레이션: 살짝 흐림 + 방향성 있는 고스트 이미지를 겹쳐 겹쳐보이는(streaking) 느낌 연출
+        cam.style.filter = 'blur(1.2px) contrast(1.03)';
+        camGhost.style.opacity = '0.55';
+        camGhost.style.filter = 'blur(3px)';
+        modeTag.textContent = '난시 미교정';
+        modeTag.classList.remove('corrected');
+      }
+    }
+    uncorrectedBtn.onclick = ()=>{ corrected=false; uncorrectedBtn.classList.add('active'); correctedBtn.classList.remove('active'); applyMode(); };
+    correctedBtn.onclick = ()=>{ corrected=true; correctedBtn.classList.add('active'); uncorrectedBtn.classList.remove('active'); applyMode(); };
+
+    async function startCamera(){
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio:false });
+        cam.srcObject = stream;
+        camGhost.srcObject = stream;
+        placeholder.style.display = 'none';
+        applyMode();
+      }catch(err){
+        placeholder.querySelector('p').textContent = '카메라 접근이 거부되었거나 사용할 수 없습니다. 브라우저의 카메라 권한을 확인해 주세요.';
+      }
+    }
+    startBtn.onclick = startCamera;
+  </script>
+</body>
+</html>
