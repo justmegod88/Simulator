@@ -747,6 +747,50 @@
 }
 </style>
 
+
+<style id="mf-eye3-compact-229">
+#multiInfoPanel #mfEyeSlider [data-eye-slide]:nth-child(3) .mf-media{
+  aspect-ratio:1.34 / 1 !important;
+  height:auto !important;
+  overflow:hidden !important;
+}
+#multiInfoPanel #mfEyeSlider [data-eye-slide]:nth-child(3) .mf-media img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+}
+</style>
+
+
+<style id="test-results-hidden-229">
+#toricInfoPanel .toric-selftest-result,
+#multiInfoPanel .mf-duo-result{
+  display:none !important;
+}
+#toricInfoPanel .toric-selftest-result.is-visible,
+#multiInfoPanel .mf-duo-result.is-visible{
+  display:block !important;
+}
+</style>
+
+
+<style id="astig-test-image-crop-230">
+/* 난시 자가 테스트 이미지만 위·아래를 살짝 크롭 */
+#toricInfoPanel .toric-selftest-media,
+#toricInfoPanel .toric-test-media{
+  overflow:hidden !important;
+}
+#toricInfoPanel .toric-selftest-media img,
+#toricInfoPanel .toric-test-media img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  transform:scale(1.08) !important;
+  transform-origin:center center !important;
+}
+</style>
+
 </head>
 <body>
 <div class="app"><div class="shell" id="appShell"><aside class="panel sidebar"><button aria-label="옵션 선택 영역 접기" class="sidebar-fold-btn" id="sidebarFoldBtn" title="옵션 선택 영역 접기" type="button">‹</button><div class="hero"><button aria-label="사용방법 보기" class="hero-help-btn" id="heroHelpBtn" title="사용방법" type="button">ⓘ</button><div class="hero-text"><img alt="ACUVUE" class="acuvue-logo-title" decoding="async" height="209" src="./acuvue-logo-title.png" width="1088"/><div class="hero-subtitle">아큐브 비전 시뮬레이터</div></div><div class="hero-pack"><img alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" src="./acuvue.png"/><div class="hero-pack-fallback">acuvue.png</div></div></div><div class="section"><div class="section-head"><div class="section-num">1</div><div><div class="section-title">굴절이상 선택</div><div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div></div></div><div class="grid-chip" id="conditionGrid"></div></div><div class="section"><div class="section-head"><div class="section-num">2</div><div><div class="section-title">제품 선택</div><div class="section-sub">좌/우 화면에 적용할 제품을 선택하세요.</div></div></div><div class="select-wrap"><div class="field"><div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div><div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div></div><div class="field"><div class="field-head"><label for="rightProduct">우측 화면 제품</label></div><div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div></div></div></div><div class="section"><div class="section-head"><div class="section-num">3</div><div><div class="section-title">환경 선택</div><div class="section-sub">시야 비교에 사용할 장면을 선택하세요.</div></div></div><div class="scene-grid" id="sceneGrid"></div><div class="field" style="margin-top:12px;display:none"><label for="sceneSelect">환경 선택</label><div class="select-shell"><select id="sceneSelect"></select></div></div></div></aside><section class="panel viewer"><div class="toolbar"><div class="toolbar-left unified-toolbar">
@@ -909,7 +953,7 @@
 <button class="toric-test-btn" onclick="toricSetTestResult('1240',this)" type="button">1240</button>
 </div>
 <div aria-live="polite" class="toric-selftest-result" id="toricSelfTestResult">
-<div class="toric-test-placeholder">보기를 선택하면 참고 결과가 표시됩니다.</div>
+
 </div>
 <div class="toric-inline-qr">
 <div class="toric-inline-qr-title">휴대폰으로 직접 테스트해 보세요</div>
@@ -1028,7 +1072,7 @@
 <button class="mf-duo-btn same" onclick="mfSetDuoResult('same',this)" type="button">비슷하게 선명해요</button>
 </div>
 <div aria-live="polite" class="mf-duo-result" id="mfDuoResult">
-<div class="mf-duo-result-placeholder">답을 선택하면 참고 결과가 표시됩니다.</div>
+
 </div>
 </div>
 <div class="mf-test-slide" data-test-slide="">
@@ -1051,7 +1095,7 @@
 
 </div>
 <div aria-live="polite" class="mf-duo-result" id="mfNumberResult">
-<div class="mf-duo-result-placeholder">답을 선택하면 정답과 참고 안내가 표시됩니다.</div>
+
 </div>
 </div>
 <div class="mf-test-slide" data-test-slide="">
@@ -1072,12 +1116,12 @@
 <button class="mf-duo-btn same" onclick="mfSetDropResult('no',this)" type="button">아니요, 두 번째 물방울이 보이지 않아요</button>
 </div>
 <div aria-live="polite" class="mf-duo-result" id="mfDropResult">
-<div class="mf-duo-result-placeholder">답을 선택하면 정답과 참고 안내가 표시됩니다.</div>
+
 </div>
 </div>
 </div>
 <div class="mf-qr-wrap"><div class="mf-qr-title">휴대폰으로 직접 테스트해 보세요</div><div class="mf-qr-text">QR 코드를 스캔하면 모바일 화면에서 멀티포컬 관련 자가 테스트를 이어서 체험할 수 있습니다.</div><div class="mf-qr-box"><img alt="멀티포컬 자가 테스트 QR 코드" id="multiQrImgNew"/></div><a class="mf-qr-link" href="#" id="multiQrLinkNew" rel="noopener" target="_blank">링크 바로 열기</a></div>
-<p class="multi-test-note">* 본 테스트는 이해를 돕기 위한 참고용이며 시력 진단을 대신하지 않습니다. 정확한 진단은 안과 전문의와 상담하세요.</p>
+
 </div>
 </div>
 <script>
@@ -1100,6 +1144,7 @@ function mfSetNumberResult(value,btn){
   mfMarkChoice(btn);
   var box=document.getElementById('mfNumberResult');
   if(!box)return;
+  box.classList.add('is-visible');
   if(value==='5'){
     box.innerHTML='<div class="mf-duo-result-title">정답 · 5개</div><div>이미지 속 노란 원에는 <strong>숫자 5가 반복되어 총 5개</strong> 보이도록 구성되어 있습니다.</div><div class="mf-duo-result-note">※ 화면 크기·밝기·시청 거리의 영향을 받는 체험용 검사입니다. 노안 진단을 대신하지 않습니다.</div>';
   }else if(value==='none'){
@@ -1112,6 +1157,7 @@ function mfSetDropResult(value,btn){
   mfMarkChoice(btn);
   var box=document.getElementById('mfDropResult');
   if(!box)return;
+  box.classList.add('is-visible');
   if(value==='yes'){
     box.innerHTML='<div class="mf-duo-result-title">배경의 두 번째 물방울이 보였어요</div><div>가까운 거리에서 숨겨진 형태를 구분해 본 결과입니다.</div><div class="mf-duo-result-note">※ 온라인 시각 체험 결과만으로 노안을 진단할 수 없습니다. 근거리 시야가 불편하다면 전문적인 시력 검사를 받아보세요.</div>';
   }else{
@@ -1130,6 +1176,7 @@ function mfSetDuoResult(type,btn){
   }
   var box=document.getElementById('mfDuoResult');
   if(!box)return;
+  box.classList.add('is-visible');
   var html='';
   if(type==='same'){
     html='<div class="mf-duo-result-title">비슷하게 보이네요</div>'
@@ -2620,6 +2667,7 @@ function toricSetTestResult(value,btn){
   }
   var box=document.getElementById('toricSelfTestResult');
   if(!box)return;
+  box.classList.add('is-visible');
   var title='',text='';
   if(value==='3246'){
     title='3246이 가장 선명하게 보였어요';
