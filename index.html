@@ -423,6 +423,19 @@
 #toricInfoPanel .toric-rec-grid-two{grid-template-columns:repeat(2,minmax(0,1fr))}
 #toricInfoPanel .toric-qr-wrap{padding:12px}
 
+
+#toricInfoPanel .toric-selftest-guide{margin:0 0 12px;color:#6F6480;font-size:12px;line-height:1.55;word-break:keep-all}
+#toricInfoPanel .toric-selftest-media{width:min(100%,340px);margin:0 auto 12px;border-radius:16px;overflow:hidden;border:1px solid #E5DCF6;background:#111}
+#toricInfoPanel .toric-selftest-media img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
+#toricInfoPanel .toric-selftest-question{margin:4px 0 10px;text-align:center;color:#3B1D72;font-size:14px;font-weight:950;letter-spacing:-.025em}
+#toricInfoPanel .toric-selftest-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#toricInfoPanel .toric-test-btn{min-height:42px;border:1px solid #D7C8F2;border-radius:12px;background:#FBF9FF;color:#5A2EAD;font-family:inherit;font-size:13px;font-weight:950;cursor:pointer}
+#toricInfoPanel .toric-test-btn.selected{background:linear-gradient(180deg,#8A5CE0,#6B34C9);border-color:#6B34C9;color:#fff;box-shadow:0 7px 16px rgba(107,52,201,.18)}
+#toricInfoPanel .toric-selftest-result{margin-top:10px;min-height:78px;padding:11px 12px;border-radius:13px;background:#F8F5FD;border:1px solid #E7DDF7;color:#665B75;font-size:11px;line-height:1.5;word-break:keep-all}
+#toricInfoPanel .toric-test-placeholder{display:flex;align-items:center;justify-content:center;min-height:54px;color:#91869E;text-align:center}
+#toricInfoPanel .toric-test-result-title{margin-bottom:4px;color:#3B1D72;font-size:12px;font-weight:950}
+#toricInfoPanel .toric-test-result-note{margin-top:6px;color:#8B8195;font-size:9.5px;line-height:1.45}
+
 </style>
 
 <div class="edu-info-body toric-final-body">
@@ -463,13 +476,29 @@
       <div class="toric-rec"><div class="toric-rec-icon">🌃</div><div class="toric-rec-title">야간에 빛이 번지거나 겹쳐 보이는 분</div><div class="toric-rec-text">가로등·헤드라이트 주변이 흐리거나 여러 겹으로 보이는 경우</div></div>
       <div class="toric-rec"><div class="toric-rec-icon">📄</div><div class="toric-rec-title">글자나 사물이 겹쳐 보이는 분</div><div class="toric-rec-text">작은 글씨나 멀리 있는 사물의 윤곽이 선명하지 않은 경우</div></div>
     </div>
-  </div><div class="edu-info-card">
-    <div class="edu-info-card-head"><span class="edu-info-num">4</span><div class="edu-info-card-title">난시 시야 직접 체험하기</div></div>
+  </div><div class="edu-info-card toric-selftest-card">
+    <div class="edu-info-card-head"><span class="edu-info-num">4</span><div class="edu-info-card-title">난시 자가 테스트</div></div>
+    <p class="toric-selftest-guide">아래 이미지 안에서 가장 선명하게 보이는 숫자 조합을 선택해 주세요.</p>
+    <div class="toric-selftest-media">
+      <img alt="난시 자가 테스트 숫자 패턴" src="ASTcard_04_01.jpeg"/>
+    </div>
+    <div class="toric-selftest-question">어떤 숫자가 가장 선명하게 보이나요?</div>
+    <div class="toric-selftest-options" role="group" aria-label="난시 자가 테스트 보기">
+      <button class="toric-test-btn" type="button" onclick="toricSetTestResult('3246',this)">3246</button>
+      <button class="toric-test-btn" type="button" onclick="toricSetTestResult('1246',this)">1246</button>
+      <button class="toric-test-btn" type="button" onclick="toricSetTestResult('3240',this)">3240</button>
+      <button class="toric-test-btn" type="button" onclick="toricSetTestResult('1240',this)">1240</button>
+    </div>
+    <div class="toric-selftest-result" id="toricSelfTestResult" aria-live="polite">
+      <div class="toric-test-placeholder">보기를 선택하면 참고 결과가 표시됩니다.</div>
+    </div>
+  </div>
+
+  <div class="edu-info-card">
+    <div class="edu-info-card-head"><span class="edu-info-num">5</span><div class="edu-info-card-title">난시 시야 직접 체험하기</div></div>
     <div class="toric-qr-wrap">
-      
-      
       <div class="toric-qr-box"><img alt="난시 체험 QR 코드" id="toricQrImg"/></div>
-      <a class="toric-qr-link" href="#" id="toricQrLink" rel="noopener" target="_blank">직접 열기</a>
+      <a class="toric-qr-link" href="#" id="toricQrLink" rel="noopener" target="_blank">링크 바로 열기</a>
     </div>
   </div>
 </div>
@@ -2126,6 +2155,35 @@ if(e.key === 'Escape' && backdrop.classList.contains('open')) closeHelp();
 })();
 </script>
 <script>
+
+function toricSetTestResult(value,btn){
+  var wrap=btn.closest('.toric-selftest-options');
+  if(wrap){
+    wrap.querySelectorAll('.toric-test-btn').forEach(function(b){
+      var active=b===btn;
+      b.classList.toggle('selected',active);
+      b.setAttribute('aria-pressed',active?'true':'false');
+    });
+  }
+  var box=document.getElementById('toricSelfTestResult');
+  if(!box)return;
+  var title='',text='';
+  if(value==='3246'){
+    title='3246이 가장 선명하게 보였어요';
+    text='제공해주신 참고 이미지 기준으로 <strong>근시·난시 의심</strong>에 해당합니다.';
+  }else if(value==='1246'){
+    title='1246이 가장 선명하게 보였어요';
+    text='제공해주신 참고 이미지 기준으로 <strong>근시 의심</strong>에 해당합니다.';
+  }else if(value==='3240'){
+    title='3240이 가장 선명하게 보였어요';
+    text='제공해주신 참고 이미지 기준으로 <strong>난시 의심</strong>에 해당합니다.';
+  }else{
+    title='1240이 가장 선명하게 보였어요';
+    text='제공해주신 참고 이미지 기준으로 <strong>정상</strong>에 해당합니다.';
+  }
+  box.innerHTML='<div class="toric-test-result-title">'+title+'</div><div>'+text+'</div><div class="toric-test-result-note">※ 본 테스트는 간단한 시각 체험용입니다. 실제 근시·난시 여부와 정확한 도수·축은 전문적인 시력 검사를 통해 확인해야 합니다.</div>';
+}
+
 var toricIntroIndex=0,toricBenefitIndex=0;
 function toricShowIntro(index){
   var slides=document.querySelectorAll('#toricInfoPanel [data-toric-intro-slide]');
