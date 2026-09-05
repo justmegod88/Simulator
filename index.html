@@ -532,6 +532,90 @@
 }
 </style>
 
+<style id="card-polish-225">
+
+#multiInfoPanel .mf-benefit-card .mf-slider{
+  padding-bottom:14px!important;
+}
+
+
+#toricInfoPanel .edu-info-card:nth-child(2){
+  overflow:visible!important;
+}
+#toricInfoPanel .edu-info-card:nth-child(2) .toric-slider{
+  overflow:visible!important;
+  padding-bottom:10px!important;
+}
+#toricInfoPanel .edu-info-card:nth-child(2) .toric-slide{
+  overflow:visible!important;
+}
+#toricInfoPanel .edu-info-card:nth-child(2) .toric-card-media{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+#toricInfoPanel .edu-info-card:nth-child(2) .toric-card-media img{
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  display:block!important;
+}
+
+
+#multiInfoPanel .mf-test-top-head{
+  margin-bottom:0!important;
+  border-radius:15px 15px 0 0!important;
+}
+#multiInfoPanel .mf-test-slider{
+  margin-top:0!important;
+}
+#multiInfoPanel .mf-test-slide .mf-media{
+  border-radius:0 0 18px 18px!important;
+}
+#multiInfoPanel .mf-test-inline-indicator{
+  padding:8px 0 12px!important;
+  text-align:center!important;
+}
+#multiInfoPanel .mf-test-inline-dots{
+  margin:0 0 4px!important;
+}
+#multiInfoPanel .mf-test-inline-count{
+  margin:0!important;
+}
+
+</style>
+
+<style id="blue-qr-size-match-226">
+#blueInfoPanel .blue-qr-box,
+#blueInfoPanel .blue-info-qr-box,
+#blueInfoPanel [id="blueQrImg"]{
+  box-sizing:border-box!important;
+}
+#blueInfoPanel .blue-qr-box,
+#blueInfoPanel .blue-info-qr-box{
+  width:148px!important;
+  height:148px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  padding:8px!important;
+}
+#blueInfoPanel #blueQrImg{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  display:block!important;
+}
+@media(max-width:560px){
+  #blueInfoPanel .blue-qr-box,
+  #blueInfoPanel .blue-info-qr-box{
+    width:138px!important;
+    height:138px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="app"><div class="shell" id="appShell"><aside class="panel sidebar"><button aria-label="옵션 선택 영역 접기" class="sidebar-fold-btn" id="sidebarFoldBtn" title="옵션 선택 영역 접기" type="button">‹</button><div class="hero"><button aria-label="사용방법 보기" class="hero-help-btn" id="heroHelpBtn" title="사용방법" type="button">ⓘ</button><div class="hero-text"><img alt="ACUVUE" class="acuvue-logo-title" decoding="async" height="209" src="./acuvue-logo-title.png" width="1088"/><div class="hero-subtitle">아큐브 비전 시뮬레이터</div></div><div class="hero-pack"><img alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" src="./acuvue.png"/><div class="hero-pack-fallback">acuvue.png</div></div></div><div class="section"><div class="section-head"><div class="section-num">1</div><div><div class="section-title">굴절이상 선택</div><div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div></div></div><div class="grid-chip" id="conditionGrid"></div></div><div class="section"><div class="section-head"><div class="section-num">2</div><div><div class="section-title">제품 선택</div><div class="section-sub">좌/우 화면에 적용할 제품을 선택하세요.</div></div></div><div class="select-wrap"><div class="field"><div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div><div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div></div><div class="field"><div class="field-head"><label for="rightProduct">우측 화면 제품</label></div><div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div></div></div></div><div class="section"><div class="section-head"><div class="section-num">3</div><div><div class="section-title">환경 선택</div><div class="section-sub">시야 비교에 사용할 장면을 선택하세요.</div></div></div><div class="scene-grid" id="sceneGrid"></div><div class="field" style="margin-top:12px;display:none"><label for="sceneSelect">환경 선택</label><div class="select-shell"><select id="sceneSelect"></select></div></div></div></aside><section class="panel viewer"><div class="toolbar"><div class="toolbar-left unified-toolbar">
@@ -686,7 +770,7 @@
 <div class="toric-selftest-media">
 <img alt="난시 자가 테스트 숫자 패턴" src="ASTcard_04_01.jpeg"/>
 </div>
-<div class="toric-selftest-question">어떤 숫자가 가장 선명하게 보이나요?</div>
+<div class="toric-selftest-question">어떤 숫자로 보이시나요?</div>
 <div aria-label="난시 자가 테스트 보기" class="toric-selftest-options" role="group">
 <button class="toric-test-btn" onclick="toricSetTestResult('3246',this)" type="button">3246</button>
 <button class="toric-test-btn" onclick="toricSetTestResult('1246',this)" type="button">1246</button>
@@ -792,11 +876,19 @@
 <div class="mf-eye-head-title" id="mfTestTopTitle">노안 적록검사</div>
 <button aria-label="다음 테스트" onclick="mfShowTest(mfTestIndex+1)" type="button">›</button>
 </div>
-<div class="mf-dots mf-test-top-dots"><button aria-label="테스트 1" class="mf-dot active" data-test-dot="" onclick="mfShowTest(0)" type="button"></button><button aria-label="테스트 2" class="mf-dot" data-test-dot="" onclick="mfShowTest(1)" type="button"></button><button aria-label="테스트 3" class="mf-dot" data-test-dot="" onclick="mfShowTest(2)" type="button"></button></div>
-<div class="mf-test-count mf-test-top-count" id="mfTestCount">1 / 3</div>
+
 <div class="mf-test-slider">
 <div class="mf-test-slide active" data-test-slide="">
 <div class="mf-media square"><img alt="적록 초점 비교 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_01.png"/><div class="mf-image-fallback">MFcard_04_01.png<span>첫 번째 테스트 이미지를 넣어주세요.</span></div></div>
+<div class="mf-test-inline-indicator">
+  <div class="mf-dots mf-test-inline-dots">
+    <button aria-label="테스트 1" class="mf-dot active" data-test-inline-dot="0" onclick="mfShowTest(0)" type="button"></button>
+    <button aria-label="테스트 2" class="mf-dot" data-test-inline-dot="1" onclick="mfShowTest(1)" type="button"></button>
+    <button aria-label="테스트 3" class="mf-dot" data-test-inline-dot="2" onclick="mfShowTest(2)" type="button"></button>
+  </div>
+  <div class="mf-test-count mf-test-inline-count" data-test-count>1 / 3</div>
+</div>
+
 <div class="mf-duo-question">어느 쪽 글자가 더 흐리게 보이나요?</div>
 <div class="mf-duo-sub">빨간색과 초록색 영역의 글자를 번갈아 보고, 더 흐린 쪽 또는 비슷함을 선택해 주세요.</div>
 <div aria-label="적록검사 결과 선택" class="mf-duo-buttons" role="group">
@@ -810,6 +902,15 @@
 </div>
 <div class="mf-test-slide" data-test-slide="">
 <div class="mf-media square"><img alt="근거리 숫자 확인 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_02.png"/><div class="mf-image-fallback">MFcard_04_02.png<span>두 번째 테스트 이미지를 넣어주세요.</span></div></div>
+<div class="mf-test-inline-indicator">
+  <div class="mf-dots mf-test-inline-dots">
+    <button aria-label="테스트 1" class="mf-dot active" data-test-inline-dot="0" onclick="mfShowTest(0)" type="button"></button>
+    <button aria-label="테스트 2" class="mf-dot" data-test-inline-dot="1" onclick="mfShowTest(1)" type="button"></button>
+    <button aria-label="테스트 3" class="mf-dot" data-test-inline-dot="2" onclick="mfShowTest(2)" type="button"></button>
+  </div>
+  <div class="mf-test-count mf-test-inline-count" data-test-count>1 / 3</div>
+</div>
+
 <div class="mf-duo-question">노란 원 안에 보이는 숫자는 몇 개인가요?</div>
 <div class="mf-duo-sub">약 30cm 거리에서 화면을 보고 가장 가까운 답을 선택해 주세요.</div>
 <div aria-label="근거리 숫자 검사 선택" class="mf-duo-buttons mf-number-buttons" role="group">
@@ -824,6 +925,15 @@
 </div>
 <div class="mf-test-slide" data-test-slide="">
 <div class="mf-media square mf-teardrop-media"><img alt="물방울 배경 확인 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_03.png"/><div class="mf-image-fallback">MFcard_04_03.png<span>세 번째 물방울 테스트 이미지를 넣어주세요.</span></div></div>
+<div class="mf-test-inline-indicator">
+  <div class="mf-dots mf-test-inline-dots">
+    <button aria-label="테스트 1" class="mf-dot active" data-test-inline-dot="0" onclick="mfShowTest(0)" type="button"></button>
+    <button aria-label="테스트 2" class="mf-dot" data-test-inline-dot="1" onclick="mfShowTest(1)" type="button"></button>
+    <button aria-label="테스트 3" class="mf-dot" data-test-inline-dot="2" onclick="mfShowTest(2)" type="button"></button>
+  </div>
+  <div class="mf-test-count mf-test-inline-count" data-test-count>1 / 3</div>
+</div>
+
 <div class="mf-duo-question">배경에 두 번째 물방울이 보이나요?</div>
 <div class="mf-duo-sub">이미지를 편안하게 바라본 뒤 가장 가까운 답을 선택해 주세요.</div>
 <div aria-label="물방울 확인 선택" class="mf-duo-buttons mf-drop-buttons mf-drop-two-buttons" role="group">
@@ -904,7 +1014,20 @@ function mfSetDuoResult(type,btn){
   box.innerHTML=html;
 }
 
-function mfShowTest(index){var slides=document.querySelectorAll('#multiInfoPanel [data-test-slide]'),dots=document.querySelectorAll('#multiInfoPanel [data-test-dot]');if(!slides.length)return;mfTestIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});dots.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});var count=document.getElementById('mfTestCount');if(count)count.textContent=(mfTestIndex+1)+' / '+slides.length;var topTitle=document.getElementById('mfTestTopTitle');if(topTitle)topTitle.textContent=['노안 적록검사','근거리 숫자 검사','물방울 확인 테스트'][mfTestIndex]||''}
+function mfShowTest(index){
+  var slides=document.querySelectorAll('#multiInfoPanel [data-test-slide]');
+  if(!slides.length)return;
+  mfTestIndex=(index+slides.length)%slides.length;
+  slides.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});
+  document.querySelectorAll('#multiInfoPanel [data-test-inline-dot]').forEach(function(el){
+    el.classList.toggle('active',Number(el.getAttribute('data-test-inline-dot'))===mfTestIndex);
+  });
+  document.querySelectorAll('#multiInfoPanel [data-test-count]').forEach(function(el){
+    el.textContent=(mfTestIndex+1)+' / '+slides.length;
+  });
+  var topTitle=document.getElementById('mfTestTopTitle');
+  if(topTitle)topTitle.textContent=['노안 적록검사','근거리 숫자 검사','물방울 확인 테스트'][mfTestIndex]||'';
+}
 </script>
 <style>
 .mf-duo-question{margin:12px 12px 4px;color:#173E37;font-size:13.5px;font-weight:950;text-align:center;letter-spacing:-.03em}
@@ -2185,7 +2308,7 @@ if(!img || !link) return;
 const url = SITE_BASE_URL + path;
 img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=4&data=' + encodeURIComponent(url);
 link.href = url;
-link.textContent = (path === 'blue-light-self-test.html' || link.id === 'multiQrLinkNew') ? '링크 바로 열기' : url;
+link.textContent = (path === 'blue-light-self-test.html' || path === 'astigmatism-experience.html' || link.id === 'multiQrLinkNew') ? '링크 바로 열기' : url;
 });
 })();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){playBothVideos();}});
