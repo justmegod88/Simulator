@@ -512,7 +512,27 @@
     max-width:100%!important;
   }
 }
-</style></head>
+</style>
+<style id="split-fullwidth-restore">
+/* 슬라이드화면 원래 전체 폭 복구 — 듀얼화면에는 영향 없음 */
+.stage.split-mode{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+}
+.stage.split-mode .video-card{
+  display:none !important;
+}
+.stage.split-mode .split-stage{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  grid-column:1 / -1 !important;
+}
+</style>
+
+</head>
 <body>
 <div class="app"><div class="shell" id="appShell"><aside class="panel sidebar"><button aria-label="옵션 선택 영역 접기" class="sidebar-fold-btn" id="sidebarFoldBtn" title="옵션 선택 영역 접기" type="button">‹</button><div class="hero"><button aria-label="사용방법 보기" class="hero-help-btn" id="heroHelpBtn" title="사용방법" type="button">ⓘ</button><div class="hero-text"><img alt="ACUVUE" class="acuvue-logo-title" decoding="async" height="209" src="./acuvue-logo-title.png" width="1088"/><div class="hero-subtitle">아큐브 비전 시뮬레이터</div></div><div class="hero-pack"><img alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" src="./acuvue.png"/><div class="hero-pack-fallback">acuvue.png</div></div></div><div class="section"><div class="section-head"><div class="section-num">1</div><div><div class="section-title">굴절이상 선택</div><div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div></div></div><div class="grid-chip" id="conditionGrid"></div></div><div class="section"><div class="section-head"><div class="section-num">2</div><div><div class="section-title">제품 선택</div><div class="section-sub">좌/우 화면에 적용할 제품을 선택하세요.</div></div></div><div class="select-wrap"><div class="field"><div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div><div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div></div><div class="field"><div class="field-head"><label for="rightProduct">우측 화면 제품</label></div><div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div></div></div></div><div class="section"><div class="section-head"><div class="section-num">3</div><div><div class="section-title">환경 선택</div><div class="section-sub">시야 비교에 사용할 장면을 선택하세요.</div></div></div><div class="scene-grid" id="sceneGrid"></div><div class="field" style="margin-top:12px;display:none"><label for="sceneSelect">환경 선택</label><div class="select-shell"><select id="sceneSelect"></select></div></div></div></aside><section class="panel viewer"><div class="toolbar"><div class="toolbar-left unified-toolbar">
 <span class="consultation-label"><span aria-hidden="true" class="consultation-title-icon consultation-title-new">N</span><span>상담 자료</span></span>
