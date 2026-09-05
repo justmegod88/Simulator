@@ -380,6 +380,8 @@
 </style>
 <style>
 .mf-eye-head{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;margin-top:14px;padding:8px;border-radius:15px 15px 0 0;background:linear-gradient(135deg,#073D61,#08705A);color:#fff}.mf-eye-head-title{text-align:center;font-size:17px;font-weight:950}.mf-eye-head button{width:38px;height:38px;border:1px solid rgba(255,255,255,.45);border-radius:11px;background:rgba(255,255,255,.95);color:#087057;font-size:23px;font-weight:950;cursor:pointer}.mf-eye-head+.mf-slider{margin-top:0}.mf-eye-head+.mf-slider .mf-media{border-top:0;border-radius:0 0 18px 18px}.mf-eye-head+.mf-slider .mf-slide-caption{margin-top:12px;padding:0 8px}.mf-benefit-card .mf-lead{margin-bottom:6px}.mf-benefit-card .mf-multilens{aspect-ratio:16/9;min-height:0;margin:0}.mf-recommend-board{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mf-rec{padding:12px 9px 14px}.mf-rec-visual{aspect-ratio:1.45/1}.mf-rec-title{font-size:12px}.mf-rec-text{font-size:9.5px}.mf-test-slide{display:none!important}.mf-test-slide.active{display:block!important;animation:mfFade .24s ease}@media(max-width:560px){.mf-benefit-card .mf-multilens{aspect-ratio:16/9;min-height:0}.mf-rec-title{font-size:11px}.mf-rec-text{font-size:8.8px}}
+.multi-answer.selected{background:linear-gradient(180deg,#2E68F0,#2359D8)!important;color:#fff!important;border-color:#2359D8!important;box-shadow:0 6px 16px rgba(35,89,216,.22)}
+.mf-benefit-head{margin-top:8px}
 </style>
 <div class="edu-info-body multi-final-body">
   <div class="edu-info-card">
@@ -388,19 +390,28 @@
     <div class="mf-eye-head"><button aria-label="이전 이미지" onclick="mfShowEye(mfEyeIndex-1)" type="button">‹</button><div class="mf-eye-head-title" id="mfEyeTitle">노안</div><button aria-label="다음 이미지" onclick="mfShowEye(mfEyeIndex+1)" type="button">›</button></div>
     <div class="mf-slider" id="mfEyeSlider">
       <div class="mf-slide active" data-eye-slide>
-        <div class="mf-media"><img alt="노안 초점 이미지" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="presby.png"/><div class="mf-image-fallback">presby.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div></div>
+        <div class="mf-media"><img alt="노안 초점 이미지" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_01_1.png"/><div class="mf-image-fallback">MFcard_01_1.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div></div>
         <div class="mf-slide-caption"><div class="mf-slide-text">가까운 거리의 초점을 맞추기 어려워집니다.</div></div>
       </div>
       <div class="mf-slide" data-eye-slide>
-        <div class="mf-media"><img alt="정시 초점 이미지" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="nomal.png"/><div class="mf-image-fallback">nomal.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div></div>
+        <div class="mf-media"><img alt="정시 초점 이미지" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_01_2.png"/><div class="mf-image-fallback">MFcard_01_2.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div></div>
         <div class="mf-slide-caption"><div class="mf-slide-text">가까운 거리에 맞춰 수정체 두께를 조절합니다.</div></div>
+      </div>
+      <div class="mf-slide" data-eye-slide>
+        <div class="mf-media"><img alt="노안 상담 카드 추가 이미지" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_01_03.png"/><div class="mf-image-fallback">MFcard_01_03.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div></div>
+        <div class="mf-slide-caption"><div class="mf-slide-text"></div></div>
       </div>
     </div>
   </div>
   <div class="edu-info-card mf-benefit-card">
-    <div class="edu-info-card-head"><span class="edu-info-num">2</span><div class="edu-info-card-title">멀티포컬 렌즈의 이점</div></div>
+    <div class="edu-info-card-head"><span class="edu-info-num">2</span><div class="edu-info-card-title">아큐브 멀티포컬의 이점</div></div>
     <p class="mf-lead">멀티포컬 렌즈는 <strong>한 렌즈 안에 여러 도수 영역을 배치해</strong> 근거리·중간거리·원거리를 함께 보완합니다. 스마트폰을 볼 때도, 먼 곳을 볼 때도 <strong>하나의 렌즈로 편안한 시야를 이어갈 수 있습니다.</strong></p>
-    <div class="mf-media mf-multilens"><img alt="멀티포컬 렌즈의 다중 초점 설계 이미지" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="multilens.png"/><div class="mf-image-fallback">multilens.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div></div>
+    <div class="mf-eye-head mf-benefit-head"><button aria-label="이전 이미지" onclick="mfShowBenefit(mfBenefitIndex-1)" type="button">‹</button><div class="mf-eye-head-title" id="mfBenefitTitle">멀티포컬 설계</div><button aria-label="다음 이미지" onclick="mfShowBenefit(mfBenefitIndex+1)" type="button">›</button></div>
+    <div class="mf-slider" id="mfBenefitSlider">
+      <div class="mf-slide active" data-benefit-slide><div class="mf-media mf-multilens"><img alt="아큐브 멀티포컬 이점 1" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_02_01.png"/><div class="mf-image-fallback">MFcard_02_01.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div></div></div>
+      <div class="mf-slide" data-benefit-slide><div class="mf-media mf-multilens"><img alt="아큐브 멀티포컬 이점 2" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_02_02.png"/><div class="mf-image-fallback">MFcard_02_02.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div></div></div>
+      <div class="mf-slide" data-benefit-slide><div class="mf-media mf-multilens"><img alt="아큐브 멀티포컬 이점 3" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_02_03.png"/><div class="mf-image-fallback">MFcard_02_03.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div></div></div>
+    </div>
   </div>
   <div class="edu-info-card">
     <div class="edu-info-card-head"><span class="edu-info-num">3</span><div class="edu-info-card-title">이런 분께 멀티포컬을 추천해요</div></div>
@@ -419,11 +430,13 @@
     <div class="mf-qr-wrap"><div class="mf-qr-title">휴대폰으로 직접 테스트해 보세요</div><div class="mf-qr-text">QR 코드를 스캔하면 모바일 화면에서 멀티포컬 관련 자가 테스트를 이어서 체험할 수 있습니다.</div><div class="mf-qr-box"><img alt="멀티포컬 자가 테스트 QR 코드" id="multiQrImgNew"/></div><a class="mf-qr-link" href="#" id="multiQrLinkNew" rel="noopener" target="_blank">링크 바로 열기</a></div>
     <p class="multi-test-note">* 본 테스트는 이해를 돕기 위한 참고용이며 시력 진단을 대신하지 않습니다. 정확한 진단은 안과 전문의와 상담하세요.</p>
   </div>
-  <div class="edu-info-footnote">* 본 콘텐츠는 이해를 돕기 위한 시각적 예시이며, 실제 노안 증상 및 멀티포컬 렌즈의 교정 효과는 개인차가 있습니다.</div>
+  
 </div>
 <script>
-var mfEyeIndex=0,mfTestIndex=0;
-function mfShowEye(index){var slides=document.querySelectorAll('#multiInfoPanel [data-eye-slide]');if(!slides.length)return;mfEyeIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfEyeIndex)});var title=document.getElementById('mfEyeTitle');if(title)title.textContent=mfEyeIndex===0?'노안':'정시'}
+var mfEyeIndex=0,mfBenefitIndex=0,mfTestIndex=0;
+function mfShowEye(index){var slides=document.querySelectorAll('#multiInfoPanel [data-eye-slide]');if(!slides.length)return;mfEyeIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfEyeIndex)});var title=document.getElementById('mfEyeTitle');if(title)title.textContent=['노안','정시','노안과 시야'][mfEyeIndex]||''}
+function mfShowBenefit(index){var slides=document.querySelectorAll('#multiInfoPanel [data-benefit-slide]');if(!slides.length)return;mfBenefitIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfBenefitIndex)});var title=document.getElementById('mfBenefitTitle');if(title)title.textContent=['멀티포컬 설계','자외선 차단','난시까지 커버'][mfBenefitIndex]||''}
+function mfSelectAnswer(btn){var row=btn.closest('.multi-answer-row');if(!row)return;row.querySelectorAll('.multi-answer').forEach(function(b){b.classList.toggle('selected',b===btn);b.setAttribute('aria-pressed',b===btn?'true':'false')})}
 function mfShowTest(index){var slides=document.querySelectorAll('#multiInfoPanel [data-test-slide]'),dots=document.querySelectorAll('#multiInfoPanel [data-test-dot]');if(!slides.length)return;mfTestIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});dots.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});var count=document.getElementById('mfTestCount');if(count)count.textContent=(mfTestIndex+1)+' / '+slides.length}
 </script>
 <style>#multiInfoPanel>.edu-info-body:last-of-type{display:none}</style>
@@ -483,9 +496,9 @@ function mfShowTest(index){var slides=document.querySelectorAll('#multiInfoPanel
         <div class="multi-test-head"><div class="multi-test-kicker">TEST 1</div><div class="multi-test-title">적록 초점 비교</div></div>
         <div class="duochrome-board" aria-label="빨간색과 초록색 바탕의 글자 선명도를 비교하는 화면"><div class="duochrome-half">E 3</div><div class="duochrome-half">E 3</div></div>
         <div class="multi-answer-row">
-          <button class="multi-answer" type="button" onclick="document.getElementById('duoResult').textContent='빨간색 쪽이 더 선명하면 초점 상태를 전문가와 확인해 보세요.'">빨강이 선명</button>
-          <button class="multi-answer" type="button" onclick="document.getElementById('duoResult').textContent='양쪽이 비슷하게 보입니다. 결과는 참고용이며 시력 진단을 대신하지 않습니다.'">비슷함</button>
-          <button class="multi-answer" type="button" onclick="document.getElementById('duoResult').textContent='초록색 쪽이 더 선명하면 초점 상태를 전문가와 확인해 보세요.'">초록이 선명</button>
+          <button class="multi-answer" type="button" onclick="mfSelectAnswer(this);document.getElementById('duoResult').textContent='빨간색 쪽이 더 선명하면 초점 상태를 전문가와 확인해 보세요.'">빨강이 선명</button>
+          <button class="multi-answer" type="button" onclick="mfSelectAnswer(this);document.getElementById('duoResult').textContent='양쪽이 비슷하게 보입니다. 결과는 참고용이며 시력 진단을 대신하지 않습니다.'">비슷함</button>
+          <button class="multi-answer" type="button" onclick="mfSelectAnswer(this);document.getElementById('duoResult').textContent='초록색 쪽이 더 선명하면 초점 상태를 전문가와 확인해 보세요.'">초록이 선명</button>
         </div>
         <div aria-live="polite" class="multi-test-result" id="duoResult"></div>
       </div>
@@ -493,8 +506,8 @@ function mfShowTest(index){var slides=document.querySelectorAll('#multiInfoPanel
         <div class="multi-test-head"><div class="multi-test-kicker">TEST 2</div><div class="multi-test-title">근거리 숫자 확인</div></div>
         <div class="yellow-test-board" aria-label="노란 원 안의 흐린 숫자를 확인하는 화면"><div class="yellow-test-circle">5</div></div>
         <div class="multi-answer-row">
-          <button class="multi-answer" type="button" onclick="document.getElementById('nearResult').textContent='숫자 5를 확인했습니다. 근거리 시야는 조명과 화면 상태에 따라 달라질 수 있습니다.'">5가 보여요</button>
-          <button class="multi-answer" type="button" onclick="document.getElementById('nearResult').textContent='잘 보이지 않으면 화면을 밝게 한 뒤 다시 확인하고, 불편이 지속되면 전문가와 상담하세요.'">잘 모르겠어요</button>
+          <button class="multi-answer" type="button" onclick="mfSelectAnswer(this);document.getElementById('nearResult').textContent='숫자 5를 확인했습니다. 근거리 시야는 조명과 화면 상태에 따라 달라질 수 있습니다.'">5가 보여요</button>
+          <button class="multi-answer" type="button" onclick="mfSelectAnswer(this);document.getElementById('nearResult').textContent='잘 보이지 않으면 화면을 밝게 한 뒤 다시 확인하고, 불편이 지속되면 전문가와 상담하세요.'">잘 모르겠어요</button>
         </div>
         <div aria-live="polite" class="multi-test-result" id="nearResult"></div>
       </div>
