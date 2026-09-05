@@ -791,6 +791,50 @@
 }
 </style>
 
+
+<style id="astig-crop-qr-unified-231">
+/* 1. 난시 자가 테스트 이미지만 위·아래를 이전보다 조금 더 크롭 */
+#toricInfoPanel .toric-selftest-media,
+#toricInfoPanel .toric-test-media{
+  overflow:hidden !important;
+}
+#toricInfoPanel .toric-selftest-media img,
+#toricInfoPanel .toric-test-media img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  transform:scale(1.14) !important;
+  transform-origin:center center !important;
+}
+
+/* 2. 난시 / 멀티포컬 / 블루라이트 QR을 난시 QR 기준 132px로 통일 */
+#toricInfoPanel .toric-qr-box,
+#multiInfoPanel .mf-qr-box,
+#blueInfoPanel .edu-qr-box{
+  width:132px !important;
+  height:132px !important;
+  padding:7px !important;
+  box-sizing:border-box !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+#toricInfoPanel .toric-qr-box img,
+#multiInfoPanel .mf-qr-box img,
+#blueInfoPanel .edu-qr-box img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+}
+@media(max-width:560px){
+  #toricInfoPanel .toric-qr-box,
+  #multiInfoPanel .mf-qr-box,
+  #blueInfoPanel .edu-qr-box{
+    width:132px !important;
+    height:132px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="app"><div class="shell" id="appShell"><aside class="panel sidebar"><button aria-label="옵션 선택 영역 접기" class="sidebar-fold-btn" id="sidebarFoldBtn" title="옵션 선택 영역 접기" type="button">‹</button><div class="hero"><button aria-label="사용방법 보기" class="hero-help-btn" id="heroHelpBtn" title="사용방법" type="button">ⓘ</button><div class="hero-text"><img alt="ACUVUE" class="acuvue-logo-title" decoding="async" height="209" src="./acuvue-logo-title.png" width="1088"/><div class="hero-subtitle">아큐브 비전 시뮬레이터</div></div><div class="hero-pack"><img alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" src="./acuvue.png"/><div class="hero-pack-fallback">acuvue.png</div></div></div><div class="section"><div class="section-head"><div class="section-num">1</div><div><div class="section-title">굴절이상 선택</div><div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div></div></div><div class="grid-chip" id="conditionGrid"></div></div><div class="section"><div class="section-head"><div class="section-num">2</div><div><div class="section-title">제품 선택</div><div class="section-sub">좌/우 화면에 적용할 제품을 선택하세요.</div></div></div><div class="select-wrap"><div class="field"><div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div><div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div></div><div class="field"><div class="field-head"><label for="rightProduct">우측 화면 제품</label></div><div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div></div></div></div><div class="section"><div class="section-head"><div class="section-num">3</div><div><div class="section-title">환경 선택</div><div class="section-sub">시야 비교에 사용할 장면을 선택하세요.</div></div></div><div class="scene-grid" id="sceneGrid"></div><div class="field" style="margin-top:12px;display:none"><label for="sceneSelect">환경 선택</label><div class="select-shell"><select id="sceneSelect"></select></div></div></div></aside><section class="panel viewer"><div class="toolbar"><div class="toolbar-left unified-toolbar">
