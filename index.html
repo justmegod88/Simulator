@@ -383,6 +383,34 @@
 .multi-answer.selected{background:linear-gradient(180deg,#2E68F0,#2359D8)!important;color:#fff!important;border-color:#2359D8!important;box-shadow:0 6px 16px rgba(35,89,216,.22)}
 .mf-benefit-head{margin-top:8px}
 .mf-test-top-head{margin-top:8px}.mf-test-top-dots{margin:4px 0 2px}.mf-test-top-count{text-align:center;margin-bottom:7px}
+
+.mf-number-buttons,.mf-drop-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:560px){.mf-number-buttons,.mf-drop-buttons{grid-template-columns:1fr 1fr}}
+
+
+.mf-teardrop-media{
+  width:min(100%,360px)!important;
+  aspect-ratio:1/1!important;
+  height:auto!important;
+  margin:0 auto!important;
+  overflow:hidden!important;
+  border-radius:14px!important;
+  background:#fff!important;
+}
+.mf-teardrop-media img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+}
+.mf-drop-two-buttons{grid-template-columns:1fr!important;gap:8px!important}
+.mf-drop-two-buttons .mf-duo-btn{
+  min-height:48px!important;
+  text-align:left!important;
+  padding:10px 14px!important;
+  font-size:11px!important;
+}
+
 </style>
 <div class="edu-info-body multi-final-body">
   <div class="edu-info-card">
@@ -423,7 +451,7 @@
     <p class="mf-lead">한 장씩 이미지를 넘겨 테스트해보세요. 각 테스트의 질문을 확인한 뒤 가장 가까운 답을 선택해 주세요.</p>
     <div class="mf-eye-head mf-test-top-head">
       <button aria-label="이전 테스트" onclick="mfShowTest(mfTestIndex-1)" type="button">‹</button>
-      <div class="mf-eye-head-title" id="mfTestTopTitle">적록 초점 비교</div>
+      <div class="mf-eye-head-title" id="mfTestTopTitle">노안 적록검사</div>
       <button aria-label="다음 테스트" onclick="mfShowTest(mfTestIndex+1)" type="button">›</button>
     </div>
     <div class="mf-dots mf-test-top-dots"><button aria-label="테스트 1" class="mf-dot active" data-test-dot onclick="mfShowTest(0)" type="button"></button><button aria-label="테스트 2" class="mf-dot" data-test-dot onclick="mfShowTest(1)" type="button"></button><button aria-label="테스트 3" class="mf-dot" data-test-dot onclick="mfShowTest(2)" type="button"></button></div>
@@ -431,9 +459,9 @@
     <div class="mf-test-slider">
       <div class="mf-test-slide active" data-test-slide>
         <div class="mf-media square"><img alt="적록 초점 비교 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_01.png"/><div class="mf-image-fallback">MFcard_04_01.png<span>첫 번째 테스트 이미지를 넣어주세요.</span></div></div>
-        <div class="mf-slide-caption"><div class="mf-slide-title">TEST 1 · 적록 초점 비교</div></div>
-        <div class="mf-duo-question">어느 쪽 글자가 더 흐려 보이나요?</div>
-        <div class="mf-duo-sub">빨간색과 초록색 영역의 글자를 번갈아 보고 가장 가까운 답을 선택해 주세요.</div>
+        
+        <div class="mf-duo-question">어느 쪽 글자가 더 흐리게 보이나요?</div>
+        <div class="mf-duo-sub">빨간색과 초록색 영역의 글자를 번갈아 보고, 더 흐린 쪽 또는 비슷함을 선택해 주세요.</div>
         <div class="mf-duo-buttons" role="group" aria-label="적록검사 결과 선택">
           <button class="mf-duo-btn red" type="button" onclick="mfSetDuoResult('red',this)">빨간 쪽이 더 흐려요</button>
           <button class="mf-duo-btn green" type="button" onclick="mfSetDuoResult('green',this)">초록 쪽이 더 흐려요</button>
@@ -443,8 +471,32 @@
           <div class="mf-duo-result-placeholder">답을 선택하면 참고 결과가 표시됩니다.</div>
         </div>
       </div>
-      <div class="mf-test-slide" data-test-slide><div class="mf-media square"><img alt="근거리 숫자 확인 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_02.png"/><div class="mf-image-fallback">MFcard_04_02.png<span>두 번째 테스트 이미지를 넣어주세요.</span></div></div><div class="mf-slide-caption"><div class="mf-slide-title">TEST 2 · 근거리 숫자 확인</div></div></div>
-      <div class="mf-test-slide" data-test-slide><div class="mf-media square"><img alt="물방울 착시 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_03.png"/><div class="mf-image-fallback">MFcard_04_03.png<span>세 번째 물방울 테스트 이미지를 넣어주세요.</span></div></div><div class="mf-slide-caption"><div class="mf-slide-title">TEST 3 · 물방울 확인</div></div></div>
+      <div class="mf-test-slide" data-test-slide>
+        <div class="mf-media square"><img alt="근거리 숫자 확인 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_02.png"/><div class="mf-image-fallback">MFcard_04_02.png<span>두 번째 테스트 이미지를 넣어주세요.</span></div></div>
+        <div class="mf-duo-question">노란 원 안에 보이는 숫자는 몇 개인가요?</div>
+        <div class="mf-duo-sub">약 30cm 거리에서 화면을 보고 가장 가까운 답을 선택해 주세요.</div>
+        <div class="mf-duo-buttons mf-number-buttons" role="group" aria-label="근거리 숫자 검사 선택">
+          <button class="mf-duo-btn same" type="button" onclick="mfSetNumberResult('3',this)">3개</button>
+          <button class="mf-duo-btn same" type="button" onclick="mfSetNumberResult('4',this)">4개</button>
+          <button class="mf-duo-btn same" type="button" onclick="mfSetNumberResult('5',this)">5개</button>
+          <button class="mf-duo-btn same" type="button" onclick="mfSetNumberResult('none',this)">잘 모르겠어요</button>
+        </div>
+        <div class="mf-duo-result" id="mfNumberResult" aria-live="polite">
+          <div class="mf-duo-result-placeholder">답을 선택하면 정답과 참고 안내가 표시됩니다.</div>
+        </div>
+      </div>
+      <div class="mf-test-slide" data-test-slide>
+        <div class="mf-media square mf-teardrop-media"><img alt="물방울 배경 확인 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_03.png"/><div class="mf-image-fallback">MFcard_04_03.png<span>세 번째 물방울 테스트 이미지를 넣어주세요.</span></div></div>
+        <div class="mf-duo-question">배경에 두 번째 물방울이 보이나요?</div>
+        <div class="mf-duo-sub">이미지를 편안하게 바라본 뒤 가장 가까운 답을 선택해 주세요.</div>
+        <div class="mf-duo-buttons mf-drop-buttons mf-drop-two-buttons" role="group" aria-label="물방울 확인 선택">
+          <button class="mf-duo-btn same" type="button" onclick="mfSetDropResult('yes',this)">네, 배경에 물방울이 하나 더 보여요</button>
+          <button class="mf-duo-btn same" type="button" onclick="mfSetDropResult('no',this)">아니요, 두 번째 물방울이 보이지 않아요</button>
+        </div>
+        <div class="mf-duo-result" id="mfDropResult" aria-live="polite">
+          <div class="mf-duo-result-placeholder">답을 선택하면 정답과 참고 안내가 표시됩니다.</div>
+        </div>
+      </div>
     </div>
 
     <div class="mf-qr-wrap"><div class="mf-qr-title">휴대폰으로 직접 테스트해 보세요</div><div class="mf-qr-text">QR 코드를 스캔하면 모바일 화면에서 멀티포컬 관련 자가 테스트를 이어서 체험할 수 있습니다.</div><div class="mf-qr-box"><img alt="멀티포컬 자가 테스트 QR 코드" id="multiQrImgNew"/></div><a class="mf-qr-link" href="#" id="multiQrLinkNew" rel="noopener" target="_blank">링크 바로 열기</a></div>
@@ -457,6 +509,39 @@ var mfEyeIndex=0,mfBenefitIndex=0,mfTestIndex=0;
 function mfShowEye(index){var slides=document.querySelectorAll('#multiInfoPanel [data-eye-slide]');if(!slides.length)return;mfEyeIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfEyeIndex)});var title=document.getElementById('mfEyeTitle');if(title)title.textContent=['노안','정시','노안과 시야'][mfEyeIndex]||''}
 function mfShowBenefit(index){var slides=document.querySelectorAll('#multiInfoPanel [data-benefit-slide]');if(!slides.length)return;mfBenefitIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfBenefitIndex)});var title=document.getElementById('mfBenefitTitle');if(title)title.textContent=['멀티포컬 설계','자외선 차단','난시까지 커버'][mfBenefitIndex]||''}
 function mfSelectAnswer(btn){var row=btn.closest('.multi-answer-row');if(!row)return;row.querySelectorAll('.multi-answer').forEach(function(b){b.classList.toggle('selected',b===btn);b.setAttribute('aria-pressed',b===btn?'true':'false')})}
+
+
+function mfMarkChoice(btn){
+  var wrap=btn.closest('.mf-duo-buttons');
+  if(!wrap)return;
+  wrap.querySelectorAll('.mf-duo-btn').forEach(function(b){
+    var active=b===btn;
+    b.classList.toggle('selected',active);
+    b.setAttribute('aria-pressed',active?'true':'false');
+  });
+}
+function mfSetNumberResult(value,btn){
+  mfMarkChoice(btn);
+  var box=document.getElementById('mfNumberResult');
+  if(!box)return;
+  if(value==='5'){
+    box.innerHTML='<div class="mf-duo-result-title">정답 · 5개</div><div>이미지 속 노란 원에는 <strong>숫자 5가 반복되어 총 5개</strong> 보이도록 구성되어 있습니다.</div><div class="mf-duo-result-note">※ 화면 크기·밝기·시청 거리의 영향을 받는 체험용 검사입니다. 노안 진단을 대신하지 않습니다.</div>';
+  }else if(value==='none'){
+    box.innerHTML='<div class="mf-duo-result-title">숫자 확인이 어렵군요</div><div>화면 밝기를 확인하고 약 30cm 거리에서 다시 보세요. 가까운 글자나 숫자가 지속적으로 불편하다면 전문적인 근거리 시력 검사를 권합니다.</div><div class="mf-duo-result-note">※ 정확한 노안 여부와 가입도는 전문 검사로 확인해야 합니다.</div>';
+  }else{
+    box.innerHTML='<div class="mf-duo-result-title">정답은 5개입니다</div><div>다시 한 번 노란 원 안을 천천히 확인해 보세요. 숨겨진 숫자 <strong>5가 총 5개</strong> 있습니다.</div><div class="mf-duo-result-note">※ 이 항목은 근거리 시각 체험용이며 단독으로 노안을 진단하지 않습니다.</div>';
+  }
+}
+function mfSetDropResult(value,btn){
+  mfMarkChoice(btn);
+  var box=document.getElementById('mfDropResult');
+  if(!box)return;
+  if(value==='yes'){
+    box.innerHTML='<div class="mf-duo-result-title">배경의 두 번째 물방울이 보였어요</div><div>가까운 거리에서 숨겨진 형태를 구분해 본 결과입니다.</div><div class="mf-duo-result-note">※ 온라인 시각 체험 결과만으로 노안을 진단할 수 없습니다. 근거리 시야가 불편하다면 전문적인 시력 검사를 받아보세요.</div>';
+  }else{
+    box.innerHTML='<div class="mf-duo-result-title">두 번째 물방울이 보이지 않았어요</div><div>가까운 거리에서 숨겨진 형태를 구분하기 어려웠던 결과입니다.</div><div class="mf-duo-result-note">※ 화면 크기·밝기·시청 거리 등에 영향을 받을 수 있으며, 이 결과만으로 노안을 진단할 수 없습니다.</div>';
+  }
+}
 
 function mfSetDuoResult(type,btn){
   var wrap=btn.closest('.mf-duo-buttons');
@@ -471,7 +556,7 @@ function mfSetDuoResult(type,btn){
   if(!box)return;
   var html='';
   if(type==='same'){
-    html='<div class="mf-duo-result-title">두 영역이 비슷하게 보이네요</div>'
+    html='<div class="mf-duo-result-title">비슷하게 보이네요</div>'
       +'<div>적록검사에서는 <strong>빨강과 초록의 글자가 비슷하게 선명하게 보이는 상태</strong>를 구면 초점이 비교적 균형에 가까운 상태로 봅니다.</div>';
   }else if(type==='red'){
     html='<div class="mf-duo-result-title">빨간 쪽이 더 흐리게 보이네요</div>'
@@ -484,7 +569,7 @@ function mfSetDuoResult(type,btn){
   box.innerHTML=html;
 }
 
-function mfShowTest(index){var slides=document.querySelectorAll('#multiInfoPanel [data-test-slide]'),dots=document.querySelectorAll('#multiInfoPanel [data-test-dot]');if(!slides.length)return;mfTestIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});dots.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});var count=document.getElementById('mfTestCount');if(count)count.textContent=(mfTestIndex+1)+' / '+slides.length;var topTitle=document.getElementById('mfTestTopTitle');if(topTitle)topTitle.textContent=['적록 초점 비교','근거리 숫자 확인','물방울 확인'][mfTestIndex]||''}
+function mfShowTest(index){var slides=document.querySelectorAll('#multiInfoPanel [data-test-slide]'),dots=document.querySelectorAll('#multiInfoPanel [data-test-dot]');if(!slides.length)return;mfTestIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});dots.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});var count=document.getElementById('mfTestCount');if(count)count.textContent=(mfTestIndex+1)+' / '+slides.length;var topTitle=document.getElementById('mfTestTopTitle');if(topTitle)topTitle.textContent=['노안 적록검사','근거리 숫자 검사','물방울 확인 테스트'][mfTestIndex]||''}
 </script>
 
 <style>
