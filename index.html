@@ -534,9 +534,6 @@
 
 <style id="card-polish-225">
 
-#multiInfoPanel .mf-benefit-card .mf-slider{
-  padding-bottom:14px!important;
-}
 
 
 #toricInfoPanel .edu-info-card:nth-child(2){
@@ -613,6 +610,94 @@
     width:138px!important;
     height:138px!important;
   }
+}
+</style>
+
+
+<style id="blue-qr-real-size-227">
+#blueInfoPanel .edu-qr-card{
+  justify-items:center!important;
+}
+#blueInfoPanel .edu-qr-box{
+  width:148px!important;
+  height:148px!important;
+  padding:8px!important;
+  box-sizing:border-box!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+#blueInfoPanel .edu-qr-box #blueQrImg{
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  object-fit:contain!important;
+}
+@media(max-width:560px){
+  #blueInfoPanel .edu-qr-box{
+    width:138px!important;
+    height:138px!important;
+  }
+}
+</style>
+
+<style id="mf-benefit-white-space-227">
+#multiInfoPanel .multi-final-body > .edu-info-card:nth-child(2){
+  padding-bottom:28px!important;
+}
+#multiInfoPanel .multi-final-body > .edu-info-card:nth-child(2) .mf-slider{
+  padding-bottom:0!important;
+  margin-bottom:0!important;
+}
+</style>
+
+<style id="toric-benefit-fullheight-227">
+#toricInfoPanel .toric-final-body > .edu-info-card:nth-child(2){
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding-bottom:24px!important;
+}
+#toricInfoPanel .toric-final-body > .edu-info-card:nth-child(2) .toric-slider{
+  position:relative!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding-bottom:0!important;
+}
+#toricInfoPanel .toric-final-body > .edu-info-card:nth-child(2) .toric-slide.active{
+  display:block!important;
+  position:relative!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+#toricInfoPanel .toric-final-body > .edu-info-card:nth-child(2) .toric-card-media{
+  position:relative!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:260px!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+#toricInfoPanel .toric-final-body > .edu-info-card:nth-child(2) .toric-card-media img{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:none!important;
+  object-fit:contain!important;
+}
+#toricInfoPanel .toric-final-body > .edu-info-card:nth-child(2) .toric-card-media .mf-image-fallback{
+  position:absolute!important;
+  inset:0!important;
+}
+#toricInfoPanel .toric-final-body > .edu-info-card:nth-child(2) .toric-dot-row{
+  margin-top:12px!important;
 }
 </style>
 
@@ -917,7 +1002,7 @@
 <button class="mf-duo-btn same" onclick="mfSetNumberResult('3',this)" type="button">3개</button>
 <button class="mf-duo-btn same" onclick="mfSetNumberResult('4',this)" type="button">4개</button>
 <button class="mf-duo-btn same" onclick="mfSetNumberResult('5',this)" type="button">5개</button>
-<button class="mf-duo-btn same" onclick="mfSetNumberResult('none',this)" type="button">잘 모르겠어요</button>
+
 </div>
 <div aria-live="polite" class="mf-duo-result" id="mfNumberResult">
 <div class="mf-duo-result-placeholder">답을 선택하면 정답과 참고 안내가 표시됩니다.</div>
@@ -1120,7 +1205,7 @@ function mfShowTest(index){
 <div aria-label="노란 원 안의 흐린 숫자를 확인하는 화면" class="yellow-test-board"><div class="yellow-test-circle">5</div></div>
 <div class="multi-answer-row">
 <button class="multi-answer" onclick="mfSelectAnswer(this);document.getElementById('nearResult').textContent='숫자 5를 확인했습니다. 근거리 시야는 조명과 화면 상태에 따라 달라질 수 있습니다.'" type="button">5가 보여요</button>
-<button class="multi-answer" onclick="mfSelectAnswer(this);document.getElementById('nearResult').textContent='잘 보이지 않으면 화면을 밝게 한 뒤 다시 확인하고, 불편이 지속되면 전문가와 상담하세요.'" type="button">잘 모르겠어요</button>
+
 </div>
 <div aria-live="polite" class="multi-test-result" id="nearResult"></div>
 </div>
