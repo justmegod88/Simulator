@@ -382,6 +382,7 @@
 .mf-eye-head{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;margin-top:14px;padding:8px;border-radius:15px 15px 0 0;background:linear-gradient(135deg,#073D61,#08705A);color:#fff}.mf-eye-head-title{text-align:center;font-size:17px;font-weight:950}.mf-eye-head button{width:38px;height:38px;border:1px solid rgba(255,255,255,.45);border-radius:11px;background:rgba(255,255,255,.95);color:#087057;font-size:23px;font-weight:950;cursor:pointer}.mf-eye-head+.mf-slider{margin-top:0}.mf-eye-head+.mf-slider .mf-media{border-top:0;border-radius:0 0 18px 18px}.mf-eye-head+.mf-slider .mf-slide-caption{margin-top:12px;padding:0 8px}.mf-benefit-card .mf-lead{margin-bottom:6px}.mf-benefit-card .mf-multilens{aspect-ratio:16/9;min-height:0;margin:0}.mf-recommend-board{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mf-rec{padding:12px 9px 14px}.mf-rec-visual{aspect-ratio:1.45/1}.mf-rec-title{font-size:12px}.mf-rec-text{font-size:9.5px}.mf-test-slide{display:none!important}.mf-test-slide.active{display:block!important;animation:mfFade .24s ease}@media(max-width:560px){.mf-benefit-card .mf-multilens{aspect-ratio:16/9;min-height:0}.mf-rec-title{font-size:11px}.mf-rec-text{font-size:8.8px}}
 .multi-answer.selected{background:linear-gradient(180deg,#2E68F0,#2359D8)!important;color:#fff!important;border-color:#2359D8!important;box-shadow:0 6px 16px rgba(35,89,216,.22)}
 .mf-benefit-head{margin-top:8px}
+.mf-test-top-head{margin-top:8px}.mf-test-top-dots{margin:4px 0 2px}.mf-test-top-count{text-align:center;margin-bottom:7px}
 </style>
 <div class="edu-info-body multi-final-body">
   <div class="edu-info-card">
@@ -420,9 +421,16 @@
   <div class="edu-info-card">
     <div class="edu-info-card-head"><span class="edu-info-num">4</span><div class="edu-info-card-title">간단 자가 테스트</div></div>
     <p class="mf-lead">한 장씩 이미지를 넘겨 테스트해보세요. 각 테스트의 질문을 확인한 뒤 가장 가까운 답을 선택해 주세요.</p>
+    <div class="mf-eye-head mf-test-top-head">
+      <button aria-label="이전 테스트" onclick="mfShowTest(mfTestIndex-1)" type="button">‹</button>
+      <div class="mf-eye-head-title" id="mfTestTopTitle">적록 초점 비교</div>
+      <button aria-label="다음 테스트" onclick="mfShowTest(mfTestIndex+1)" type="button">›</button>
+    </div>
+    <div class="mf-dots mf-test-top-dots"><button aria-label="테스트 1" class="mf-dot active" data-test-dot onclick="mfShowTest(0)" type="button"></button><button aria-label="테스트 2" class="mf-dot" data-test-dot onclick="mfShowTest(1)" type="button"></button><button aria-label="테스트 3" class="mf-dot" data-test-dot onclick="mfShowTest(2)" type="button"></button></div>
+    <div class="mf-test-count mf-test-top-count" id="mfTestCount">1 / 3</div>
     <div class="mf-test-slider">
       <div class="mf-test-slide active" data-test-slide>
-        <div class="mf-media square"><img alt="적록 초점 비교 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="test1.png"/><div class="mf-image-fallback">test1.png<span>첫 번째 테스트 이미지를 넣어주세요.</span></div></div>
+        <div class="mf-media square"><img alt="적록 초점 비교 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_01.png"/><div class="mf-image-fallback">MFcard_04_01.png<span>첫 번째 테스트 이미지를 넣어주세요.</span></div></div>
         <div class="mf-slide-caption"><div class="mf-slide-title">TEST 1 · 적록 초점 비교</div></div>
         <div class="mf-duo-question">어느 쪽 글자가 더 흐려 보이나요?</div>
         <div class="mf-duo-sub">빨간색과 초록색 영역의 글자를 번갈아 보고 가장 가까운 답을 선택해 주세요.</div>
@@ -435,11 +443,10 @@
           <div class="mf-duo-result-placeholder">답을 선택하면 참고 결과가 표시됩니다.</div>
         </div>
       </div>
-      <div class="mf-test-slide" data-test-slide><div class="mf-media square"><img alt="근거리 숫자 확인 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="test2.png"/><div class="mf-image-fallback">test2.png<span>두 번째 테스트 이미지를 넣어주세요.</span></div></div><div class="mf-slide-caption"><div class="mf-slide-title">TEST 2 · 근거리 숫자 확인</div></div></div>
-      <div class="mf-test-slide" data-test-slide><div class="mf-media square"><img alt="물방울 착시 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="test3.png"/><div class="mf-image-fallback">test3.png<span>세 번째 물방울 테스트 이미지를 넣어주세요.</span></div></div><div class="mf-slide-caption"><div class="mf-slide-title">TEST 3 · 물방울 확인</div></div></div>
+      <div class="mf-test-slide" data-test-slide><div class="mf-media square"><img alt="근거리 숫자 확인 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_02.png"/><div class="mf-image-fallback">MFcard_04_02.png<span>두 번째 테스트 이미지를 넣어주세요.</span></div></div><div class="mf-slide-caption"><div class="mf-slide-title">TEST 2 · 근거리 숫자 확인</div></div></div>
+      <div class="mf-test-slide" data-test-slide><div class="mf-media square"><img alt="물방울 착시 테스트" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'" src="MFcard_04_03.png"/><div class="mf-image-fallback">MFcard_04_03.png<span>세 번째 물방울 테스트 이미지를 넣어주세요.</span></div></div><div class="mf-slide-caption"><div class="mf-slide-title">TEST 3 · 물방울 확인</div></div></div>
     </div>
-    <div class="mf-test-nav"><button aria-label="이전 테스트" onclick="mfShowTest(mfTestIndex-1)" type="button">‹</button><div class="mf-test-count" id="mfTestCount">1 / 3</div><button aria-label="다음 테스트" onclick="mfShowTest(mfTestIndex+1)" type="button">›</button></div>
-    <div class="mf-dots"><button aria-label="테스트 1" class="mf-dot active" data-test-dot onclick="mfShowTest(0)" type="button"></button><button aria-label="테스트 2" class="mf-dot" data-test-dot onclick="mfShowTest(1)" type="button"></button><button aria-label="테스트 3" class="mf-dot" data-test-dot onclick="mfShowTest(2)" type="button"></button></div>
+
     <div class="mf-qr-wrap"><div class="mf-qr-title">휴대폰으로 직접 테스트해 보세요</div><div class="mf-qr-text">QR 코드를 스캔하면 모바일 화면에서 멀티포컬 관련 자가 테스트를 이어서 체험할 수 있습니다.</div><div class="mf-qr-box"><img alt="멀티포컬 자가 테스트 QR 코드" id="multiQrImgNew"/></div><a class="mf-qr-link" href="#" id="multiQrLinkNew" rel="noopener" target="_blank">링크 바로 열기</a></div>
     <p class="multi-test-note">* 본 테스트는 이해를 돕기 위한 참고용이며 시력 진단을 대신하지 않습니다. 정확한 진단은 안과 전문의와 상담하세요.</p>
   </div>
@@ -477,7 +484,7 @@ function mfSetDuoResult(type,btn){
   box.innerHTML=html;
 }
 
-function mfShowTest(index){var slides=document.querySelectorAll('#multiInfoPanel [data-test-slide]'),dots=document.querySelectorAll('#multiInfoPanel [data-test-dot]');if(!slides.length)return;mfTestIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});dots.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});var count=document.getElementById('mfTestCount');if(count)count.textContent=(mfTestIndex+1)+' / '+slides.length}
+function mfShowTest(index){var slides=document.querySelectorAll('#multiInfoPanel [data-test-slide]'),dots=document.querySelectorAll('#multiInfoPanel [data-test-dot]');if(!slides.length)return;mfTestIndex=(index+slides.length)%slides.length;slides.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});dots.forEach(function(el,i){el.classList.toggle('active',i===mfTestIndex)});var count=document.getElementById('mfTestCount');if(count)count.textContent=(mfTestIndex+1)+' / '+slides.length;var topTitle=document.getElementById('mfTestTopTitle');if(topTitle)topTitle.textContent=['적록 초점 비교','근거리 숫자 확인','물방울 확인'][mfTestIndex]||''}
 </script>
 
 <style>
