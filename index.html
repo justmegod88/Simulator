@@ -436,6 +436,61 @@
 #toricInfoPanel .toric-test-result-title{margin-bottom:4px;color:#3B1D72;font-size:12px;font-weight:950}
 #toricInfoPanel .toric-test-result-note{margin-top:6px;color:#8B8195;font-size:9.5px;line-height:1.45}
 
+
+#toricInfoPanel .toric-inline-qr{
+  margin-top:14px;
+  padding:16px 14px 14px;
+  border:1px solid #E3DBF4;
+  border-radius:17px;
+  background:linear-gradient(145deg,#FBFAFE,#F4F0FC);
+  text-align:center;
+}
+#toricInfoPanel .toric-inline-qr-title{
+  color:#3B1D72;
+  font-size:14px;
+  font-weight:950;
+}
+#toricInfoPanel .toric-inline-qr-sub{
+  margin:5px auto 11px;
+  max-width:340px;
+  color:#746B82;
+  font-size:10.5px;
+  line-height:1.5;
+  word-break:keep-all;
+}
+#toricInfoPanel .toric-inline-qr .toric-qr-box{
+  width:132px;
+  height:132px;
+  margin:0 auto;
+  padding:7px;
+}
+#toricInfoPanel .toric-inline-qr .toric-qr-link{
+  display:inline-block;
+  margin-top:9px;
+  color:#6B34C9;
+  font-size:11px;
+  font-weight:900;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  word-break:normal;
+  overflow-wrap:normal;
+}
+
+
+#toricInfoPanel .toric-recommend-image{
+  width:100%;
+  overflow:hidden;
+  border-radius:16px;
+  background:#fff;
+}
+#toricInfoPanel .toric-recommend-image img{
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  background:#fff;
+}
+
 </style>
 
 <div class="edu-info-body toric-final-body">
@@ -472,33 +527,38 @@
 
   <div class="edu-info-card">
     <div class="edu-info-card-head"><span class="edu-info-num">3</span><div class="edu-info-card-title">이런 분께 난시 렌즈를 추천해요</div></div>
-    <div class="toric-rec-grid toric-rec-grid-two">
-      <div class="toric-rec"><div class="toric-rec-icon">🌃</div><div class="toric-rec-title">야간에 빛이 번지거나 겹쳐 보이는 분</div><div class="toric-rec-text">가로등·헤드라이트 주변이 흐리거나 여러 겹으로 보이는 경우</div></div>
-      <div class="toric-rec"><div class="toric-rec-icon">📄</div><div class="toric-rec-title">글자나 사물이 겹쳐 보이는 분</div><div class="toric-rec-text">작은 글씨나 멀리 있는 사물의 윤곽이 선명하지 않은 경우</div></div>
+    <div class="toric-recommend-image">
+      <img alt="난시 렌즈 추천 대상" src="ASTcard_03_01.png"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/>
+      <div class="mf-image-fallback">ASTcard_03_01.png<span>인덱스 파일과 같은 폴더에 이미지를 넣어주세요.</span></div>
     </div>
   </div><div class="edu-info-card toric-selftest-card">
     <div class="edu-info-card-head"><span class="edu-info-num">4</span><div class="edu-info-card-title">난시 자가 테스트</div></div>
+
     <p class="toric-selftest-guide">아래 이미지 안에서 가장 선명하게 보이는 숫자 조합을 선택해 주세요.</p>
+
     <div class="toric-selftest-media">
       <img alt="난시 자가 테스트 숫자 패턴" src="ASTcard_04_01.jpeg"/>
     </div>
+
     <div class="toric-selftest-question">어떤 숫자가 가장 선명하게 보이나요?</div>
+
     <div class="toric-selftest-options" role="group" aria-label="난시 자가 테스트 보기">
       <button class="toric-test-btn" type="button" onclick="toricSetTestResult('3246',this)">3246</button>
       <button class="toric-test-btn" type="button" onclick="toricSetTestResult('1246',this)">1246</button>
       <button class="toric-test-btn" type="button" onclick="toricSetTestResult('3240',this)">3240</button>
       <button class="toric-test-btn" type="button" onclick="toricSetTestResult('1240',this)">1240</button>
     </div>
+
     <div class="toric-selftest-result" id="toricSelfTestResult" aria-live="polite">
       <div class="toric-test-placeholder">보기를 선택하면 참고 결과가 표시됩니다.</div>
     </div>
-  </div>
 
-  <div class="edu-info-card">
-    <div class="edu-info-card-head"><span class="edu-info-num">5</span><div class="edu-info-card-title">난시 시야 직접 체험하기</div></div>
-    <div class="toric-qr-wrap">
+    <div class="toric-inline-qr">
+      <div class="toric-inline-qr-title">휴대폰으로 직접 테스트해 보세요</div>
+      <div class="toric-inline-qr-sub">QR 코드를 스캔하면 모바일 화면에서 난시 관련 체험을 이어서 확인할 수 있습니다.</div>
       <div class="toric-qr-box"><img alt="난시 체험 QR 코드" id="toricQrImg"/></div>
-      <a class="toric-qr-link" href="#" id="toricQrLink" rel="noopener" target="_blank">링크 바로 열기</a>
+      <a aria-label="난시 체험 링크 바로 열기" class="toric-qr-link" href="#" id="toricQrLink" rel="noopener" target="_blank">링크 바로 열기</a>
     </div>
   </div>
 </div>
