@@ -423,6 +423,95 @@
   text-overflow:clip!important;
   word-break:keep-all!important;
 }
+</style><style>
+/* TORIC PANEL - final overflow/right-cutoff fix */
+#toricInfoPanel{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  overflow-x:hidden!important;
+  box-sizing:border-box!important;
+}
+#toricInfoPanel .edu-info-head,
+#toricInfoPanel .edu-info-body,
+#toricInfoPanel .toric-final-body,
+#toricInfoPanel .edu-info-card{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+#toricInfoPanel .edu-info-body,
+#toricInfoPanel .toric-final-body{
+  padding-left:16px!important;
+  padding-right:16px!important;
+  overflow-x:hidden!important;
+}
+#toricInfoPanel .edu-info-card{
+  margin-left:0!important;
+  margin-right:0!important;
+  overflow:hidden!important;
+}
+#toricInfoPanel .toric-slide-head,
+#toricInfoPanel .toric-slider,
+#toricInfoPanel .toric-card-media,
+#toricInfoPanel .toric-recommend-image,
+#toricInfoPanel .toric-selftest-media,
+#toricInfoPanel .toric-selftest-options,
+#toricInfoPanel .toric-selftest-result,
+#toricInfoPanel .toric-inline-qr,
+#toricInfoPanel .toric-qr-wrap{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+#toricInfoPanel img{
+  max-width:100%!important;
+  height:auto!important;
+}
+#toricInfoPanel .toric-card-media img,
+#toricInfoPanel .toric-recommend-image img{
+  width:100%!important;
+  max-width:100%!important;
+  object-fit:contain!important;
+}
+#toricInfoPanel .toric-slide-head{
+  grid-template-columns:40px minmax(0,1fr) 40px!important;
+}
+#toricInfoPanel .toric-slide-title{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#toricInfoPanel .toric-selftest-options{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#toricInfoPanel .toric-test-btn{
+  min-width:0!important;
+  width:100%!important;
+}
+#toricInfoPanel .toric-inline-qr .toric-qr-link{
+  max-width:100%!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+@media (min-width:1281px){
+  .shell.info-panel-open{
+    grid-template-columns:36px minmax(0,1fr) minmax(0,380px)!important;
+  }
+  #toricInfoPanel{
+    width:380px!important;
+    max-width:380px!important;
+  }
+}
+@media (max-width:1280px){
+  #toricInfoPanel{
+    width:100%!important;
+    max-width:100%!important;
+  }
+}
 </style></head>
 <body>
 <div class="app"><div class="shell" id="appShell"><aside class="panel sidebar"><button aria-label="옵션 선택 영역 접기" class="sidebar-fold-btn" id="sidebarFoldBtn" title="옵션 선택 영역 접기" type="button">‹</button><div class="hero"><button aria-label="사용방법 보기" class="hero-help-btn" id="heroHelpBtn" title="사용방법" type="button">ⓘ</button><div class="hero-text"><img alt="ACUVUE" class="acuvue-logo-title" decoding="async" height="209" src="./acuvue-logo-title.png" width="1088"/><div class="hero-subtitle">아큐브 비전 시뮬레이터</div></div><div class="hero-pack"><img alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" src="./acuvue.png"/><div class="hero-pack-fallback">acuvue.png</div></div></div><div class="section"><div class="section-head"><div class="section-num">1</div><div><div class="section-title">굴절이상 선택</div><div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div></div></div><div class="grid-chip" id="conditionGrid"></div></div><div class="section"><div class="section-head"><div class="section-num">2</div><div><div class="section-title">제품 선택</div><div class="section-sub">좌/우 화면에 적용할 제품을 선택하세요.</div></div></div><div class="select-wrap"><div class="field"><div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div><div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div></div><div class="field"><div class="field-head"><label for="rightProduct">우측 화면 제품</label></div><div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div></div></div></div><div class="section"><div class="section-head"><div class="section-num">3</div><div><div class="section-title">환경 선택</div><div class="section-sub">시야 비교에 사용할 장면을 선택하세요.</div></div></div><div class="scene-grid" id="sceneGrid"></div><div class="field" style="margin-top:12px;display:none"><label for="sceneSelect">환경 선택</label><div class="select-shell"><select id="sceneSelect"></select></div></div></div></aside><section class="panel viewer"><div class="toolbar"><div class="toolbar-left unified-toolbar">
