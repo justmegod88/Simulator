@@ -914,123 +914,9 @@
 #toricInfoPanel .toric-test-kicker{display:none!important}
 #toricInfoPanel .toric-test-dots{margin-top:10px}
 </style>
-<style id="premium-guide-styles">
-/* Premium expandable observation guide */
-.video-label{
-  bottom:16px !important;
-  padding:0 !important;
-  min-height:0 !important;
-  border:0 !important;
-  border-radius:17px !important;
-  background:transparent !important;
-  backdrop-filter:none !important;
-  box-shadow:none !important;
-  overflow:visible !important;
-  max-width:min(82%,520px) !important;
-  display:flex !important;
-  flex-direction:column-reverse !important;
-  align-items:flex-start !important;
-  gap:8px !important;
-  isolation:isolate;
-}
-.video-label.right{align-items:flex-end !important;}
-.guide-tag-button{
-  position:relative;
-  min-height:40px;
-  max-width:100%;
-  display:inline-flex;
-  align-items:center;
-  gap:9px;
-  padding:9px 12px 9px 11px;
-  border:1px solid rgba(180,211,255,.48);
-  border-radius:999px;
-  color:#fff;
-  background:linear-gradient(135deg,rgba(5,25,57,.94),rgba(10,45,91,.91));
-  box-shadow:0 10px 26px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.14);
-  backdrop-filter:blur(16px) saturate(135%);
-  -webkit-backdrop-filter:blur(16px) saturate(135%);
-  cursor:pointer;
-  font-family:inherit;
-  text-align:left;
-  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;
-}
-.guide-tag-button:hover{
-  transform:translateY(-2px);
-  border-color:rgba(196,224,255,.78);
-  box-shadow:0 14px 30px rgba(0,0,0,.34),0 0 0 3px rgba(80,150,255,.10),inset 0 1px 0 rgba(255,255,255,.18);
-}
-.guide-tag-button:focus-visible{outline:3px solid rgba(113,180,255,.72);outline-offset:3px;}
-.guide-tag-dot{
-  width:8px;height:8px;flex:0 0 8px;border-radius:50%;
-  background:linear-gradient(180deg,#8FD3FF,#4D9CFF);
-  box-shadow:0 0 0 4px rgba(90,166,255,.13),0 0 14px rgba(110,190,255,.72);
-}
-.video-label .guide-cause{
-  min-width:0;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  color:#DCEEFF !important;
-  font-size:13.4px !important;
-  line-height:1.25 !important;
-  font-weight:900 !important;
-  letter-spacing:-.025em !important;
-}
-.guide-tag-icon{
-  position:relative;width:22px;height:22px;flex:0 0 22px;
-  border-radius:50%;background:rgba(255,255,255,.10);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
-}
-.guide-tag-icon span{position:absolute;left:6px;right:6px;top:10px;height:2px;border-radius:2px;background:#fff;transition:transform .22s ease,opacity .22s ease;}
-.guide-tag-icon span+span{transform:rotate(90deg);}
-.video-label.is-open .guide-tag-icon span+span{transform:rotate(0deg);opacity:0;}
-.guide-detail{
-  width:min(100%,480px);
-  padding:16px 18px 17px;
-  border:1px solid rgba(190,219,255,.42);
-  border-radius:18px;
-  color:#fff;
-  background:linear-gradient(145deg,rgba(4,20,47,.96),rgba(8,42,84,.94));
-  box-shadow:0 18px 40px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.12);
-  backdrop-filter:blur(20px) saturate(140%);
-  -webkit-backdrop-filter:blur(20px) saturate(140%);
-  opacity:0;
-  visibility:hidden;
-  transform:translateY(8px) scale(.985);
-  transform-origin:left bottom;
-  pointer-events:none;
-  transition:opacity .22s ease,transform .22s ease,visibility .22s ease;
-}
-.video-label.right .guide-detail{transform-origin:right bottom;}
-.video-label.is-open .guide-detail{opacity:1;visibility:visible;transform:translateY(0) scale(1);pointer-events:auto;}
-.guide-detail-eyebrow{
-  display:flex;align-items:center;gap:7px;margin-bottom:7px;
-  color:#83BEFF;font-size:11px;font-weight:950;letter-spacing:.08em;
-}
-.guide-detail-eyebrow:before{content:"";width:16px;height:2px;border-radius:2px;background:linear-gradient(90deg,#59A6FF,#A9D5FF);}
-.video-label .guide-target{
-  display:block !important;
-  color:#fff !important;
-  font-size:18px !important;
-  line-height:1.42 !important;
-  font-weight:850 !important;
-  letter-spacing:-.035em !important;
-  word-break:keep-all;
-  text-wrap:balance;
-}
-.video-label.is-open .guide-tag-button{border-color:rgba(132,190,255,.78);background:linear-gradient(135deg,rgba(10,48,99,.97),rgba(15,72,137,.94));}
-#splitLeftPane .video-label.left,#splitRightPane .video-label.right{bottom:16px !important;}
-@media(max-width:760px){
-  .video-label{bottom:11px !important;max-width:86% !important;gap:6px !important;}
-  .guide-tag-button{min-height:36px;padding:7px 10px;gap:7px;}
-  .video-label .guide-cause{font-size:11.5px !important;}
-  .guide-tag-icon{width:20px;height:20px;flex-basis:20px;}
-  .guide-tag-icon span{left:5px;right:5px;top:9px;}
-  .guide-detail{padding:13px 14px 14px;border-radius:15px;}
-  .guide-detail-eyebrow{font-size:9.5px;margin-bottom:5px;}
-  .video-label .guide-target{font-size:15px !important;line-height:1.38 !important;}
-}
-@media(prefers-reduced-motion:reduce){.guide-tag-button,.guide-tag-icon span,.guide-detail{transition:none !important;}}
+<style id="pulse-click-label-style">
+.scene-pulse{pointer-events:auto!important}.scene-pulse .pulse-label{opacity:0!important;visibility:hidden!important;transform:translateX(-50%) translateY(7px) scale(.96)!important;transition:opacity .18s ease,transform .18s ease,visibility .18s ease!important;pointer-events:none!important}.scene-pulse.pulse-detail-open .pulse-label{opacity:1!important;visibility:visible!important;transform:translateX(-50%) translateY(0) scale(1)!important}.pulse-detail-toggle{position:absolute;left:50%;top:50%;z-index:6;width:34px;height:34px;padding:0;transform:translate(-50%,-50%);display:grid;place-items:center;border:1px solid rgba(255,255,255,.9);border-radius:50%;color:#fff;background:linear-gradient(145deg,rgba(6,35,79,.95),rgba(24,88,164,.93));box-shadow:0 8px 22px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.3),0 0 0 5px rgba(255,255,255,.1);font:900 23px/1 Arial,sans-serif;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}.pulse-detail-toggle:hover{transform:translate(-50%,-50%) scale(1.08)}.pulse-detail-toggle:focus-visible{outline:3px solid rgba(135,198,255,.9);outline-offset:4px}.pulse-detail-toggle span{transition:transform .2s ease}.pulse-detail-open .pulse-detail-toggle span{display:inline-block;transform:rotate(45deg)}@media(max-width:760px){.pulse-detail-toggle{width:30px;height:30px;font-size:20px}}</style><style id="final-guide-refinement">
+.video-label{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;display:flex!important;flex-direction:column-reverse!important;gap:7px!important;align-items:flex-start!important;overflow:visible!important;max-width:min(82%,520px)!important}.video-label.right{align-items:flex-end!important}.guide-tag-button{min-height:38px;max-width:100%;display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid rgba(155,202,255,.52);border-radius:999px;color:#fff;background:linear-gradient(135deg,rgba(4,25,59,.95),rgba(11,54,108,.92));box-shadow:0 9px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.16);font-family:inherit;cursor:pointer}.guide-tag-dot{width:7px;height:7px;border-radius:50%;background:#67B3FF;box-shadow:0 0 0 4px rgba(80,160,255,.13),0 0 12px rgba(100,185,255,.65)}.guide-cause{color:#E4F1FF!important;font-size:13px!important;font-weight:900!important;white-space:nowrap!important}.guide-tag-icon{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.11);font-size:15px;font-weight:700;transition:transform .2s ease}.video-label.is-open .guide-tag-icon{transform:rotate(45deg)}.guide-detail{width:min(100%,470px);padding:15px 17px;border:1px solid rgba(181,216,255,.42);border-radius:17px;background:linear-gradient(145deg,rgba(4,20,47,.97),rgba(8,42,84,.95));box-shadow:0 18px 38px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.12);opacity:0;visibility:hidden;transform:translateY(7px) scale(.985);transition:.2s ease;pointer-events:none}.video-label.is-open .guide-detail{opacity:1;visibility:visible;transform:none;pointer-events:auto}.guide-detail-eyebrow{margin-bottom:6px;color:#83BEFF;font-size:10.5px;font-weight:950;letter-spacing:.08em}.guide-target{color:#fff!important;font-size:17px!important;line-height:1.42!important;font-weight:850!important;word-break:keep-all!important}.pulse-detail-toggle{left:79%!important;top:21%!important;width:23px!important;height:23px!important;font-size:14px!important;border-width:1px!important;background:linear-gradient(145deg,rgba(4,31,70,.96),rgba(33,104,184,.92))!important;box-shadow:0 5px 14px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.28),0 0 0 3px rgba(255,255,255,.08)!important}.pulse-detail-toggle:hover{transform:translate(-50%,-50%) scale(1.06)!important}@media(max-width:760px){.pulse-detail-toggle{width:20px!important;height:20px!important;font-size:12px!important;left:78%!important;top:22%!important}.guide-target{font-size:14px!important}.guide-cause{font-size:11.5px!important}}
 </style></head>
 <body>
 <div class="app"><div class="shell" id="appShell"><aside class="panel sidebar"><button aria-label="옵션 선택 영역 접기" class="sidebar-fold-btn" id="sidebarFoldBtn" title="옵션 선택 영역 접기" type="button">‹</button><div class="hero"><button aria-label="사용방법 보기" class="hero-help-btn" id="heroHelpBtn" title="사용방법" type="button">ⓘ</button><div class="hero-text"><img alt="ACUVUE" class="acuvue-logo-title" decoding="async" height="209" src="./acuvue-logo-title.png" width="1088"/><div class="hero-subtitle">아큐브 비전 시뮬레이터</div></div><div class="hero-pack"><img alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" src="./acuvue.png"/><div class="hero-pack-fallback">acuvue.png</div></div></div><div class="section"><div class="section-head"><div class="section-num">1</div><div><div class="section-title">굴절이상 선택</div><div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div></div></div><div class="grid-chip" id="conditionGrid"></div></div><div class="section"><div class="section-head"><div class="section-num">2</div><div><div class="section-title">제품 선택</div><div class="section-sub">좌/우 화면에 적용할 제품을 선택하세요.</div></div></div><div class="select-wrap"><div class="field"><div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div><div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div></div><div class="field"><div class="field-head"><label for="rightProduct">우측 화면 제품</label></div><div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div></div></div></div><div class="section"><div class="section-head"><div class="section-num">3</div><div><div class="section-title">환경 선택</div><div class="section-sub">시야 비교에 사용할 장면을 선택하세요.</div></div></div><div class="scene-grid" id="sceneGrid"></div><div class="field" style="margin-top:12px;display:none"><label for="sceneSelect">환경 선택</label><div class="select-shell"><select id="sceneSelect"></select></div></div></div></aside><section class="panel viewer"><div class="toolbar"><div class="toolbar-left unified-toolbar">
@@ -2024,375 +1910,85 @@ return sceneMap[fallbackId][state.scene];
 return ({day:'1-1', night:'2-1', dine:'3-1'})[state.scene] || '1-1';
 }
 function videoSrc(productId){return `https://d13mgx9baq2vuj.cloudfront.net/videos/${videoCode(productId)}.mp4`}
-// Matches the workbook's 90개 긍정 문구 sheet by condition, product and scene.
-const POSITIVE_GUIDE_BY_SELECTION = {
-  "M|oasys|day": {
-    "tag": "원거리 교정",
-    "text": "진열대 가격표를 확인해 보세요"
-  },
-  "M|oasys|night": {
-    "tag": "원거리 교정",
-    "text": "전방 도로와 표지판을 확인해 보세요"
-  },
-  "M|oasys|dine": {
-    "tag": "원거리 교정",
-    "text": "맞은편 인물과 실내 배경을 확인해 보세요"
-  },
-  "M|max1day|day": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "진열대 가격표와 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "M|max1day|night": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "전방 도로와 표지판을 확인해 보세요"
-  },
-  "M|max1day|dine": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "맞은편 인물과 실내 배경을 확인해 보세요"
-  },
-  "A|oasys|day": {
-    "tag": "난시용 제품 비교",
-    "text": "상품과 진열대 가격표의 윤곽을 비교해 보세요"
-  },
-  "A|oasys|night": {
-    "tag": "난시용 제품 비교",
-    "text": "차선과 자동차 라이트의 윤곽을 비교해 보세요"
-  },
-  "A|oasys|dine": {
-    "tag": "난시용 제품 비교",
-    "text": "테이블과 조명의 윤곽을 비교해 보세요"
-  },
-  "A|oasysToric|day": {
-    "tag": "난시 교정",
-    "text": "상품과 진열대 가격표의 윤곽을 확인해 보세요"
-  },
-  "A|oasysToric|night": {
-    "tag": "난시 교정",
-    "text": "차선과 자동차 라이트의 윤곽을 확인해 보세요"
-  },
-  "A|oasysToric|dine": {
-    "tag": "난시 교정",
-    "text": "테이블과 조명의 윤곽을 확인해 보세요"
-  },
-  "A|max1day|day": {
-    "tag": "블루라이트 차단",
-    "text": "휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A|max1day|night": {
-    "tag": "블루라이트 차단",
-    "text": "자동차 라이트의 차이를 비교해 보세요"
-  },
-  "A|max1day|dine": {
-    "tag": "블루라이트 차단",
-    "text": "실내 조명의 차이를 비교해 보세요"
-  },
-  "A|maxToric|day": {
-    "tag": "난시 교정 + 블루라이트 차단",
-    "text": "상품·진열대 가격표의 윤곽과 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A|maxToric|night": {
-    "tag": "난시 교정 + 블루라이트 차단",
-    "text": "차선과 자동차 라이트의 윤곽을 확인해 보세요"
-  },
-  "A|maxToric|dine": {
-    "tag": "난시 교정 + 블루라이트 차단",
-    "text": "테이블과 조명의 윤곽을 확인해 보세요"
-  },
-  "A+M|oasys|day": {
-    "tag": "원거리 교정",
-    "text": "진열대 가격표를 확인해 보세요"
-  },
-  "A+M|oasys|night": {
-    "tag": "원거리 교정",
-    "text": "전방 도로와 표지판을 확인해 보세요"
-  },
-  "A+M|oasys|dine": {
-    "tag": "원거리 교정",
-    "text": "맞은편 인물과 실내 배경을 확인해 보세요"
-  },
-  "A+M|oasysToric|day": {
-    "tag": "원거리 교정 + 난시 교정",
-    "text": "진열대 가격표과 상품과 진열대 가격표의 윤곽을 확인해 보세요"
-  },
-  "A+M|oasysToric|night": {
-    "tag": "원거리 교정 + 난시 교정",
-    "text": "전방 도로와 표지판과 차선과 자동차 라이트의 윤곽을 확인해 보세요"
-  },
-  "A+M|oasysToric|dine": {
-    "tag": "원거리 교정 + 난시 교정",
-    "text": "맞은편 인물과 실내 배경과 테이블과 조명의 윤곽을 확인해 보세요"
-  },
-  "A+M|max1day|day": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "진열대 가격표와 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A+M|max1day|night": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "전방 도로와 표지판을 확인해 보세요"
-  },
-  "A+M|max1day|dine": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "맞은편 인물과 실내 배경을 확인해 보세요"
-  },
-  "A+M|maxToric|day": {
-    "tag": "원거리 교정 + 난시 교정 + 블루라이트 차단",
-    "text": "상품·진열대 가격표의 윤곽과 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A+M|maxToric|night": {
-    "tag": "원거리 교정 + 난시 교정 + 블루라이트 차단",
-    "text": "전방 도로와 표지판과 차선과 자동차 라이트의 윤곽을 확인해 보세요"
-  },
-  "A+M|maxToric|dine": {
-    "tag": "원거리 교정 + 난시 교정 + 블루라이트 차단",
-    "text": "맞은편 인물과 실내 배경과 테이블과 조명의 윤곽을 확인해 보세요"
-  },
-  "A+P|maxMultiToric|day": {
-    "tag": "난시 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "상품·진열대 가격표의 윤곽과 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A+P|maxMultiToric|night": {
-    "tag": "난시 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "내비게이션과 계기판의 선명도와 차선과 자동차 라이트의 윤곽을 확인해 보세요"
-  },
-  "A+P|maxMultiToric|dine": {
-    "tag": "난시 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "메뉴판의 선명도와 테이블과 조명의 윤곽을 확인해 보세요"
-  },
-  "A+P|maxMulti|day": {
-    "tag": "근거리 교정 + 블루라이트 차단",
-    "text": "진열대 가격표와 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A+P|maxMulti|night": {
-    "tag": "근거리 교정 + 블루라이트 차단",
-    "text": "내비게이션과 계기판을 확인해 보세요"
-  },
-  "A+P|maxMulti|dine": {
-    "tag": "근거리 교정 + 블루라이트 차단",
-    "text": "메뉴판을 확인해 보세요"
-  },
-  "A+P|moistMulti|day": {
-    "tag": "근거리 교정",
-    "text": "휴대폰과 진열대 가격표를 확인해 보세요"
-  },
-  "A+P|moistMulti|night": {
-    "tag": "근거리 교정",
-    "text": "내비게이션과 계기판을 확인해 보세요"
-  },
-  "A+P|moistMulti|dine": {
-    "tag": "근거리 교정",
-    "text": "메뉴판을 확인해 보세요"
-  },
-  "A+P|maxToric|day": {
-    "tag": "난시 교정 + 블루라이트 차단",
-    "text": "상품·진열대 가격표의 윤곽과 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A+P|maxToric|night": {
-    "tag": "난시 교정 + 블루라이트 차단",
-    "text": "차선과 자동차 라이트의 윤곽을 확인해 보세요"
-  },
-  "A+P|maxToric|dine": {
-    "tag": "난시 교정 + 블루라이트 차단",
-    "text": "테이블과 조명의 윤곽을 확인해 보세요"
-  },
-  "A+P|oasysToric|day": {
-    "tag": "난시 교정",
-    "text": "상품과 진열대 가격표의 윤곽을 확인해 보세요"
-  },
-  "A+P|oasysToric|night": {
-    "tag": "난시 교정",
-    "text": "차선과 자동차 라이트의 윤곽을 확인해 보세요"
-  },
-  "A+P|oasysToric|dine": {
-    "tag": "난시 교정",
-    "text": "테이블과 조명의 윤곽을 확인해 보세요"
-  },
-  "A+P|max1day|day": {
-    "tag": "블루라이트 차단",
-    "text": "휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A+P|max1day|night": {
-    "tag": "블루라이트 차단",
-    "text": "자동차 라이트의 차이를 비교해 보세요"
-  },
-  "A+P|max1day|dine": {
-    "tag": "블루라이트 차단",
-    "text": "실내 조명의 차이를 비교해 보세요"
-  },
-  "A+P|oasys|day": {
-    "tag": "난시용 제품 비교",
-    "text": "상품과 진열대 가격표의 윤곽을 비교해 보세요"
-  },
-  "A+P|oasys|night": {
-    "tag": "난시용 제품 비교",
-    "text": "차선과 자동차 라이트의 윤곽을 비교해 보세요"
-  },
-  "A+P|oasys|dine": {
-    "tag": "난시용 제품 비교",
-    "text": "테이블과 조명의 윤곽을 비교해 보세요"
-  },
-  "A+M+P|maxMultiToric|day": {
-    "tag": "원거리 교정 + 난시 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "휴대폰 화면의 밝기부터 진열대 가격표까지, 시야와 윤곽을 확인해 보세요"
-  },
-  "A+M+P|maxMultiToric|night": {
-    "tag": "원거리 교정 + 난시 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "내비게이션부터 도로 표지판까지, 시야와 윤곽을 확인해 보세요"
-  },
-  "A+M+P|maxMultiToric|dine": {
-    "tag": "원거리 교정 + 난시 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "메뉴판부터 실내 배경까지, 시야와 윤곽을 확인해 보세요"
-  },
-  "A+M+P|maxMulti|day": {
-    "tag": "원거리 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "휴대폰 화면의 밝기부터 진열대 가격표까지 확인해 보세요"
-  },
-  "A+M+P|maxMulti|night": {
-    "tag": "원거리 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "내비게이션부터 도로 표지판까지 확인해 보세요"
-  },
-  "A+M+P|maxMulti|dine": {
-    "tag": "원거리 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "메뉴판부터 실내 배경까지 확인해 보세요"
-  },
-  "A+M+P|moistMulti|day": {
-    "tag": "원거리 교정 + 근거리 교정",
-    "text": "휴대폰부터 진열대 가격표까지 확인해 보세요"
-  },
-  "A+M+P|moistMulti|night": {
-    "tag": "원거리 교정 + 근거리 교정",
-    "text": "내비게이션부터 도로 표지판까지 확인해 보세요"
-  },
-  "A+M+P|moistMulti|dine": {
-    "tag": "원거리 교정 + 근거리 교정",
-    "text": "메뉴판부터 실내 배경까지 확인해 보세요"
-  },
-  "A+M+P|maxToric|day": {
-    "tag": "원거리 교정 + 난시 교정 + 블루라이트 차단",
-    "text": "상품·진열대 가격표의 윤곽과 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A+M+P|maxToric|night": {
-    "tag": "원거리 교정 + 난시 교정 + 블루라이트 차단",
-    "text": "전방 도로와 표지판과 차선과 자동차 라이트의 윤곽을 확인해 보세요"
-  },
-  "A+M+P|maxToric|dine": {
-    "tag": "원거리 교정 + 난시 교정 + 블루라이트 차단",
-    "text": "맞은편 인물과 실내 배경과 테이블과 조명의 윤곽을 확인해 보세요"
-  },
-  "A+M+P|oasysToric|day": {
-    "tag": "원거리 교정 + 난시 교정",
-    "text": "진열대 가격표과 상품과 진열대 가격표의 윤곽을 확인해 보세요"
-  },
-  "A+M+P|oasysToric|night": {
-    "tag": "원거리 교정 + 난시 교정",
-    "text": "전방 도로와 표지판과 차선과 자동차 라이트의 윤곽을 확인해 보세요"
-  },
-  "A+M+P|oasysToric|dine": {
-    "tag": "원거리 교정 + 난시 교정",
-    "text": "맞은편 인물과 실내 배경과 테이블과 조명의 윤곽을 확인해 보세요"
-  },
-  "A+M+P|max1day|day": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "진열대 가격표와 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "A+M+P|max1day|night": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "전방 도로와 표지판을 확인해 보세요"
-  },
-  "A+M+P|max1day|dine": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "맞은편 인물과 실내 배경을 확인해 보세요"
-  },
-  "A+M+P|oasys|day": {
-    "tag": "원거리 교정",
-    "text": "진열대 가격표를 확인해 보세요"
-  },
-  "A+M+P|oasys|night": {
-    "tag": "원거리 교정",
-    "text": "전방 도로와 표지판을 확인해 보세요"
-  },
-  "A+M+P|oasys|dine": {
-    "tag": "원거리 교정",
-    "text": "맞은편 인물과 실내 배경을 확인해 보세요"
-  },
-  "M+P|maxMulti|day": {
-    "tag": "원거리 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "휴대폰 화면의 밝기부터 진열대 가격표까지 확인해 보세요"
-  },
-  "M+P|maxMulti|night": {
-    "tag": "원거리 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "내비게이션부터 도로 표지판까지 확인해 보세요"
-  },
-  "M+P|maxMulti|dine": {
-    "tag": "원거리 교정 + 근거리 교정 + 블루라이트 차단",
-    "text": "메뉴판부터 실내 배경까지 확인해 보세요"
-  },
-  "M+P|moistMulti|day": {
-    "tag": "원거리 교정 + 근거리 교정",
-    "text": "휴대폰부터 진열대 가격표까지 확인해 보세요"
-  },
-  "M+P|moistMulti|night": {
-    "tag": "원거리 교정 + 근거리 교정",
-    "text": "내비게이션부터 도로 표지판까지 확인해 보세요"
-  },
-  "M+P|moistMulti|dine": {
-    "tag": "원거리 교정 + 근거리 교정",
-    "text": "메뉴판부터 실내 배경까지 확인해 보세요"
-  },
-  "M+P|max1day|day": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "진열대 가격표와 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "M+P|max1day|night": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "전방 도로와 표지판을 확인해 보세요"
-  },
-  "M+P|max1day|dine": {
-    "tag": "원거리 교정 + 블루라이트 차단",
-    "text": "맞은편 인물과 실내 배경을 확인해 보세요"
-  },
-  "M+P|oasys|day": {
-    "tag": "원거리 교정",
-    "text": "진열대 가격표를 확인해 보세요"
-  },
-  "M+P|oasys|night": {
-    "tag": "원거리 교정",
-    "text": "전방 도로와 표지판을 확인해 보세요"
-  },
-  "M+P|oasys|dine": {
-    "tag": "원거리 교정",
-    "text": "맞은편 인물과 실내 배경을 확인해 보세요"
-  },
-  "P|maxMulti|day": {
-    "tag": "근거리 교정 + 블루라이트 차단",
-    "text": "진열대 가격표와 휴대폰 화면의 밝기를 확인해 보세요"
-  },
-  "P|maxMulti|night": {
-    "tag": "근거리 교정 + 블루라이트 차단",
-    "text": "내비게이션과 계기판을 확인해 보세요"
-  },
-  "P|maxMulti|dine": {
-    "tag": "근거리 교정 + 블루라이트 차단",
-    "text": "메뉴판을 확인해 보세요"
-  },
-  "P|moistMulti|day": {
-    "tag": "근거리 교정",
-    "text": "휴대폰과 진열대 가격표를 확인해 보세요"
-  },
-  "P|moistMulti|night": {
-    "tag": "근거리 교정",
-    "text": "내비게이션과 계기판을 확인해 보세요"
-  },
-  "P|moistMulti|dine": {
-    "tag": "근거리 교정",
-    "text": "메뉴판을 확인해 보세요"
-  }
+const GUIDE_TEXT_BY_CODE = {
+"1-1": "핸드폰 화면의 밝기를 확인해 보세요",
+"1-2": "선명한 시야를 확인해 보세요",
+"1-3": "핸드폰 화면 흐림과 밝기를 확인해 보세요",
+"1-4": "전반적인 시야 흐림을 확인해 보세요",
+"1-5": "미교정된 난시로 인한 흐림을 확인해 보세요",
+"1-6": "미교정된 난시로 인한 흐림을 확인해 보세요",
+"1-7": "핸드폰 화면의 흐림 현상을 확인해 보세요",
+"1-8": "전반적인 시야 흐림을 확인해 보세요",
+"2-1": "자동차 라이트의 빛번짐을 확인해 보세요",
+"2-2": "선명한 시야를 확인해 보세요",
+"2-3": "네비게이션 흐림 현상과 빛번짐을 확인해 보세요",
+"2-4": "전반적인 시야 흐림을 확인해 보세요",
+"2-5": "미교정된 난시로 인한 흐림을 확인해 보세요",
+"2-6": "미교정된 난시 흐림과 빛번짐을 확인해 보세요",
+"2-7": "네비게이션 흐림 현상을 확인해 보세요",
+"2-8": "전반적인 시야 흐림을 확인해 보세요",
+"3-1": "빛번짐을 확인해 보세요",
+"3-2": "선명한 시야를 확인해 보세요",
+"3-3": "메뉴판 흐림 현상과 빛번짐을 확인해 보세요",
+"3-4": "전반적인 시야 흐림을 확인해 보세요",
+"3-5": "미교정된 난시로 인한 흐림을 확인해 보세요",
+"3-6": "미교정된 난시 흐림과 빛번짐을 확인해 보세요",
+"3-7": "메뉴판 흐림 현상을 확인해 보세요",
+"3-8": "전반적인 시야 흐림을 확인해 보세요"
 };
+function positiveGuide(productId){
+const f=flags();
+const isMax=['max1day','maxToric','maxMulti','maxMultiToric'].includes(productId);
+const isToric=['oasysToric','maxToric','maxMultiToric'].includes(productId);
+const isMulti=['moistMulti','maxMulti','maxMultiToric'].includes(productId);
+const corrected=[];
+if(f.myohyperopia) corrected.push('원거리 교정');
+if(f.astigmatism && isToric) corrected.push('난시 교정');
+if(f.presbyopia && isMulti) corrected.push('근거리 교정');
+if(isMax) corrected.push('블루라이트 차단');
+if(!corrected.length && f.astigmatism) corrected.push('난시용 제품 비교');
+const tag=corrected.length?corrected.join(' + '):'제품 비교';
+const scene=state.scene;
+let text='선택한 제품의 시야를 확인해 보세요';
+const sphere=f.myohyperopia;
+const astig=f.astigmatism && isToric;
+const near=f.presbyopia && isMulti;
+if(scene==='day'){
+ if(sphere&&astig&&near) text='휴대폰 화면의 밝기부터 진열대 가격표까지, 시야와 윤곽을 확인해 보세요';
+ else if(sphere&&near) text=isMax?'휴대폰 화면의 밝기부터 진열대 가격표까지 확인해 보세요':'휴대폰부터 진열대 가격표까지 확인해 보세요';
+ else if(astig&&near) text='상품·진열대 가격표의 윤곽과 휴대폰 화면의 밝기를 확인해 보세요';
+ else if(sphere&&astig) text=isMax?'상품·진열대 가격표의 윤곽과 휴대폰 화면의 밝기를 확인해 보세요':'진열대 가격표와 상품의 윤곽을 확인해 보세요';
+ else if(near) text=isMax?'진열대 가격표와 휴대폰 화면의 밝기를 확인해 보세요':'휴대폰과 진열대 가격표를 확인해 보세요';
+ else if(astig) text=isMax?'상품·진열대 가격표의 윤곽과 휴대폰 화면의 밝기를 확인해 보세요':'상품과 진열대 가격표의 윤곽을 확인해 보세요';
+ else if(sphere) text=isMax?'진열대 가격표와 휴대폰 화면의 밝기를 확인해 보세요':'진열대 가격표를 확인해 보세요';
+ else if(f.astigmatism) text='상품과 진열대 가격표의 윤곽을 비교해 보세요';
+ else if(isMax) text='휴대폰 화면의 밝기를 확인해 보세요';
+}else if(scene==='night'){
+ if(sphere&&astig&&near) text='내비게이션부터 도로 표지판까지, 시야와 윤곽을 확인해 보세요';
+ else if(sphere&&near) text='내비게이션부터 도로 표지판까지 확인해 보세요';
+ else if(astig&&near) text='내비게이션과 계기판의 선명도와 차선과 자동차 라이트의 윤곽을 확인해 보세요';
+ else if(sphere&&astig) text='전방 도로와 표지판과 차선과 자동차 라이트의 윤곽을 확인해 보세요';
+ else if(near) text='내비게이션과 계기판을 확인해 보세요';
+ else if(astig) text='차선과 자동차 라이트의 윤곽을 확인해 보세요';
+ else if(sphere) text='전방 도로와 표지판을 확인해 보세요';
+ else if(f.astigmatism) text='차선과 자동차 라이트의 윤곽을 비교해 보세요';
+ else if(isMax) text='자동차 라이트의 차이를 비교해 보세요';
+}else{
+ if(sphere&&astig&&near) text='메뉴판부터 실내 배경까지, 시야와 윤곽을 확인해 보세요';
+ else if(sphere&&near) text='메뉴판부터 실내 배경까지 확인해 보세요';
+ else if(astig&&near) text='메뉴판의 선명도와 테이블과 조명의 윤곽을 확인해 보세요';
+ else if(sphere&&astig) text='맞은편 인물과 실내 배경과 테이블과 조명의 윤곽을 확인해 보세요';
+ else if(near) text='메뉴판을 확인해 보세요';
+ else if(astig) text='테이블과 조명의 윤곽을 확인해 보세요';
+ else if(sphere) text='맞은편 인물과 실내 배경을 확인해 보세요';
+ else if(f.astigmatism) text='테이블과 조명의 윤곽을 비교해 보세요';
+ else if(isMax) text='실내 조명의 차이를 비교해 보세요';
+}
+return {tag,text};
+}
 function guideText(productId){
-const key = `${selectedConditionKey()}|${productId}|${state.scene}`;
-const guide = POSITIVE_GUIDE_BY_SELECTION[key] || {
-tag:'제품 비교', text:'제품을 선택해 시야를 비교해 보세요'
-};
-return `<button class="guide-tag-button" type="button" aria-expanded="false" aria-label="${guide.tag}: 관찰 포인트 열기"><span class="guide-tag-dot" aria-hidden="true"></span><span class="guide-cause">${guide.tag}</span><span class="guide-tag-icon" aria-hidden="true"><span></span><span></span></span></button><div class="guide-detail" aria-hidden="true"><div class="guide-detail-eyebrow">관찰 포인트</div><div class="guide-target">${guide.text}</div></div>`;
+const guide=positiveGuide(productId);
+return `<button class="guide-tag-button" type="button" aria-expanded="false"><span class="guide-tag-dot" aria-hidden="true"></span><span class="guide-cause">${guide.tag}</span><span class="guide-tag-icon" aria-hidden="true">+</span></button><div class="guide-detail" aria-hidden="true"><div class="guide-detail-eyebrow">관찰 포인트</div><div class="guide-target">${guide.text}</div></div>`;
 }
 const GUIDE_PULSE_TARGETS_DUAL = {
 day:{
@@ -2451,26 +2047,53 @@ function effectNoFromVideoCode(code){
 return Number(String(code || '').split('-')[1]) || 2;
 }
 function pulsePointsForCode(code, mode='dual', productId=''){
-const targets = guidePulseTargetsForMode(mode)[sceneKeyFromVideoCode(code)];
+const sceneKey = sceneKeyFromVideoCode(code);
+const effectNo = effectNoFromVideoCode(code);
+const causes = GUIDE_EFFECT_CAUSES[effectNo] || [];
+const targetSet = guidePulseTargetsForMode(mode);
+const targets = targetSet[sceneKey] || targetSet.day;
+const bluePoint = {...(targets.glareOnly || targets.glare), guideType:'blue'};
+const astigPoint = {...targets.astig, guideType:'astig'};
+const nearPoint = {...targets.near, guideType:'near'};
 const f = flags();
-const multi = ['maxMulti','moistMulti','maxMultiToric'].includes(productId);
-const toric = ['maxToric','oasysToric','maxMultiToric'].includes(productId);
-// Highlight the supported benefit rather than an uncorrected area.
-if(f.presbyopia && multi) return [{...targets.near, guideType:'near'}];
-if(f.astigmatism && toric) return [{...targets.astig, guideType:'astig'}];
-if(f.myohyperopia) return [{...targets.clear, guideType:'sphere'}];
-if(isMaxProduct(productId)) return [{...(targets.glareOnly || targets.glare), guideType:'blue'}];
+const isAstigPresbySelection = f.astigmatism && f.presbyopia;
+if(isAstigPresbySelection){
+if(productId === 'maxMultiToric'){
+return [bluePoint];
+}
+if(productId === 'moistMulti'){
+return [astigPoint, bluePoint];
+}
+if(productId === 'maxMulti'){
+return [astigPoint, bluePoint];
+}
+}
+if(!causes.length){
+if(effectNo === 2) return [bluePoint];
+return [];
+}
+if(effectNo === 1) return [bluePoint];
+if(effectNo === 3) return [nearPoint];
+if(effectNo === 4) return [astigPoint, nearPoint];
+if(effectNo === 5) return [astigPoint];
+if(effectNo === 6) return [astigPoint];
+if(effectNo === 7) return [nearPoint];
+if(effectNo === 8) return [astigPoint, nearPoint];
 return [];
 }
 function pulseLabelForPoint(p, code, productId=''){
 if(!p) return '';
-const key = `${selectedConditionKey()}|${productId}|${state.scene}`;
-const guide = POSITIVE_GUIDE_BY_SELECTION[key];
-if(guide && guide.tag) return guide.tag;
-if(p.guideType === 'astig') return '난시 교정';
-if(p.guideType === 'near') return '근거리 교정';
-if(p.guideType === 'sphere') return '원거리 교정';
-if(p.guideType === 'blue') return isMaxProduct(productId) ? '블루라이트 차단' : '';
+if(p.guideType === 'astig') return '겹쳐보이는 시야';
+if(p.guideType === 'near') return '근거리 흐림';
+if(p.guideType === 'blue'){
+const f = flags();
+const isAstigPresbySelection = f.astigmatism && f.presbyopia;
+if(isAstigPresbySelection){
+if(productId === 'moistMulti') return '빛번짐';
+if(productId === 'maxMulti' || productId === 'maxMultiToric') return '눈부심 & 빛번짐 감소';
+}
+return effectNoFromVideoCode(code) === 2 ? '눈부심 & 빛번짐 감소' : '';
+}
 return '';
 }
 function applyMaxMultiAmpBlueNoLabelPatch(points, productId){
@@ -2493,29 +2116,25 @@ if(p.guideType === 'blue') return 'label-blue';
 return '';
 }
 function formatPulseLabelWithRefs(label){
-if(label === '겹쳐보이는 시야' || label === '근거리 흐림'){
+if(label === '확인 포인트' || label === '확인 포인트'){
 return `${label}<sup class="tag-ref">1,2</sup>`;
 }
-if(label === '눈부심 & 빛번짐 감소' || label === '눈부심&빛번짐 감소'){
+if(label === '확인 포인트' || label === '눈부심&빛번짐 감소'){
 return `${label}<sup class="tag-ref">3,4</sup>`;
 }
 return label;
 }
 function setPulseLabel(el, label, labelClass=''){
 if(!el) return;
-let labelEl = el.querySelector('.pulse-label');
-if(!label){
-if(labelEl) labelEl.remove();
-return;
-}
-if(!labelEl){
-labelEl = document.createElement('div');
-el.appendChild(labelEl);
-}
-labelEl.className = ('pulse-label ' + (labelClass || '')).trim();
-const formattedLabel = formatPulseLabelWithRefs(label);
-if(formattedLabel !== label) labelEl.innerHTML = formattedLabel;
-else labelEl.textContent = label;
+el.classList.remove('pulse-detail-open');
+let toggle=el.querySelector('.pulse-detail-toggle');
+if(!toggle){toggle=document.createElement('button');toggle.type='button';toggle.className='pulse-detail-toggle';toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','확인 내용 열기');toggle.innerHTML='<span aria-hidden="true">+</span>';el.appendChild(toggle);}
+let labelEl=el.querySelector('.pulse-label');
+if(!labelEl){labelEl=document.createElement('span');el.appendChild(labelEl);}
+labelEl.className=('pulse-label '+(labelClass||'')).trim();
+labelEl.textContent=label||'';
+labelEl.setAttribute('aria-hidden','true');
+toggle.style.display=label?'grid':'none';
 }
 function setPulseStyle(el, p){
 const size = 135;
@@ -3460,34 +3079,5 @@ function toricResetSelfTest(){
 }
 
 document.addEventListener('DOMContentLoaded',function(){toricShowSelfTest(0);toricSetEye('right');toricSetNumberEye('right');});
-
-// Expand/collapse the observation guide without covering the video by default.
-(function(){
-  function closeGuide(label){
-    if(!label) return;
-    label.classList.remove('is-open');
-    const btn=label.querySelector('.guide-tag-button');
-    const detail=label.querySelector('.guide-detail');
-    if(btn){btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label',(label.querySelector('.guide-cause')?.textContent||'태그')+': 관찰 포인트 열기');}
-    if(detail) detail.setAttribute('aria-hidden','true');
-  }
-  function toggleGuide(label){
-    const willOpen=!label.classList.contains('is-open');
-    document.querySelectorAll('.video-label.is-open').forEach(function(other){if(other!==label) closeGuide(other);});
-    const btn=label.querySelector('.guide-tag-button');
-    const detail=label.querySelector('.guide-detail');
-    label.classList.toggle('is-open',willOpen);
-    if(btn){btn.setAttribute('aria-expanded',String(willOpen));btn.setAttribute('aria-label',(label.querySelector('.guide-cause')?.textContent||'태그')+(willOpen?': 관찰 포인트 닫기':': 관찰 포인트 열기'));}
-    if(detail) detail.setAttribute('aria-hidden',String(!willOpen));
-  }
-  document.addEventListener('click',function(e){
-    const btn=e.target.closest('.guide-tag-button');
-    if(btn){e.preventDefault();e.stopPropagation();toggleGuide(btn.closest('.video-label'));return;}
-    if(!e.target.closest('.video-label')) document.querySelectorAll('.video-label.is-open').forEach(closeGuide);
-  });
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape') document.querySelectorAll('.video-label.is-open').forEach(closeGuide);
-  });
-})();
 </script>
-</body></html>
+<script id="pulse-click-label-script">document.addEventListener('click',function(e){const b=e.target.closest('.pulse-detail-toggle');if(!b)return;e.preventDefault();e.stopPropagation();const p=b.closest('.scene-pulse');const open=!p.classList.contains('pulse-detail-open');p.classList.toggle('pulse-detail-open',open);b.setAttribute('aria-expanded',String(open));b.setAttribute('aria-label',open?'확인 내용 닫기':'확인 내용 열기');const l=p.querySelector('.pulse-label');if(l)l.setAttribute('aria-hidden',String(!open));});</script><script id="final-guide-toggle">document.addEventListener('click',function(e){const b=e.target.closest('.guide-tag-button');if(!b)return;e.preventDefault();e.stopPropagation();const box=b.closest('.video-label');const open=!box.classList.contains('is-open');document.querySelectorAll('.video-label.is-open').forEach(x=>{if(x!==box){x.classList.remove('is-open');const ob=x.querySelector('.guide-tag-button');const od=x.querySelector('.guide-detail');if(ob)ob.setAttribute('aria-expanded','false');if(od)od.setAttribute('aria-hidden','true')}});box.classList.toggle('is-open',open);b.setAttribute('aria-expanded',String(open));const d=box.querySelector('.guide-detail');if(d)d.setAttribute('aria-hidden',String(!open));});</script></body></html>
