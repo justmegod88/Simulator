@@ -4178,12 +4178,14 @@ hint.querySelector('button').addEventListener('click',dismiss);buttons.forEach(f
 </style>
 <script id="response-report-functions">
 function responseReport(label,completion,headline,desc,rows,advice,reset){
- var now=new Date();var date=now.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Seoul'});
- return '<div class="response-report-top"><span>나의 시각 체크</span><time>'+date+'</time></div>'
- +'<div class="response-report-heading"><h3>'+label+'</h3><p>'+completion+'</p></div>'
- +'<div class="response-overview"><span class="response-small-label">응답 요약</span><h4>'+headline+'</h4><p>'+desc+'</p></div>'
- +rows+'<section class="response-next"><h4>다음으로 확인해 보세요</h4><p>'+advice+'</p></section>'
- +'<div class="response-report-actions"><button type="button" onclick="'+reset+'">다시 테스트하기 <span aria-hidden="true">↻</span></button><p>자가 체크 결과이며 진단을 대신하지 않습니다.</p></div>';
+ var toric=reset.indexOf('toric')===0;
+ var expected=toric?[['방사선 시표','모든 방향의 선이 비슷한 진하기로 보여요.'],['숫자 시표','양쪽 눈 모두 1240이 가장 선명하게 보여요.']]:[['적록 시표','빨간 쪽과 초록 쪽이 비슷하게 선명해요.'],['숫자 시표','숫자 5개가 보여요.'],['물방울 이미지','두 번째 물방울이 보여요.']];
+ var reference='<table class="response-table response-table-multi response-reference"><caption>'+(toric?'난시 시표가 선명하다면?':'근거리가 선명하다면?')+'</caption><thead><tr><th scope="col">항목</th><th scope="col">정답</th></tr></thead><tbody>'+expected.map(function(r){return '<tr><th scope="row">'+r[0]+'</th><td>'+r[1]+'</td></tr>';}).join('')+'</tbody></table>';
+ if(toric){
+  function radial(e){return toricRadialAnswers[e]==='different'?'특정 선이 더 진함':'비슷한 진하기';}
+  rows='<table class="response-table response-table-multi"><caption>항목별 응답 기록</caption><thead><tr><th scope="col">확인 항목</th><th scope="col">내 응답</th></tr></thead><tbody><tr><th scope="row">방사선 시표</th><td>오른눈 · '+radial('right')+'<br>왼눈 · '+radial('left')+'</td></tr><tr><th scope="row">숫자 시표</th><td>오른눈 · '+toricNumberAnswers.right+'<br>왼눈 · '+toricNumberAnswers.left+'</td></tr></tbody></table>';
+ }else{rows=rows.replace('내가 선택한 응답','내 응답');}
+ return '<div class="response-report-heading"><h3>'+(toric?'난시 테스트 결과':'근거리 테스트 결과')+'</h3></div>'+rows+reference+'<div class="response-report-actions"><button type="button" onclick="'+reset+'">다시 테스트하기 <span aria-hidden="true">↻</span></button></div>';
 }
 function showResponseReport(panel){
  var first=panel.hidden;panel.hidden=false;panel.classList.add('is-visible');
@@ -4228,4 +4230,4 @@ function showResponseReport(panel){
 .response-saved{font-size:11px;color:#6c7e8d}
 #toricInfoPanel .toric-test-btn{word-break:keep-all;overflow-wrap:normal}
 @media(max-width:420px){.response-report-top{padding:12px 16px}.response-report-heading{padding:21px 16px 16px}.response-report-heading h3{font-size:21px!important}.response-overview{padding:19px 16px}.response-overview h4{font-size:21px}.response-table{width:calc(100% - 32px);margin-left:16px;margin-right:16px}.response-table tbody th,.response-table tbody td{font-size:10px;padding:14px 4px}.response-table .response-digits{font-size:18px}.response-next{padding:21px 16px 18px}.response-report-actions{padding:0 16px 17px}}
-</style></body></html>
+</style><style id="two-table-results">.response-report-heading{border-bottom:0;padding-bottom:22px}.response-table{margin-top:0}.response-reference{margin-top:30px}.response-table caption{font-size:14px;margin-bottom:13px}.response-report-actions{padding-top:25px}.response-table-multi th:first-child{width:32%}</style></body></html>
