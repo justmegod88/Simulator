@@ -4180,7 +4180,7 @@ hint.querySelector('button').addEventListener('click',dismiss);buttons.forEach(f
 function responseReport(label,completion,headline,desc,rows,advice,reset){
  var toric=reset.indexOf('toric')===0;
  var expected=toric?[['방사선 시표','모든 방향의 선이 비슷한 진하기로 보여요.'],['숫자 시표','양쪽 눈 모두 1240이 가장 선명하게 보여요.']]:[['적록 시표','빨간 쪽과 초록 쪽이 비슷하게 선명해요.'],['숫자 시표','숫자 5개가 보여요.'],['물방울 이미지','두 번째 물방울이 보여요.']];
- var reference='<table class="response-table response-table-multi response-reference"><caption>'+(toric?'난시 시표가 선명하다면?':'근거리가 선명하다면?')+'</caption><thead><tr><th scope="col">항목</th><th scope="col">정답</th></tr></thead><tbody>'+expected.map(function(r){return '<tr><th scope="row">'+r[0]+'</th><td>'+r[1]+'</td></tr>';}).join('')+'</tbody></table>';
+ var reference='<table class="response-table response-table-multi response-reference"><caption>'+(toric?'난시가 없이 선명한 시야라면?':'근거리 시야가 선명하다면?')+'</caption><thead><tr><th scope="col">항목</th><th scope="col">정답</th></tr></thead><tbody>'+expected.map(function(r){return '<tr><th scope="row">'+r[0]+'</th><td>'+r[1]+'</td></tr>';}).join('')+'</tbody></table>';
  if(toric){
   function radial(e){return toricRadialAnswers[e]==='different'?'특정 선이 더 진함':'비슷한 진하기';}
   rows='<table class="response-table response-table-multi"><caption>항목별 응답 기록</caption><thead><tr><th scope="col">확인 항목</th><th scope="col">내 응답</th></tr></thead><tbody><tr><th scope="row">방사선 시표</th><td>오른눈 · '+radial('right')+'<br>왼눈 · '+radial('left')+'</td></tr><tr><th scope="row">숫자 시표</th><td>오른눈 · '+toricNumberAnswers.right+'<br>왼눈 · '+toricNumberAnswers.left+'</td></tr></tbody></table>';
@@ -4230,4 +4230,13 @@ function showResponseReport(panel){
 .response-saved{font-size:11px;color:#6c7e8d}
 #toricInfoPanel .toric-test-btn{word-break:keep-all;overflow-wrap:normal}
 @media(max-width:420px){.response-report-top{padding:12px 16px}.response-report-heading{padding:21px 16px 16px}.response-report-heading h3{font-size:21px!important}.response-overview{padding:19px 16px}.response-overview h4{font-size:21px}.response-table{width:calc(100% - 32px);margin-left:16px;margin-right:16px}.response-table tbody th,.response-table tbody td{font-size:10px;padding:14px 4px}.response-table .response-digits{font-size:18px}.response-next{padding:21px 16px 18px}.response-report-actions{padding:0 16px 17px}}
-</style><style id="two-table-results">.response-report-heading{border-bottom:0;padding-bottom:22px}.response-table{margin-top:0}.response-reference{margin-top:30px}.response-table caption{font-size:14px;margin-bottom:13px}.response-report-actions{padding-top:25px}.response-table-multi th:first-child{width:32%}</style></body></html>
+</style><style id="two-table-results">.response-report-heading{border-bottom:0;padding-bottom:22px}.response-table{margin-top:0}.response-reference{margin-top:30px}.response-table caption{font-size:14px;margin-bottom:13px}.response-report-actions{padding-top:25px}.response-table-multi th:first-child{width:32%}</style><style id="result-table-color-refinement">
+.response-report .response-table:not(.response-reference) thead th{background:#edf2f6;color:#546c80;border-color:#d9e2e9}
+.response-report .response-table:not(.response-reference) tbody th,.response-report .response-table:not(.response-reference) tbody td{background:#fafcfd}
+#toricFinalResult .response-reference thead th{background:#fff0e3;color:#936037;border-color:#efdaca}
+#toricFinalResult .response-reference tbody th,#toricFinalResult .response-reference tbody td{background:#fffbf7;border-color:#f0e5dc}
+#mfFinalResult .response-reference thead th{background:#fff6d9;color:#7c692d;border-color:#e9dfbb}
+#mfFinalResult .response-reference tbody th,#mfFinalResult .response-reference tbody td{background:#fffdf5;border-color:#ece7d6}
+.asset-origin-note{margin:12px 0 0;padding:0;text-align:left;font-size:12px;line-height:1.72;color:rgba(255,255,255,.90)}
+.asset-origin-note span{font-size:inherit;margin-right:0}
+</style></body></html>
