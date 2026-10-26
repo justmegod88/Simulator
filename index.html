@@ -4183,13 +4183,22 @@ hint.querySelector('button').addEventListener('click',dismiss);buttons.forEach(f
 function responseReport(label,completion,headline,desc,rows,advice,reset){
  var toric=reset.indexOf('toric')===0;
  var expected=toric?[['방사선 시표','모든 방향의 선이 비슷한 진하기로 보여요.'],['숫자 시표','양쪽 눈 모두 1240이 가장 선명하게 보여요.']]:[['적록 시표','빨간 쪽과 초록 쪽이 비슷하게 선명해요.'],['숫자 시표','숫자 5개가 보여요.'],['물방울 이미지','두 번째 물방울이 보여요.']];
- var reference='<table class="response-table response-table-multi response-reference"><caption>'+(toric?'난시가 없이 선명한 시야라면?':'근거리 시야가 선명하다면?')+'</caption><thead><tr><th scope="col">항목</th><th scope="col">정답</th></tr></thead><tbody>'+expected.map(function(r){return '<tr><th scope="row">'+r[0]+'</th><td>'+r[1]+'</td></tr>';}).join('')+'</tbody></table>';
+ var score=0,total=toric?4:3;
  if(toric){
   function radial(e){return toricRadialAnswers[e]==='different'?'특정 선이 더 진함':'비슷한 진하기';}
+  if(toricRadialAnswers.right==='same')score++; if(toricRadialAnswers.left==='same')score++;
+  if(toricNumberAnswers.right==='1240')score++; if(toricNumberAnswers.left==='1240')score++;
   rows='<table class="response-table response-table-multi"><caption>항목별 응답 기록</caption><thead><tr><th scope="col">확인 항목</th><th scope="col">내 응답</th></tr></thead><tbody><tr><th scope="row">방사선 시표</th><td>오른눈 · '+radial('right')+'<br>왼눈 · '+radial('left')+'</td></tr><tr><th scope="row">숫자 시표</th><td>오른눈 · '+toricNumberAnswers.right+'<br>왼눈 · '+toricNumberAnswers.left+'</td></tr></tbody></table>';
- }else{rows=rows.replace('내가 선택한 응답','내 응답');}
- return '<div class="response-report-heading"><h3>'+(toric?'난시 테스트 결과':'근거리 테스트 결과')+'</h3></div>'+rows+reference+'<div class="response-report-actions"><button type="button" onclick="'+reset+'">다시 테스트하기 <span aria-hidden="true">↻</span></button></div>';
+ }else{
+  if(mfTestAnswers.duo==='same')score++; if(mfTestAnswers.number==='5')score++; if(mfTestAnswers.drop==='yes')score++;
+  rows=rows.replace('내가 선택한 응답','내 응답');
+ }
+ var comment=score===total?(toric?'네 가지 항목이 모두 기준 응답과 일치했어요. 선명한 시야가 비교적 편안한 상태로 보입니다.':'세 가지 항목이 모두 기준 응답과 일치했어요. 근거리 시야가 비교적 편안한 상태로 보입니다.'):(score===0?(toric?'기준 응답과 일치한 항목이 없습니다. 선의 번짐이나 겹침이 느껴진다면 전문가와 상담해 보세요.':'기준 응답과 일치한 항목이 없습니다. 가까운 글씨가 불편하다면 전문가와 상담해 보세요.'):(toric?score+'개 항목이 기준 응답과 일치했어요. 일부 시표에서 차이가 보여 추가 확인을 권합니다.':score+'개 항목이 기준 응답과 일치했어요. 가까운 거리에서 불편함이 있는지 함께 확인해 보세요.'));
+ var scoreBlock='<section class="response-score"><div><span>기준 응답 일치</span><strong>'+score+'<small> / '+total+'</small></strong></div><p>'+comment+'</p></section>';
+ var reference='<table class="response-table response-table-multi response-reference"><caption>'+(toric?'난시가 없이 선명한 시야라면?':'근거리 시야가 선명하다면?')+'</caption><thead><tr><th scope="col">항목</th><th scope="col">정답</th></tr></thead><tbody>'+expected.map(function(r){return '<tr><th scope="row">'+r[0]+'</th><td>'+r[1]+'</td></tr>';}).join('')+'</tbody></table>';
+ return '<div class="response-report-heading"><h3>'+(toric?'난시 테스트 결과':'근거리 테스트 결과')+'</h3></div>'+scoreBlock+rows+reference+'<div class="response-report-actions"><button type="button" onclick="'+reset+'">다시 테스트하기 <span aria-hidden="true">↻</span></button></div>';
 }
+
 function showResponseReport(panel){
  var first=panel.hidden;panel.hidden=false;panel.classList.add('is-visible');
  if(first)setTimeout(function(){panel.scrollIntoView({behavior:'smooth',block:'start'});},80);
@@ -4259,4 +4268,8 @@ function showResponseReport(panel){
  document.querySelectorAll('#multiInfoPanel [data-mf-benefit-dot]').forEach(function(b,i){b.setAttribute('aria-label',(i+1)+'번 멀티포컬 이점')});
  var observer=new ResizeObserver(fit);document.querySelectorAll('.benefit-square').forEach(function(el){observer.observe(el)});window.addEventListener('load',fit);fit();
 })();
-</script></body></html>
+</script><style id="response-score-style">
+.response-score{display:flex;align-items:center;gap:16px;margin:0 20px 20px;padding:15px 16px;border:1px solid #dce5eb;border-radius:8px;background:#f7fafc}
+.response-score>div{flex:0 0 94px;text-align:center;border-right:1px solid #dbe4ea;padding-right:14px}.response-score span{display:block;color:#718493;font-size:10px;font-weight:700;white-space:nowrap}.response-score strong{display:block;color:#173b55;font-size:34px;line-height:1.05;margin-top:4px}.response-score strong small{font-size:15px;color:#78909f;font-weight:600}.response-score p{margin:0;color:#5e7382;font-size:11px;line-height:1.7;word-break:keep-all}
+@media(max-width:420px){.response-score{margin-left:16px;margin-right:16px;gap:12px;padding:13px}.response-score>div{flex-basis:82px;padding-right:11px}.response-score strong{font-size:30px}.response-score p{font-size:10px}}
+</style></body></html>
