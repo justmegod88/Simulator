@@ -1832,6 +1832,10 @@ box-shadow:0 4px 20px rgba(0,0,0,.35)!important;color:#fff!important;pointer-eve
 #pairComparisonGuide .comparison-emphasis-target{color:#a9dcff;}
 #pairComparisonGuide .comparison-emphasis-condition{color:#ffe1a6;}
 </style>
+<style id="observation-circles-only-style">
+.scene-pulse .pulse-detail-toggle,.scene-pulse .pulse-label{display:none!important;}
+.scene-pulse{pointer-events:none!important;}
+</style>
 </head>
 <body>
 <div class="app"><div class="shell" id="appShell"><aside class="panel sidebar"><button aria-label="옵션 선택 영역 접기" class="sidebar-fold-btn" id="sidebarFoldBtn" title="옵션 선택 영역 접기" type="button">‹</button><div class="hero"><button aria-label="사용방법 보기" class="hero-help-btn" id="heroHelpBtn" title="사용방법" type="button">ⓘ</button><div class="hero-text"><img alt="ACUVUE" class="acuvue-logo-title" decoding="async" height="209" src="./acuvue-logo-title.png" width="1088"/><div class="hero-subtitle">아큐브 비전 시뮬레이터</div></div><div class="hero-pack"><img alt="ACUVUE 팩샷" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" src="./acuvue.png"/><div class="hero-pack-fallback">acuvue.png</div></div></div><div class="section"><div class="section-head"><div class="section-num">1</div><div><div class="section-title">굴절이상 선택</div><div class="section-sub">근/원시, 난시, 노안 중복 선택 가능합니다.</div></div></div><div class="grid-chip" id="conditionGrid"></div></div><div class="section"><div class="section-head"><div class="section-num">2</div><div><div class="section-title">제품 선택</div><div class="section-sub">좌/우 화면에 적용할 제품을 선택하세요.</div></div></div><div class="select-wrap"><div class="field"><div class="field-head"><label for="leftProduct">좌측 화면 제품</label></div><div class="select-shell" id="leftProductShell"><select id="leftProduct"></select><span class="select-inline-tag" id="leftProductTag">블루라이트 차단</span></div></div><div class="field"><div class="field-head"><label for="rightProduct">우측 화면 제품</label></div><div class="select-shell" id="rightProductShell"><select id="rightProduct"></select><span class="select-inline-tag" id="rightProductTag">블루라이트 차단</span></div></div></div></div><div class="section"><div class="section-head"><div class="section-num">3</div><div><div class="section-title">환경 선택</div><div class="section-sub">시야 비교에 사용할 장면을 선택하세요.</div></div></div><div class="scene-grid" id="sceneGrid"></div><div class="field" style="margin-top:12px;display:none"><label for="sceneSelect">환경 선택</label><div class="select-shell"><select id="sceneSelect"></select></div></div></div></aside><section class="panel viewer"><div class="toolbar"><div class="toolbar-left unified-toolbar">
@@ -3530,25 +3534,32 @@ return '';
 }
 function formatPulseLabelWithRefs(label){return label;}
 function setPulseLabel(el, label, labelClass=''){
-if(!el) return;
-el.classList.remove('pulse-detail-open');
-let toggle=el.querySelector('.pulse-detail-toggle');
-if(!toggle){toggle=document.createElement('button');toggle.type='button';toggle.className='pulse-detail-toggle';toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','확인 내용 열기');toggle.innerHTML='<span aria-hidden="true">+</span>';el.appendChild(toggle);}
-let labelEl=el.querySelector('.pulse-label');
-if(!labelEl){labelEl=document.createElement('span');el.appendChild(labelEl);}
-labelEl.className=('pulse-label '+(labelClass||'')).trim();
-labelEl.textContent=label||'';
-labelEl.setAttribute('aria-hidden','true');
-toggle.style.display=label?'grid':'none';
+ if(!el)return;
+ el.classList.remove('pulse-detail-open');
+ el.querySelectorAll('.pulse-detail-toggle,.pulse-label').forEach(node=>node.remove());
+ el.setAttribute('aria-hidden','true');
+ el.style.pointerEvents='none';
 }
 function setPulseStyle(el, p){
-const size = 135;
+const size = 120;
 el.style.setProperty('--pulse-x', p.x + '%');
 el.style.setProperty('--pulse-y', p.y + '%');
 el.style.setProperty('--pulse-size', size + 'px');
-el.style.setProperty('--pulse-size-mobile', '98px');
+el.style.setProperty('--pulse-size-mobile', '88px');
 }
 const MARKET_PULSE_DELAY_MS = 2000; // 마트 장면에서 핸드폰 주시 원형 가이드만 2초 늦게 표시
+function sharedObservationPoints(mode){
+ const all=[];
+ [state.leftProduct,state.rightProduct].forEach(id=>{
+  const code=videoCode(id);
+  const points=applyMaxMultiAmpBlueNoLabelPatch(pulsePointsForCode(code,mode,id),id);
+  points.forEach(p=>{
+   if(!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))return;
+   if(!all.some(q=>Math.abs(q.x-p.x)<.01&&Math.abs(q.y-p.y)<.01))all.push({...p});
+  });
+ });
+ return all;
+}
 function applyPulsePoint(el, code, productId=''){
 if(!el) return;
 const mode = (el.id && el.id.toLowerCase().includes('split')) ? 'split' : 'dual';
@@ -3560,7 +3571,7 @@ el._pulseDelayTimer = null;
 if(parent){
 parent.querySelectorAll('.scene-pulse-extra').forEach(node=>node.remove());
 }
-const points = applyMaxMultiAmpBlueNoLabelPatch(pulsePointsForCode(code, mode, productId), productId);
+const points = sharedObservationPoints(mode);
 if(!points.length){
 setPulseLabel(el, '');
 el.style.display = 'none';
