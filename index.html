@@ -731,51 +731,67 @@
 }
 </style>
 
-<style id="toric-definition-highlight-style">
-/* 노안 정의의 강조 음영과 같은 방식으로 난시 핵심 문구 강조 */
-#toricInfoPanel .toric-lead .toric-definition-highlight{
-  display:inline;
-  padding:1px 5px 2px;
-  border-radius:7px;
-  background:linear-gradient(180deg,transparent 12%,#fde5ca 12%,#fde5ca 92%,transparent 92%);
-  color:#9a470e;
-  font-weight:950;
-  box-decoration-break:clone;
-  -webkit-box-decoration-break:clone;
-}
-</style>
-
-<style id="ipad-responsive-fix-2026">
-/* iPad/tablet: fixed 3-column widths are replaced with fluid sizing */
-@media (min-width:761px) and (max-width:1366px){
+<style id="ipad-landscape-desktop-layout">
+/* iPad landscape: keep the same 3-column consultation layout as desktop,
+   but scale the whole workspace to the available viewport instead of switching tablet layout. */
+@media (min-width:900px) and (max-width:1366px) and (orientation:landscape){
+  :root{--ipad-page-pad:12px;--ipad-gap:12px;}
   html,body{min-width:0!important;overflow-x:hidden!important;}
-  .app{width:100%!important;max-width:none!important;padding:clamp(10px,1.6vw,18px)!important;}
-  .shell{width:100%!important;max-width:100%!important;min-width:0!important;gap:clamp(10px,1.4vw,18px)!important;}
-  .shell:not(.info-panel-open):not(.sidebar-collapsed){grid-template-columns:clamp(280px,31vw,360px) minmax(0,1fr)!important;}
-  .shell.sidebar-collapsed:not(.info-panel-open){grid-template-columns:48px minmax(0,1fr)!important;}
-  .shell.info-panel-open{grid-template-columns:44px minmax(0,1fr) clamp(300px,35vw,370px)!important;}
-  .viewer,.sidebar,.edu-info-panel,.video-card,.stage,.split-stage{min-width:0!important;max-width:100%!important;}
-  .shell.info-panel-open .edu-info-panel.is-active{width:100%!important;max-width:100%!important;height:calc(100dvh - 24px)!important;max-height:calc(100dvh - 24px)!important;}
-  .edu-info-head{padding:16px 18px 13px!important;}
-  .edu-info-body,#toricInfoPanel .toric-final-body,#multiInfoPanel .mf-final-body{padding-left:clamp(10px,1.4vw,16px)!important;padding-right:clamp(10px,1.4vw,16px)!important;}
-  .edu-info-card{min-width:0!important;}
-  #toricInfoPanel img,#multiInfoPanel img,#blueInfoPanel img{max-width:100%!important;height:auto;}
-  #toricInfoPanel .toric-recommend-image,
-  #multiInfoPanel .mf-media,
-  #multiInfoPanel .benefit-square{max-width:100%!important;min-width:0!important;}
+  body{background-attachment:scroll!important;}
+  .app{width:100%!important;max-width:none!important;margin:0!important;padding:var(--ipad-page-pad)!important;}
+  .shell{width:100%!important;max-width:none!important;min-width:0!important;gap:var(--ipad-gap)!important;align-items:start!important;}
+
+  /* normal PC-like simulator: left option panel + viewer */
+  .shell:not(.info-panel-open):not(.sidebar-collapsed){
+    grid-template-columns:clamp(300px,29vw,360px) minmax(0,1fr)!important;
+  }
+  .shell.sidebar-collapsed:not(.info-panel-open){
+    grid-template-columns:54px minmax(0,1fr)!important;
+  }
+
+  /* consultation open: collapsed left rail + viewer + consultation panel */
+  .shell.info-panel-open{
+    grid-template-columns:54px minmax(0,1fr) clamp(330px,30vw,390px)!important;
+    gap:12px!important;
+  }
+  .shell.info-panel-open .sidebar{
+    display:block!important;
+    width:auto!important;
+    min-width:0!important;
+    height:var(--stage-video-height-collapsed,auto)!important;
+    max-height:var(--stage-video-height-collapsed,none)!important;
+  }
+  .shell.info-panel-open .edu-info-panel.is-active{
+    display:block!important;
+    position:sticky!important;
+    top:12px!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:calc(100dvh - 24px)!important;
+    max-height:calc(100dvh - 24px)!important;
+    overflow-y:auto!important;
+    align-self:start!important;
+  }
+
+  .viewer,.stage,.video-grid,.video-card,.split-stage,.sidebar,.edu-info-panel{min-width:0!important;max-width:100%!important;}
   .toolbar,.unified-toolbar{min-width:0!important;flex-wrap:wrap!important;}
+  .edu-info-head{padding:16px 18px 13px!important;}
+  .edu-info-body,#toricInfoPanel .toric-final-body,#multiInfoPanel .mf-final-body{padding-left:12px!important;padding-right:12px!important;}
+  .edu-info-card{min-width:0!important;}
+  #blueInfoPanel img,#toricInfoPanel img,#multiInfoPanel img{max-width:100%!important;height:auto;}
+  #toricInfoPanel .toric-recommend-image,#multiInfoPanel .mf-media,#multiInfoPanel .benefit-square{max-width:100%!important;min-width:0!important;}
 }
-/* iPad portrait: give content and consultation panel enough readable width */
-@media (min-width:761px) and (max-width:1024px) and (orientation:portrait){
-  .shell:not(.info-panel-open){grid-template-columns:clamp(250px,32vw,315px) minmax(0,1fr)!important;gap:12px!important;}
-  .shell.info-panel-open{grid-template-columns:40px minmax(0,1fr) minmax(310px,39vw)!important;gap:10px!important;}
+
+/* 1024px-class iPads in landscape need slightly more room for the consultation column. */
+@media (min-width:900px) and (max-width:1100px) and (orientation:landscape){
+  .shell.info-panel-open{
+    grid-template-columns:46px minmax(0,1fr) 330px!important;
+    gap:9px!important;
+  }
   .shell.info-panel-open .sidebar-fold-btn{right:-15px!important;transform:translateY(-50%) scale(.9)!important;}
-  .consultation-label{font-size:11px!important;}
-  .edu-info-title{font-size:clamp(18px,2.1vw,22px)!important;}
-}
-/* Large iPad landscape / iPad Pro */
-@media (min-width:1025px) and (max-width:1366px){
-  .shell.info-panel-open{grid-template-columns:46px minmax(0,1fr) clamp(340px,31vw,390px)!important;}
+  .edu-info-head{padding:14px 15px 12px!important;}
+  .edu-info-title{font-size:19px!important;}
 }
 </style>
 </head>
@@ -823,7 +839,7 @@
 <div class="edu-info-body toric-final-body">
 <div class="edu-info-card">
 <div class="edu-info-card-head"><span class="edu-info-num">1</span><div class="edu-info-card-title">난시란?</div></div>
-<p class="toric-lead">각막이나 수정체의 곡률이 균일하지 않아 빛이 한 점에 초점을 맺지 못해 <strong class="toric-definition-highlight">사물이 겹치거나 흐리게 보일 수 있는 굴절이상</strong>입니다.</p>
+<p class="toric-lead">각막이나 수정체의 곡률이 균일하지 않아 빛이 한 점에 초점을 맺지 못해 <strong>사물이 겹치거나 흐리게 보일 수 있는 굴절이상</strong>입니다.</p>
 <div class="toric-slide-head">
 <button aria-label="이전 이미지" onclick="toricShowIntro(toricIntroIndex-1)" type="button">‹</button>
 <div class="toric-slide-title" id="toricIntroTitle">난시란?</div>
